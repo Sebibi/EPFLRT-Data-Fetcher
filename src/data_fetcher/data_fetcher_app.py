@@ -1,11 +1,10 @@
 import numpy as np
 import pandas as pd
 from influxdb_client import InfluxDBClient
-import os
 import streamlit as st
 import matplotlib.pyplot as plt
 from typing import List
-
+from sklearn.preprocessing import MinMaxScaler
 
 def date_to_influx(date: pd.Timestamp) -> str:
     return date.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -62,8 +61,7 @@ def choose_r2d_session(dfs: List[pd.DataFrame]) -> str:
 def fetch_data(datetime_range: str) -> pd.DataFrame:
     query = f"""from(bucket:"ariane")
     |> {datetime_range}
-    |> filter(fn: (r) => r["_measurement"] == "sensors")
-    |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+    |> pivot(rowKey:["_time"], columnKey: ["_measurement", "_field"], valueColumn: "_value")
     |> drop(columns: ["_start", "_stop"])
     |> yield(name: "mean")
     """
@@ -71,7 +69,7 @@ def fetch_data(datetime_range: str) -> pd.DataFrame:
     with st.spinner("Fetching data from InfluxDB..."):
         with InfluxDBClient(url="https://epfl-rt-data-logging.epfl.ch:8443", token=token, org=org) as client:
             df = client.query_api().query_data_frame(query=query, org=org)
-            df.drop(columns=["result", "table", "_measurement"], inplace=True)
+            df.drop(columns=["result", "table"], inplace=True)
             df.set_index("_time", inplace=True)
     return df
 
@@ -106,16 +104,21 @@ if __name__ == '__main__':
     if len(st.session_state.sessions) > 0:
         st.header("Choose a session !")
         datetime_range = choose_r2d_session(st.session_state.sessions)
-        data = fetch_data(datetime_range)
-        st.session_state.data = data
+        if st.button("Fetch data"):
+            data = fetch_data(datetime_range)
+            data.index = (data.index - data.index[0]).total_seconds()
+            st.session_state.data = data
 
+    if len(st.session_state.data) > 0:
+        # measurements = ["MISC", "AMS", "VSI", "sensors"]
+        data = st.session_state.data
         # Select the Data
         st.subheader("Data to Download")
         # if st.button(label="Set start time to 0"):
         #    st.session_state.data.index = st.session_state.data.index - st.session_state.data.index[0]
-        selected_columns = st.multiselect(label="Select the fields you want to download", options=data.columns, default=["vX", "vXEst"])
-        samples_to_select = st.slider(label="Number of samples to select", min_value=1, max_value=len(data), value=[1, len(data)])
-        output_data = data[selected_columns].iloc[samples_to_select[0]:samples_to_select[1]]
+        selected_columns = st.multiselect(label="Select the fields you want to download", options=data.columns, default=list(data.columns[:2]))
+        samples_to_select = st.select_slider(label="Number of samples to select", options=data.index, value=[data.index[0], data.index[-1]], format_func=lambda x: f"{x:.2f}")
+        output_data = data[selected_columns].loc[samples_to_select[0]:samples_to_select[1]]
         st.dataframe(output_data)
 
         # Download data
@@ -128,9 +131,19 @@ if __name__ == '__main__':
 
         # Plot data
         st.subheader("Plot some data")
-        columns_to_plot = st.multiselect(label="Select the labels to plot", options=data.columns, default=["vX", "vXEst"])
-        samples_to_plot = st.slider(label="Number of samples to plot", min_value=1, max_value=len(data), value=[1, len(data)])
-        plot_data = data[columns_to_plot].iloc[samples_to_plot[0]:samples_to_plot[1]]
+
+        columns_to_plot = st.multiselect(label="Select the labels to plot", options=data.columns, default=list(data.columns[:2]))
+        samples_to_plot = st.select_slider(label="Number of samples to plot", options=data.index, value=[data.index[0], data.index[-1]], format_func=lambda x: f"{x:.2f}")
+        plot_data = data[columns_to_plot].loc[samples_to_plot[0]:samples_to_plot[1]]
+        if st.checkbox("Smooth data"):
+            smooth_cols = st.multiselect(label="Select the labels to smooth", options=plot_data.columns, default=list(plot_data.columns))
+            plot_data[smooth_cols] = plot_data[smooth_cols].rolling(window=7).mean()
+
+        if st.checkbox("Normalize data"):
+            scaler = MinMaxScaler()
+            data['sensors_vX'] = abs(data['sensors_vX'])
+            scale_cols = st.multiselect(label="Select the labels to scale", options=plot_data.columns, default=list(plot_data.columns))
+            plot_data[scale_cols] = pd.DataFrame(scaler.fit_transform(plot_data[scale_cols]), columns=scale_cols, index=plot_data.index)
         fig, ax = plt.subplots(figsize=(16, 9))
         plot_data.plot(ax=ax)
         st.pyplot(fig, use_container_width=False)
