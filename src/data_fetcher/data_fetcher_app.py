@@ -111,8 +111,8 @@ if __name__ == '__main__':
 
         # Select the Data
         st.subheader("Data to Download")
-        if st.button(label="Set start time to 0"):
-            st.session_state.data.index = st.session_state.data.index - st.session_state.data.index[0]
+        # if st.button(label="Set start time to 0"):
+        #    st.session_state.data.index = st.session_state.data.index - st.session_state.data.index[0]
         selected_columns = st.multiselect(label="Select the fields you want to download", options=data.columns, default=["vX", "vXEst"])
         samples_to_select = st.slider(label="Number of samples to select", min_value=1, max_value=len(data), value=[1, len(data)])
         output_data = data[selected_columns].iloc[samples_to_select[0]:samples_to_select[1]]
