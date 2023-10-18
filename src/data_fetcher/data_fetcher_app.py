@@ -145,6 +145,7 @@ if __name__ == '__main__':
             scale_cols = st.multiselect(label="Select the labels to scale", options=plot_data.columns, default=list(plot_data.columns))
             plot_data[scale_cols] = pd.DataFrame(scaler.fit_transform(plot_data[scale_cols]), columns=scale_cols, index=plot_data.index)
         fig, ax = plt.subplots(figsize=(16, 9))
+        # ax.axhline(y=25, color='r', linestyle='-', label='Horizontal Line at y=25')
         plot_data.plot(ax=ax)
         st.pyplot(fig, use_container_width=False)
 
