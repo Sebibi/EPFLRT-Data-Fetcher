@@ -33,7 +33,7 @@ def fetch_r2d_session(start_date: pd.Timestamp, end_date: pd.Timestamp) -> List[
     """
 
     with st.spinner("Fetching r2d sessions from InfluxDB..."):
-        with InfluxDBClient(url="https://epfl-rt-data-logging.epfl.ch:8443", token=token, org=org) as client:
+        with InfluxDBClient(url="https://epfl-rt-data-logging.epfl.ch:8443", token=token, org=org, verify_ssl=verify_sll) as client:
             df_r2d = client.query_api().query_data_frame(query=query_r2d, org=org)
             df_r2d.drop(columns=["result", "table"], inplace=True)
             df_r2d.set_index("_time", inplace=True)
@@ -67,7 +67,7 @@ def fetch_data(datetime_range: str) -> pd.DataFrame:
     """
 
     with st.spinner("Fetching data from InfluxDB..."):
-        with InfluxDBClient(url="https://epfl-rt-data-logging.epfl.ch:8443", token=token, org=org) as client:
+        with InfluxDBClient(url="https://epfl-rt-data-logging.epfl.ch:8443", token=token, org=org, verify_ssl=verify_sll) as client:
             df = client.query_api().query_data_frame(query=query, org=org)
             df.drop(columns=["result", "table"], inplace=True)
             df.set_index("_time", inplace=True)
@@ -80,6 +80,7 @@ if __name__ == '__main__':
     st.set_page_config(layout="wide")
     init_sessions_state()
     st.title("Data Fetcher")
+    verify_sll = st.checkbox("Fetch with SSL", value=True)
 
     # API information
     st.subheader("Fetch data from InfluxDB")
