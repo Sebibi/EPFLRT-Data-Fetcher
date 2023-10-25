@@ -35,6 +35,8 @@ def fetch_r2d_session(start_date: pd.Timestamp, end_date: pd.Timestamp) -> List[
     with st.spinner("Fetching r2d sessions from InfluxDB..."):
         with InfluxDBClient(url="https://epfl-rt-data-logging.epfl.ch:8443", token=token, org=org, verify_ssl=verify_sll) as client:
             df_r2d = client.query_api().query_data_frame(query=query_r2d, org=org)
+            if len(df_r2d) == 0:
+                return []
             df_r2d.drop(columns=["result", "table"], inplace=True)
             df_r2d.set_index("_time", inplace=True)
 
@@ -69,6 +71,8 @@ def fetch_data(datetime_range: str) -> pd.DataFrame:
     with st.spinner("Fetching data from InfluxDB..."):
         with InfluxDBClient(url="https://epfl-rt-data-logging.epfl.ch:8443", token=token, org=org, verify_ssl=verify_sll) as client:
             df = client.query_api().query_data_frame(query=query, org=org)
+            if len(df) == 0:
+                return pd.DataFrame()
             df.drop(columns=["result", "table"], inplace=True)
             df.set_index("_time", inplace=True)
     return df
@@ -99,7 +103,10 @@ if __name__ == '__main__':
     if fetch:
         dfs = fetch_r2d_session(start_date, end_date)
         st.session_state.sessions = dfs
-        st.success(f"Fetched {len(dfs)} sessions, select one in the dropdown below")
+        if len(dfs) == 0:
+            st.error("No R2D session found in the selected date range (if the requested data is recent, it might not have been uploaded yet)")
+        else:
+            st.success(f"Fetched {len(dfs)} sessions, select one in the dropdown below")
 
     # Choose R2D session and fetch data
     if len(st.session_state.sessions) > 0:
