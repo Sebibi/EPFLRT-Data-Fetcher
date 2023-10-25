@@ -80,7 +80,7 @@ if __name__ == '__main__':
     st.set_page_config(layout="wide")
     init_sessions_state()
     st.title("Data Fetcher")
-    verify_sll = st.checkbox("Fetch with SSL", value=True)
+    verify_sll = st.checkbox("Fetch with SSL", value=False)
 
     # API information
     st.subheader("Fetch data from InfluxDB")
