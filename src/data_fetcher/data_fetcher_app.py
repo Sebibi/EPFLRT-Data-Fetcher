@@ -8,9 +8,7 @@ import matplotlib.pyplot as plt
 from typing import List
 from sklearn.preprocessing import MinMaxScaler
 
-
-def date_to_influx(date: pd.Timestamp) -> str:
-    return date.strftime("%Y-%m-%dT%H:%M:%SZ")
+from utils import fetch_r2d_session, choose_r2d_session, fetch_data
 
 
 def init_sessions_state():
@@ -19,69 +17,6 @@ def init_sessions_state():
 
     if "data" not in st.session_state:
         st.session_state.data = pd.DataFrame()
-
-
-def fetch_r2d_session(start_date: pd.Timestamp, end_date: pd.Timestamp) -> List[pd.DataFrame]:
-    start_date = date_to_influx(start_date)
-    end_date = date_to_influx(end_date)
-
-    query_r2d = f"""from(bucket:"ariane") 
-    |> range(start: {start_date}, stop: {end_date})
-    |> filter(fn: (r) => r["_measurement"] == "MISC")
-    |> filter(fn: (r) => r["_field"] == "FSM")
-    |> filter(fn: (r) => r["_value"] == "R2D")
-    |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
-    |> drop(columns: ["_start", "_stop"])
-    |> yield(name: "max")
-    """
-
-    with st.spinner("Fetching r2d sessions from InfluxDB..."):
-        with InfluxDBClient(url="https://epfl-rt-data-logging.epfl.ch:8443", token=token, org=org,
-                            verify_ssl=verify_sll) as client:
-            df_r2d = client.query_api().query_data_frame(query=query_r2d, org=org)
-            if len(df_r2d) == 0:
-                return []
-            df_r2d.drop(columns=["result", "table"], inplace=True)
-            df_r2d.set_index("_time", inplace=True)
-
-    threshold = pd.Timedelta(seconds=10)
-    separation_indexes = df_r2d.index[df_r2d.index.to_series().diff() > threshold].tolist()
-    separation_indexes = [df_r2d.index[0]] + separation_indexes + [df_r2d.index[-1]]
-    dfs = [df_r2d.loc[separation_indexes[i]:separation_indexes[i + 1]] for i in range(len(separation_indexes) - 1)]
-    dfs = [df[:-1] for df in dfs]
-    return dfs
-
-
-def choose_r2d_session(dfs: List[pd.DataFrame]) -> str:
-    date_format = "%Y-%m-%dT%H:%M:%SZ"
-    dfs_options = [f"range(start: {df.index[0].strftime(date_format)}, stop: {df.index[-1].strftime(date_format)})" for
-                   df in dfs]
-
-    dfs_elapsed_time = [str((df.index[-1] - df.index[0]).floor('s'))[7:] for df in dfs]
-
-    options_index = list(np.arange(len(dfs)))
-    session_index = st.selectbox("Session", options=options_index, index=0, label_visibility="collapsed",
-                                 format_func=lambda i: f"{i} - Duration ({dfs_elapsed_time[i]}) : " + dfs_options[i])
-    return dfs_options[session_index]
-
-
-def fetch_data(datetime_range: str) -> pd.DataFrame:
-    query = f"""from(bucket:"ariane")
-    |> {datetime_range}
-    |> pivot(rowKey:["_time"], columnKey: ["_measurement", "_field"], valueColumn: "_value")
-    |> drop(columns: ["_start", "_stop"])
-    |> yield(name: "mean")
-    """
-
-    with st.spinner("Fetching data from InfluxDB..."):
-        with InfluxDBClient(url="https://epfl-rt-data-logging.epfl.ch:8443", token=token, org=org,
-                            verify_ssl=verify_sll) as client:
-            df = client.query_api().query_data_frame(query=query, org=org)
-            if len(df) == 0:
-                return pd.DataFrame()
-            df.drop(columns=["result", "table"], inplace=True)
-            df.set_index("_time", inplace=True)
-    return df
 
 
 if __name__ == '__main__':
@@ -104,12 +39,13 @@ if __name__ == '__main__':
     start_date = date_cols[0].date_input("Start date", value=pd.to_datetime("2023-10-05"),
                                          max_value=pd.to_datetime(datetime.now().strftime("%Y-%m-%d")))
     end_date = date_cols[1].date_input("End date", value=pd.to_datetime("2023-10-06"),
-                                       max_value=pd.to_datetime((datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")))
+                                       max_value=pd.to_datetime(
+                                           (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")))
 
     # Fetch R2D sessions
     fetch = st.button("Fetch R2D sessions")
     if fetch:
-        dfs = fetch_r2d_session(start_date, end_date)
+        dfs = fetch_r2d_session(start_date, end_date, verify_ssl=verify_sll)
         st.session_state.sessions = dfs
         if len(dfs) == 0:
             st.error(
@@ -122,7 +58,7 @@ if __name__ == '__main__':
         st.header("Choose a session !")
         datetime_range = choose_r2d_session(st.session_state.sessions)
         if st.button("Fetch data"):
-            data = fetch_data(datetime_range)
+            data = fetch_data(datetime_range, verify_ssl=verify_sll)
             data.index = (data.index - data.index[0]).total_seconds()
             st.session_state.data = data
 
@@ -130,15 +66,19 @@ if __name__ == '__main__':
         # measurements = ["MISC", "AMS", "VSI", "sensors"]
         data = st.session_state.data
         # Select the Data
-        st.subheader("Data to Download")
-        # if st.button(label="Set start time to 0"):
-        #    st.session_state.data.index = st.session_state.data.index - st.session_state.data.index[0]
         selected_columns = st.multiselect(label="Select the fields you want to download", options=data.columns,
                                           default=list(data.columns[:2]))
         samples_to_select = st.select_slider(label="Number of samples to select", options=data.index,
                                              value=[data.index[0], data.index[-1]], format_func=lambda x: f"{x:.2f}")
         output_data = data[selected_columns].loc[samples_to_select[0]:samples_to_select[1]]
-        st.dataframe(output_data)
+
+        cols = st.columns(2)
+        with cols[0]:
+            st.subheader("Data to Download")
+            st.dataframe(output_data)
+        with cols[1]:
+            st.subheader("Data Description")
+            st.dataframe(output_data.describe())
 
         # Download data
         file_name = st.text_input("File name", value="output_data.csv")
