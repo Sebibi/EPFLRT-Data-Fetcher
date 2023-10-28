@@ -8,7 +8,7 @@ This is a simple script that fetches data from the EPFL Racing Team's website an
 2. Activate the virtual environment with `source venv/bin/activate`
 3. Upgarde the package installer with `pip install --upgrade pip`
 4. Install the dependencies with `pip install -r requirements.txt`
-5. Launch the app with `streamlit run data_fetcher.py`
+5. Launch the app with `streamlit run data_fetcher_app.py`
 6. The app should open in your browser (if not, go to `http://localhost:8501`)
 
 
