@@ -7,8 +7,12 @@ from src.functionnal.create_sessions import SessionCreator
 
 
 def init_sessions_state_tab1():
-    if "data" not in st.session_state:
-        st.session_state.data = pd.DataFrame()
+
+    if "tab1" not in st.session_state:
+        st.session_state['tab1'] = {}
+
+    if "data" not in st.session_state.tab1:
+        st.session_state.tab1['data'] = pd.DataFrame()
 
 
 def build_tab1(session_creator: SessionCreator) -> bool:
@@ -20,10 +24,10 @@ def build_tab1(session_creator: SessionCreator) -> bool:
     if st.button("Fetch this session", key="tab1 fetch data button"):
         data = session_creator.fetch_data(datetime_range, verify_ssl=st.session_state.verify_ssl)
         data.index = (data.index - data.index[0]).total_seconds()
-        st.session_state.data = data
+        st.session_state.tab1['data'] = data
 
-    if len(st.session_state.data) > 0:
-        data = st.session_state.data
+    if len(st.session_state.tab1['data']) > 0:
+        data = st.session_state.tab1['data']
         # Select the Data
         selected_columns = st.multiselect(
             label="Select the fields you want to download", options=data.columns, default=list(data.columns[:2]))

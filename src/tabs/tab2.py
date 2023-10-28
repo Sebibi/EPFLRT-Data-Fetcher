@@ -5,8 +5,12 @@ from src.functionnal.create_sessions import SessionCreator
 
 
 def init_sessions_state_tab2():
-    if "datas" not in st.session_state:
-        st.session_state.datas = pd.DataFrame()
+
+    if "tab2" not in st.session_state:
+        st.session_state['tab2'] = {}
+
+    if "datas" not in st.session_state.tab2:
+        st.session_state.tab2['datas'] = pd.DataFrame()
 
 
 def build_tab2(session_creator: SessionCreator):
@@ -25,10 +29,10 @@ def build_tab2(session_creator: SessionCreator):
             bar.progress(text=f"Fetching data", value=(i + 1) / len(datetime_ranges))
             datas = pd.concat([datas, data], axis=0)
 
-        st.session_state.datas = datas
+        st.session_state.tab2['datas'] = datas
 
-    if len(st.session_state.datas) > 0:
-        datas = st.session_state.datas
+    if len(st.session_state.tab2['datas']) > 0:
+        datas = st.session_state.tab2['datas']
         # Select the Data
         selected_columns = st.multiselect(
             label="Select the fields you want examine", options=datas.columns, default=list(datas.columns[:2]))
