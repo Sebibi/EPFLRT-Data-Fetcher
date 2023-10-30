@@ -29,13 +29,17 @@ class SessionCreator:
 
         with st.spinner("Fetching r2d sessions from InfluxDB..."):
             df_r2d = self.fetcher.fetch_data(query=query_r2d, verify_sll=verify_ssl)
-
-        threshold = pd.Timedelta(seconds=10)
-        separation_indexes = df_r2d.index[df_r2d.index.to_series().diff() > threshold].tolist()
-        separation_indexes = [df_r2d.index[0]] + separation_indexes + [df_r2d.index[-1]]
-        dfs = [df_r2d.loc[separation_indexes[i]:separation_indexes[i + 1]] for i in range(len(separation_indexes) - 1)]
-        dfs = [df[:-1] for df in dfs]
-        return dfs
+        if len(df_r2d) == 0:
+            return []
+        else:
+            print(df_r2d)
+            st.info(df_r2d)
+            threshold = pd.Timedelta(seconds=10)
+            separation_indexes = df_r2d.index[df_r2d.index.to_series().diff() > threshold].tolist()
+            separation_indexes = [df_r2d.index[0]] + separation_indexes + [df_r2d.index[-1]]
+            dfs = [df_r2d.loc[separation_indexes[i]:separation_indexes[i + 1]] for i in range(len(separation_indexes) - 1)]
+            dfs = [df[:-1] for df in dfs]
+            return dfs
 
     def fetch_data(self, datetime_range: str, verify_ssl: bool) -> pd.DataFrame:
         query = f"""from(bucket:"ariane")

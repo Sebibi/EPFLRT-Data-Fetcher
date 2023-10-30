@@ -16,6 +16,8 @@ class InfluxDbFetcher(Fetcher):
             df = client.query_api().query_data_frame(query=query, org=self.org)
             if len(df) == 0:
                 return pd.DataFrame()
-            df.drop(columns=["result", "table"], inplace=True)
-            df.set_index("_time", inplace=True)
+            else:
+                df.drop(columns=["result", "table"], inplace=True)
+                df["_time"] = pd.to_datetime(df["_time"])
+                df.set_index("_time", inplace=True)
             return df
