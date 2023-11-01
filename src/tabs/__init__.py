@@ -1,2 +1,10 @@
-from src.tabs.tab1 import build_tab1
-from src.tabs.tab2 import build_tab2
+from typing import List
+
+from src.tabs.tab1 import Tab1
+from src.tabs.tab2 import Tab2
+from src.tabs.base import Tab
+
+
+def create_tabs() -> List[Tab]:
+    tabs = [Tab1(), Tab2()]
+    return tabs

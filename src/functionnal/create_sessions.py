@@ -32,7 +32,6 @@ class SessionCreator:
         if len(df_r2d) == 0:
             return []
         else:
-            st.info(df_r2d)
             threshold = pd.Timedelta(seconds=10)
             separation_indexes = df_r2d.index[df_r2d.index.to_series().diff() > threshold].tolist()
             separation_indexes = [df_r2d.index[0]] + separation_indexes + [df_r2d.index[-1]]

@@ -1,0 +1,18 @@
+from abc import ABC, abstractmethod
+import streamlit as st
+from src.functionnal.create_sessions import SessionCreator
+
+
+class Tab(ABC):
+    name: str
+    description: str
+
+    def __init__(self, name: str, description: str):
+        self.name = name
+        self.description = description
+        if self.name not in st.session_state:
+            st.session_state[self.name] = {}
+
+    @abstractmethod
+    def build(self, session_creator: SessionCreator) -> bool:
+        pass

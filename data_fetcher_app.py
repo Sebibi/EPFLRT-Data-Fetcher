@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from typing import List
 
 import pandas as pd
 import streamlit as st
@@ -7,7 +8,7 @@ from config.config import Config
 from src.api_call.influxdb_api import InfluxDbFetcher
 from src.functionnal.create_sessions import SessionCreator
 
-from src.tabs import build_tab1, build_tab2
+from src.tabs import create_tabs, Tab
 
 
 def init_sessions_state():
@@ -66,9 +67,9 @@ if __name__ == '__main__':
         # Build the tabs
     if len(st.session_state.sessions) > 0:
         st.subheader("Select a tab")
-        tabs = st.tabs(["Session Analysis", "Maximum features extraction"])
-        with tabs[0]:
-            build_tab1(session_creator)
+        tabs: List[Tab] = create_tabs()
+        st_tabs = st.tabs(tabs=[tab.description for tab in tabs])
 
-        with tabs[1]:
-            build_tab2(session_creator)
+        for tab, st_tab in zip(tabs, st_tabs):
+            with st_tab:
+                tab.build(session_creator=session_creator)
