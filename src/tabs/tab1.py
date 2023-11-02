@@ -76,7 +76,7 @@ class Tab1(Tab):
                                             default=list(plot_data.columns))
                 plot_data[scale_cols] = pd.DataFrame(scaler.fit_transform(plot_data[scale_cols]), columns=scale_cols,
                                                      index=plot_data.index)
-            fig, ax = plt.subplots(figsize=(16, 9))
+            fig, ax = plt.subplots(figsize=(10, 5))
             # ax.axhline(y=25, color='r', linestyle='-', label='Horizontal Line at y=25')
             plot_data.plot(ax=ax)
             st.pyplot(fig, use_container_width=False)

@@ -32,8 +32,8 @@ class Tab3(Tab):
             data = self.memory['data']
 
             # Select the velocities and the motor speeds
-            wheel_radius = 0.203  # meters
-            gear_ratio = 13.2
+            wheel_radius = 0.2032  # meters
+            gear_ratio = 13.188
 
             velocities = pd.DataFrame()
             data_names = [
@@ -45,7 +45,7 @@ class Tab3(Tab):
                 if data_name in data.columns:
                     velocities[data_name] = data[data_name]
 
-            k = 2 * math.pi * wheel_radius / (60.0 * gear_ratio)
+            k = 2 * np.pi * wheel_radius / (60.0 * gear_ratio)
             velocities['VSI_Motor_Speed_FR'] *= k
             velocities['VSI_Motor_Speed_FL'] *= k
             velocities['VSI_Motor_Speed_RR'] *= k

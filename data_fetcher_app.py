@@ -54,19 +54,21 @@ if __name__ == '__main__':
         session_creator: SessionCreator = st.session_state.session_creator
 
         # API information and Fetcher initialization
-        st.divider()
-        with st.expander("API information"):
-            st.markdown(f"**Organisation**: {Config.org}")
-            st.markdown(f"**Api token**: {Config.token}")
+        # st.divider()
+        # with st.expander("API information"):
+        #     st.markdown(f"**Organisation**: {Config.org}")
+        #     st.markdown(f"**Api token**: {Config.token}")
 
-    if fetch:
-        dfs = session_creator.fetch_r2d_session(start_date, end_date, verify_ssl=st.session_state.verify_ssl)
-        st.session_state.sessions = dfs
-        if len(dfs) == 0:
-            st.error(
-                "No R2D session found in the selected date range (if the requested data is recent, it might not have been uploaded yet)")
-        else:
-            st.success(f"Fetched {len(dfs)} sessions, select one in the dropdown below")
+        if fetch:
+            dfs = session_creator.fetch_r2d_session(start_date, end_date, verify_ssl=st.session_state.verify_ssl)
+            st.session_state.sessions = dfs
+            if len(dfs) == 0:
+                st.error(
+                    "No R2D session found in the selected date range (if the requested data is recent, it might not have been uploaded yet)")
+            else:
+                st.success(f"Fetched {len(dfs)} sessions, select one in the dropdown menu")
+
+
 
     # Build the tabs
     if len(st.session_state.sessions) > 0:
