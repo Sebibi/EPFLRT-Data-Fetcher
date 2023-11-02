@@ -50,7 +50,7 @@ class SessionCreator:
         with st.spinner("Fetching session data from InfluxDB..."):
             return self.fetcher.fetch_data(query, verify_sll=verify_ssl)
 
-    def r2d_session_selector(self, dfs: List[pd.DataFrame]) -> str:
+    def r2d_session_selector(self, dfs: List[pd.DataFrame], key: str) -> str:
         dfs_options = [f"range(start: {date_to_influx(df.index[0])}, stop: {date_to_influx(df.index[-1])})"
                        for
                        df in dfs]
@@ -61,7 +61,8 @@ class SessionCreator:
         session_index = st.selectbox(
             "Session", options=options_index, index=0,
             label_visibility="collapsed",
-            format_func=lambda i: f"{i} - Duration ({dfs_elapsed_time[i]}) : " + dfs_options[i]
+            format_func=lambda i: f"{i} - Duration ({dfs_elapsed_time[i]}) : " + dfs_options[i],
+            key=key,
         )
         return dfs_options[session_index]
 

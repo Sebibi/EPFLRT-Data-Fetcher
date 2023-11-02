@@ -35,25 +35,30 @@ if __name__ == '__main__':
     cols[0].title("InfluxDB data Fetcher")
     cols[0].markdown("This application allows you to fetch data from the InfluxDB database of the EPFL Racing Team")
     cols[1].image("data/img/epflrt_logo.png", width=200)
-    st.session_state.verify_ssl = st.checkbox("Fetch with SSL", value=False)
 
-    # API information and Fetcher initialization
-    st.markdown(f"**Organisation**: {Config.org}")
-    st.markdown(f"**Api token**: {Config.token}")
+    with st.sidebar:
+        # Choose date range
+        st.header("Select a date range")
+        date_cols = st.columns(2)
+        start_date = date_cols[0].date_input("Start date", value=pd.to_datetime("2023-10-05"),
+                                             max_value=pd.to_datetime(datetime.now().strftime("%Y-%m-%d")))
+        end_date = date_cols[1].date_input("End date", value=pd.to_datetime("2023-10-06"),
+                                           max_value=pd.to_datetime(
+                                               (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")))
 
-    # Choose date range
-    st.subheader("Select a date range")
-    date_cols = st.columns(2)
-    start_date = date_cols[0].date_input("Start date", value=pd.to_datetime("2023-10-05"),
-                                         max_value=pd.to_datetime(datetime.now().strftime("%Y-%m-%d")))
-    end_date = date_cols[1].date_input("End date", value=pd.to_datetime("2023-10-06"),
-                                       max_value=pd.to_datetime(
-                                           (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")))
+        # Enable / Disable SSL verification
+        st.session_state.verify_ssl = st.checkbox("Fetch with SSL", value=False)
 
-    session_creator: SessionCreator = st.session_state.session_creator
+        # Fetch R2D sessions
+        fetch = st.button("Fetch R2D sessions")
+        session_creator: SessionCreator = st.session_state.session_creator
 
-    # Fetch R2D sessions
-    fetch = st.button("Fetch R2D sessions")
+        # API information and Fetcher initialization
+        st.divider()
+        with st.expander("API information"):
+            st.markdown(f"**Organisation**: {Config.org}")
+            st.markdown(f"**Api token**: {Config.token}")
+
     if fetch:
         dfs = session_creator.fetch_r2d_session(start_date, end_date, verify_ssl=st.session_state.verify_ssl)
         st.session_state.sessions = dfs
@@ -63,10 +68,8 @@ if __name__ == '__main__':
         else:
             st.success(f"Fetched {len(dfs)} sessions, select one in the dropdown below")
 
-
-        # Build the tabs
+    # Build the tabs
     if len(st.session_state.sessions) > 0:
-        st.subheader("Select a tab")
         tabs: List[Tab] = create_tabs()
         st_tabs = st.tabs(tabs=[tab.description for tab in tabs])
 

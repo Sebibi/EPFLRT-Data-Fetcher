@@ -9,15 +9,15 @@ class Tab2(Tab):
 
     def __init__(self):
         super().__init__("tab2", "Maximum features extraction")
-        if "datas" not in st.session_state.tab2:
-            st.session_state.tab2['datas'] = pd.DataFrame()
+        if "datas" not in self.memory:
+            self.memory['datas'] = pd.DataFrame()
 
     def build(self, session_creator: SessionCreator):
 
-        st.subheader("Maximum features extraction")
+        st.subheader(self.description)
         datetime_ranges = session_creator.r2d_multi_session_selector(st.session_state.sessions)
 
-        if st.button("Fetch these sessions", key="tab2 fetch data button"):
+        if st.button("Fetch these sessions", key=f"{self.name} fetch data button"):
             datas = pd.DataFrame()
             bar = st.progress(text="Fetching data", value=0.0)
             for i, datetime_range in enumerate(datetime_ranges):
@@ -26,10 +26,10 @@ class Tab2(Tab):
                 bar.progress(text=f"Fetching data", value=(i + 1) / len(datetime_ranges))
                 datas = pd.concat([datas, data], axis=0)
 
-            st.session_state.tab2['datas'] = datas
+            self.memory['datas'] = datas
 
-        if len(st.session_state.tab2['datas']) > 0:
-            datas = st.session_state.tab2['datas']
+        if len(self.memory['datas']) > 0:
+            datas = self.memory['datas']
             # Select the Data
             selected_columns = st.multiselect(
                 label="Select the fields you want examine", options=datas.columns, default=list(datas.columns[:2]))

@@ -11,20 +11,20 @@ class Tab1(Tab):
 
     def __init__(self):
         super().__init__("tab1", "Session analysis")
-        if "data" not in st.session_state.tab1:
-            st.session_state.tab1['data'] = pd.DataFrame()
+        if "data" not in self.memory:
+            self.memory['data'] = pd.DataFrame()
 
     def build(self, session_creator: SessionCreator) -> bool:
 
-        st.header("Session analysis")
-        datetime_range = session_creator.r2d_session_selector(st.session_state.sessions)
-        if st.button("Fetch this session", key="tab1 fetch data button"):
+        st.header(self.description)
+        datetime_range = session_creator.r2d_session_selector(st.session_state.sessions, key=f"{self.name} session selector")
+        if st.button("Fetch this session", key=f"{self.name} fetch data button"):
             data = session_creator.fetch_data(datetime_range, verify_ssl=st.session_state.verify_ssl)
             data.index = (data.index - data.index[0]).total_seconds()
-            st.session_state.tab1['data'] = data
+            self.memory['data'] = data
 
-        if len(st.session_state.tab1['data']) > 0:
-            data = st.session_state.tab1['data']
+        if len(self.memory['data']) > 0:
+            data = self.memory['data']
             # Select the Data
             selected_columns = st.multiselect(
                 label="Select the fields you want to download", options=data.columns, default=list(data.columns[:2]))
