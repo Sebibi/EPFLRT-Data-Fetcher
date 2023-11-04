@@ -43,7 +43,7 @@ class Tab3(Tab):
             ]
             for data_name in data_names:
                 if data_name in data.columns:
-                    velocities[data_name] = data[data_name]
+                    velocities[data_name] = data[data_name].copy()
 
             k = 2 * np.pi * wheel_radius / (60.0 * gear_ratio)
             velocities['VSI_Motor_Speed_FR'] *= k
