@@ -3,8 +3,10 @@ from typing import List
 import numpy as np
 import pandas as pd
 import streamlit as st
+import urllib3
+
 from src.api_call.base import Fetcher
-from src.utils import date_to_influx
+from src.utils import date_to_influx, timestamp_to_datetime_range
 
 
 class SessionCreator:
@@ -40,21 +42,42 @@ class SessionCreator:
             return dfs
 
     def fetch_data(self, datetime_range: str, verify_ssl: bool) -> pd.DataFrame:
-        query = f"""from(bucket:"ariane")
-        |> {datetime_range}
+        query = """from(bucket:"ariane")
+        |> {}
         |> pivot(rowKey:["_time"], columnKey: ["_measurement", "_field"], valueColumn: "_value")
         |> drop(columns: ["_start", "_stop"])
         |> yield(name: "mean")
-        """
+        """.format(datetime_range)
+
+        # range(start: 2023-11-04T10:06:18Z, stop: 2023-11-04T10:08:57Z)
 
         with st.spinner("Fetching session data from InfluxDB..."):
-            return self.fetcher.fetch_data(query, verify_sll=verify_ssl)
+            try:
+                df = self.fetcher.fetch_data(query, verify_sll=verify_ssl)
+            except urllib3.exceptions.ReadTimeoutError as e:
+                st.warning("The connection to the database timed out. Tyring again with divide and conquer strategy...")
+
+                # Split the datetime range in two
+                datetime_range = datetime_range.split(",")
+                start = pd.to_datetime(datetime_range[0].split()[1])
+                end = pd.to_datetime(datetime_range[1].split()[1][:-1])
+                mid = start + (end - start) / 2
+
+                # Fetch the data into 2 steps
+                first_datetime_range = timestamp_to_datetime_range(start, mid)
+                second_datetime_range = timestamp_to_datetime_range(mid, end)
+                df1 = self.fetch_data(first_datetime_range, verify_ssl)
+                df2 = self.fetch_data(second_datetime_range, verify_ssl)
+
+                # Merge the data
+                df = pd.concat([df1, df2], ignore_index=True)
+                df.index = df1.index.tolist() + df2.index.tolist()
+                df.index = pd.to_datetime(df.index)
+                st.success("The data has been fetched in two steps and merged.")
+            return df
 
     def r2d_session_selector(self, dfs: List[pd.DataFrame], key: str) -> str:
-        dfs_options = [f"range(start: {date_to_influx(df.index[0])}, stop: {date_to_influx(df.index[-1])})"
-                       for
-                       df in dfs]
-
+        dfs_options = [timestamp_to_datetime_range(df.index[0], df.index[-1]) for df in dfs]
         dfs_elapsed_time = [str((df.index[-1] - df.index[0]).floor('s'))[7:] for df in dfs]
 
         options_index = list(np.arange(len(dfs)))
@@ -67,10 +90,7 @@ class SessionCreator:
         return dfs_options[session_index]
 
     def r2d_multi_session_selector(self, dfs: List[pd.DataFrame]) -> List[str]:
-        dfs_options = [f"range(start: {date_to_influx(df.index[0])}, stop: {date_to_influx(df.index[-1])})"
-                       for
-                       df in dfs]
-
+        dfs_options = [timestamp_to_datetime_range(df.index[0], df.index[-1]) for df in dfs]
         dfs_elapsed_time = [str((df.index[-1] - df.index[0]).floor('s'))[7:] for df in dfs]
 
         options_index = list(np.arange(len(dfs)))
