@@ -22,7 +22,7 @@ def init_sessions_state():
         st.session_state.session_creator = SessionCreator(fetcher=st.session_state.fetcher)
 
     if "verify_ssl" not in st.session_state:
-        st.session_state.verify_ssl = False
+        st.session_state.verify_ssl = True
 
 
 if __name__ == '__main__':
@@ -47,7 +47,7 @@ if __name__ == '__main__':
                                                (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")))
 
         # Enable / Disable SSL verification
-        st.session_state.verify_ssl = st.checkbox("Fetch with SSL", value=False)
+        st.session_state.verify_ssl = st.checkbox("Fetch with SSL", value=True)
 
         # Fetch R2D sessions
         fetch = st.button("Fetch R2D sessions")
@@ -67,8 +67,6 @@ if __name__ == '__main__':
                     "No R2D session found in the selected date range (if the requested data is recent, it might not have been uploaded yet)")
             else:
                 st.success(f"Fetched {len(dfs)} sessions, select one in the dropdown menu")
-
-
 
     # Build the tabs
     if len(st.session_state.sessions) > 0:

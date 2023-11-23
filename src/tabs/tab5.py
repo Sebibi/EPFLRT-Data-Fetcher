@@ -28,7 +28,7 @@ class Tab5(Tab):
         if st.button("Fetch this session", key=f"{self.name} fetch data button"):
             data = session_creator.fetch_data(datetime_range, verify_ssl=st.session_state.verify_ssl)
             data.index = (data.index - data.index[0]).total_seconds()
-            self.memory['data'] = data
+            self.memory['data'] = data.copy()
 
         if len(self.memory['data']) > 0:
             data = self.memory['data']
@@ -49,6 +49,15 @@ class Tab5(Tab):
                     state_estimation_df.set_index('_time', inplace=True)
                     data.loc[state_estimation_df.index, state_estimation_df.columns] = state_estimation_df.values
                     self.memory['data'] = data
+
+            # Send data to Other Tabs
+            with st.expander("Send data to another TAB"):
+                other_tabs = ['tab1', 'tab2', 'tab3', 'tab4']
+                for i, other_tab in enumerate(other_tabs):
+                    cols = st.columns([1, 3])
+                    if cols[0].button(f"Send data to {other_tab}", key=f"{self.name} send data to {other_tab} button"):
+                        st.session_state[other_tab]['data'] = self.memory['data'].copy()
+                        cols[1].success(f"Data sent to {other_tab}")
 
             # Plot data
             st.subheader("Plot some data")
