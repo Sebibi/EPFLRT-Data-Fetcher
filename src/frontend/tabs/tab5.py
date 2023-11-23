@@ -1,7 +1,7 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-
+import numpy as np
 from src.backend.functionnal.create_sessions import SessionCreator
 from src.frontend.tabs.base import Tab
 from src.frontend.plotting.plotting import plot_data
@@ -27,6 +27,7 @@ class Tab5(Tab):
         if st.button("Fetch this session", key=f"{self.name} fetch data button"):
             data = session_creator.fetch_data(datetime_range, verify_ssl=st.session_state.verify_ssl)
             data.index = (data.index - data.index[0]).total_seconds()
+            data.index = np.array(data.index).round(2)
             self.memory['data'] = data.copy()
 
         if len(self.memory['data']) > 0:
@@ -43,12 +44,17 @@ class Tab5(Tab):
             # Load the state estimation data and Replace the new data with the old one
             if uploaded_file is not None:
                 if cols[1].button("Update the state estimation data", key=f"{self.name} save estimation data button"):
-                    state_estimation_df = pd.read_csv(uploaded_file)
+                    state_estimation_df = pd.read_csv(uploaded_file, header=None)
                     state_estimation_df = state_estimation_df.iloc[:, :len(self.state_estimation_df_cols[estimation_type])]
                     state_estimation_df.columns = self.state_estimation_df_cols[estimation_type]
                     state_estimation_df.set_index('_time', inplace=True)
-                    data.loc[state_estimation_df.index, state_estimation_df.columns] = state_estimation_df.values
+                    cols[0].dataframe(data[state_estimation_df.columns], use_container_width=True)
+                    cols[0].info(data[state_estimation_df.columns].shape)
+                    cols[1].dataframe(state_estimation_df, use_container_width=True)
+                    cols[1].info(state_estimation_df.shape)
+                    data.loc[state_estimation_df.index[0]:state_estimation_df.index[-1], state_estimation_df.columns] = state_estimation_df.values
                     self.memory['data'] = data
+
 
             # Send data to Other Tabs
             with st.expander("Send data to another TAB"):

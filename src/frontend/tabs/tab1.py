@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
-
+import numpy as np
 from src.backend.functionnal.create_sessions import SessionCreator
 from src.frontend.tabs.base import Tab
 
@@ -21,6 +21,7 @@ class Tab1(Tab):
         if st.button("Fetch this session", key=f"{self.name} fetch data button"):
             data = session_creator.fetch_data(datetime_range, verify_ssl=st.session_state.verify_ssl)
             data.index = (data.index - data.index[0]).total_seconds()
+            data.index = np.array(data.index).round(2)
             self.memory['data'] = data
 
         if len(self.memory['data']) > 0:
@@ -47,9 +48,10 @@ class Tab1(Tab):
 
             # Download data
             file_name = st.text_input("File name", value="output_data.csv")
+            header = st.checkbox("Put header in downloaded data", value=True)
             st.download_button(
                 label="Download data as CSV",
-                data=output_data.to_csv().encode("utf-8"),
+                data=output_data.to_csv(header=header).encode("utf-8"),
                 file_name=file_name,
             )
 
