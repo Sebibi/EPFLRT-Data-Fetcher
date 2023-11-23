@@ -1,11 +1,10 @@
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import MinMaxScaler
 
-from src.functionnal.create_sessions import SessionCreator
-from src.tabs.base import Tab
-
+from src.backend.functionnal.create_sessions import SessionCreator
+from src.frontend.tabs.base import Tab
+from src.frontend.plotting.plotting import plot_data
 
 class Tab5(Tab):
 
@@ -45,6 +44,7 @@ class Tab5(Tab):
             if uploaded_file is not None:
                 if cols[1].button("Update the state estimation data", key=f"{self.name} save estimation data button"):
                     state_estimation_df = pd.read_csv(uploaded_file)
+                    state_estimation_df = state_estimation_df.iloc[:, :len(self.state_estimation_df_cols[estimation_type])]
                     state_estimation_df.columns = self.state_estimation_df_cols[estimation_type]
                     state_estimation_df.set_index('_time', inplace=True)
                     data.loc[state_estimation_df.index, state_estimation_df.columns] = state_estimation_df.values
@@ -60,24 +60,5 @@ class Tab5(Tab):
                         cols[1].success(f"Data sent to {other_tab}")
 
             # Plot data
-            st.subheader("Plot some data")
-            columns_to_plot = st.multiselect(
-                label="Select the labels to plot",
-                options=data.columns,
-                default=self.state_estimation_df_cols['No_slips'][1:],
-                key=f"{self.name} columns to plot",
-            )
-            samples_to_plot = st.select_slider(
-                label="Number of samples to plot", options=data.index,
-                value=[data.index[0], data.index[-1]], format_func=lambda x: f"{x:.2f}",
-                key=f"{self.name} samples to plot",
-            )
-            plot_data = data[columns_to_plot].loc[samples_to_plot[0]:samples_to_plot[1]]
-
-            st.subheader("Plot state estimation data")
-            fig, ax = plt.subplots()
-            plot_data.plot(ax=ax)
-            ax.legend()
-            ax.set_title('State Estimation observation')
-            st.pyplot(fig)
+            plot_data(data, self.name, title='State Estimation observation', default_columns=self.state_estimation_df_cols['No_slips'][1:])
         return True

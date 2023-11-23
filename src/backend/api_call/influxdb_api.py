@@ -1,9 +1,7 @@
-import streamlit as st
-import urllib3
 from influxdb_client import InfluxDBClient
 import pandas as pd
 
-from src.api_call.base import Fetcher
+from src.backend.api_call.base import Fetcher
 
 
 class InfluxDbFetcher(Fetcher):

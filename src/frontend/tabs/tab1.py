@@ -3,8 +3,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.preprocessing import MinMaxScaler
 
-from src.functionnal.create_sessions import SessionCreator
-from src.tabs.base import Tab
+from src.backend.functionnal.create_sessions import SessionCreator
+from src.frontend.tabs.base import Tab
 
 
 class Tab1(Tab):

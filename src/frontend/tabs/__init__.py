@@ -1,11 +1,11 @@
 from typing import List
 
-from src.tabs.base import Tab
-from src.tabs.tab1 import Tab1
-from src.tabs.tab2 import Tab2
-from src.tabs.tab3 import Tab3
-from src.tabs.tab4 import Tab4
-from src.tabs.tab5 import Tab5
+from src.frontend.tabs.base import Tab
+from src.frontend.tabs.tab1 import Tab1
+from src.frontend.tabs.tab2 import Tab2
+from src.frontend.tabs.tab3 import Tab3
+from src.frontend.tabs.tab4 import Tab4
+from src.frontend.tabs.tab5 import Tab5
 
 
 def create_tabs() -> List[Tab]:

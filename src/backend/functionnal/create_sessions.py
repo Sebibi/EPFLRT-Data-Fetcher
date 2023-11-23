@@ -5,7 +5,7 @@ import pandas as pd
 import streamlit as st
 import urllib3
 
-from src.api_call.base import Fetcher
+from src.backend.api_call.base import Fetcher
 from src.utils import date_to_influx, timestamp_to_datetime_range
 
 

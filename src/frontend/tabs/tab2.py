@@ -1,8 +1,8 @@
 import pandas as pd
 import streamlit as st
 
-from src.functionnal.create_sessions import SessionCreator
-from src.tabs.base import Tab
+from src.backend.functionnal.create_sessions import SessionCreator
+from src.frontend.tabs.base import Tab
 
 
 class Tab2(Tab):

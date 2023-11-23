@@ -5,10 +5,10 @@ import pandas as pd
 import streamlit as st
 
 from config.config import Config
-from src.api_call.influxdb_api import InfluxDbFetcher
-from src.functionnal.create_sessions import SessionCreator
+from src.backend.api_call.influxdb_api import InfluxDbFetcher
+from src.backend.functionnal.create_sessions import SessionCreator
 
-from src.tabs import create_tabs, Tab
+from src.frontend.tabs import create_tabs, Tab
 
 
 def init_sessions_state():
