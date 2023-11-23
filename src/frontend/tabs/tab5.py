@@ -66,5 +66,9 @@ class Tab5(Tab):
                         cols[1].success(f"Data sent to {other_tab}")
 
             # Plot data
-            plot_data(data, self.name, title='State Estimation observation', default_columns=self.state_estimation_df_cols['No_slips'][1:])
+            if st.button("Smooth raw acceleration data"):
+                raw_data = ['sensors_accX', 'sensors_accY']
+                data[raw_data] = data[raw_data].rolling(window=10).mean()
+            column_names, samples = plot_data(data, self.name, title='X-Estimation observation', default_columns=self.state_estimation_df_cols['No_slips'][1:])
+            st.dataframe(data[column_names].describe().T)
         return True

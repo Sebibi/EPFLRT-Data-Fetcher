@@ -1,11 +1,11 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-from typing import Tuple
+from typing import Tuple, List
 
 def plot_data(
         data: pd.DataFrame, tab_name: str, title: str = "Sensors",
-        default_columns: list = None, fig_ax: Tuple[plt.Figure, plt.Axes] = None):
+        default_columns: list = None, fig_ax: Tuple[plt.Figure, plt.Axes] = None) -> Tuple[List[str], List[str]]:
 
     columns_to_plot = st.multiselect(
         label="Select the labels to plot",
@@ -26,3 +26,4 @@ def plot_data(
     ax.set_title(title)
     ax.set_xlabel('Time [s]')
     st.pyplot(fig)
+    return columns_to_plot, samples_to_plot
