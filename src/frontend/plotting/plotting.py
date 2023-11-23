@@ -1,11 +1,11 @@
 import pandas as pd
 import streamlit as st
 import matplotlib.pyplot as plt
-
+from typing import Tuple
 
 def plot_data(
         data: pd.DataFrame, tab_name: str, title: str = "Sensors",
-        default_columns: list = None, fig_ax: tuple[plt.Figure, plt.Axes] = None):
+        default_columns: list = None, fig_ax: Tuple[plt.Figure, plt.Axes] = None):
 
     columns_to_plot = st.multiselect(
         label="Select the labels to plot",

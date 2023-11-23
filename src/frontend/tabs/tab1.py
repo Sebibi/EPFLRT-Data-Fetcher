@@ -28,6 +28,10 @@ class Tab1(Tab):
             # Select the Data
             selected_columns = st.multiselect(
                 label="Select the fields you want to download", options=data.columns, default=list(data.columns[:2]))
+
+            if st.button("Download for state estimation"):
+                columns_string = """sensors_accX	sensors_accY	sensors_accZ	VSI_Motor_Speed_FL	VSI_Motor_Speed_FR	VSI_Motor_Speed_RL	VSI_Motor_Speed_RR	sensors_gyroZ	sensors_brake_pressure_L	sensors_brake_pressure_R	sensors_steering_angle	VSI_TrqFeedback_FL	VSI_TrqFeedback_FR	VSI_TrqFeedback_RL	VSI_TrqFeedback_RR"""
+                selected_columns = columns_string.split()
             samples_to_select = st.select_slider(
                 label="Number of samples to select", options=data.index,
                 value=[data.index[0], data.index[-1]], format_func=lambda x: f"{x:.2f}")
@@ -51,6 +55,7 @@ class Tab1(Tab):
 
             # Plot data
             st.subheader("Plot some data")
+
             columns_to_plot = st.multiselect(
                 label="Select the labels to plot",
                 options=data.columns,
