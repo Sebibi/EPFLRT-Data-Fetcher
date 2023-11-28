@@ -1,12 +1,12 @@
-import numpy as np
-
-from src.frontend.signal_processing.moving_average import moving_avg_input
-from src.frontend.signal_processing.correlation_lag import plot_correlation_log
-from src.backend.functionnal.create_sessions import SessionCreator
-from src.frontend.tabs import Tab
-import streamlit as st
-import pandas as pd
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import streamlit as st
+
+from src.backend.functionnal.create_sessions import SessionCreator
+from src.frontend.signal_processing.correlation_lag import plot_correlation_log
+from src.frontend.signal_processing.moving_average import moving_avg_input
+from src.frontend.tabs import Tab
 
 
 class Tab3(Tab):

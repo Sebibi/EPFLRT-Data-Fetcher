@@ -1,6 +1,7 @@
-from typing import List
 from collections import deque
+
 import numpy as np
+
 from src.state_estimation.config.vehicle_params import VehicleParams
 
 
@@ -32,9 +33,9 @@ class MeasurementPreprocessing:
         old_wheel_speeds = self.wheel_acc_history[0]
         self.wheel_acc_history.append(wheel_speeds)
         return (wheel_speeds - old_wheel_speeds) / (self.delta * 0.01)
-    
-    
-    def get_longitudonal_forces(self, torques: np.ndarray, bps: np.ndarray, wheel_speeds: np.ndarray, wheel_acc: np.ndarray) -> np.ndarray:
+
+
+    def get_tire_longitudonal_forces(self, torques: np.ndarray, bps: np.ndarray, wheel_speeds: np.ndarray, wheel_acc: np.ndarray) -> np.ndarray:
         l_forces = np.zeros(4)
         for i, (tau, Pb, w, dw) in enumerate(zip(torques, bps, bps, wheel_speeds, wheel_acc)):
             if abs(w) > 0.1 or abs(dw) > 0.1:

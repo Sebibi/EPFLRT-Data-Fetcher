@@ -1,5 +1,6 @@
+from typing import TypedDict, Sequence
+
 import pandas as pd
-from typing import Tuple, TypedDict, List, Sequence
 
 
 class Inputs(TypedDict):

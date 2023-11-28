@@ -1,9 +1,9 @@
-from typing import List, Sequence
+from typing import Sequence
 
-import streamlit as st
-import pandas as pd
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import streamlit as st
 
 
 def plot_correlation_log(data: pd.DataFrame, col1: str, col2: str, lags: Sequence[int], samples_to_plot) -> int:

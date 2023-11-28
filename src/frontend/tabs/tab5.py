@@ -1,10 +1,11 @@
-import streamlit as st
-import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
+import pandas as pd
+import streamlit as st
+
 from src.backend.functionnal.create_sessions import SessionCreator
-from src.frontend.tabs.base import Tab
 from src.frontend.plotting.plotting import plot_data
+from src.frontend.tabs.base import Tab
+
 
 class Tab5(Tab):
 

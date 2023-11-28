@@ -1,3 +1,5 @@
+import numpy as np
+
 
 class VehicleParams:
 
@@ -40,3 +42,19 @@ class VehicleParams:
     C = 1.98
     D = 1.67
     E = 0.97
+
+
+    def magic_formula(self, Fz, kappa, alpha) -> float:
+        B = self.B
+        C = self.C
+        D = self.D
+        E = self.E
+        return D * np.sin(C * np.arctan(B * kappa - E * (B * kappa - np.arctan(B * kappa)))) + alpha
+
+
+    def inverse_magic_formula(self, Fz, Fx, alpha) -> float:
+        B = self.B
+        C = self.C
+        D = self.D
+        E = self.E
+        return np.tan((1 / B) * (np.arctan(Fx / (D * Fz)) + E * np.arctan(Fx / (D * Fz))))

@@ -1,8 +1,9 @@
-import streamlit as st
-import pandas as pd
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import MinMaxScaler
 import numpy as np
+import pandas as pd
+import streamlit as st
+from sklearn.preprocessing import MinMaxScaler
+
 from src.backend.functionnal.create_sessions import SessionCreator
 from src.frontend.tabs.base import Tab
 

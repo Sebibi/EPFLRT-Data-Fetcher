@@ -1,7 +1,9 @@
+from typing import Tuple, List
+
+import matplotlib.pyplot as plt
 import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
-from typing import Tuple, List
+
 
 def plot_data(
         data: pd.DataFrame, tab_name: str, title: str = "Sensors",
