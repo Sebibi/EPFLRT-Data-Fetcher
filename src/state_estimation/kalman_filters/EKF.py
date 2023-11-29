@@ -21,7 +21,6 @@ class EKF:
         A[1, 3] = 1
         A[1, 4] = -vx
         phi = A * self.dt
-        print(phi[:5, :5])
         x += phi @ x
         P = phi @ P @ phi.T + self.Q
         return x, P

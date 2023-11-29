@@ -1,8 +1,8 @@
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class VehicleParams:
-
     # Aero
     A_front = 1.61
     c_drag = 0.97
@@ -28,11 +28,11 @@ class VehicleParams:
     lf = 0.785
     lr = 0.785
     m_car = 300
-    z_cg = 0.288
+    z_cg = 0.295
 
     # Wheel parameters
-    lw = 0.3
-    Rw = 0.2
+    Iw = 0.3
+    Rw = 0.202
     kb = 0.18
     kd = 0.17
     ks = 15
@@ -42,19 +42,35 @@ class VehicleParams:
     C = 1.98
     D = 1.67
     E = 0.97
+    BCD = B * C * D
+
+    @classmethod
+    def magic_formula(cls, slip_ratio: float | np.ndarray) -> float | np.ndarray:
+        """
+        :param slip_ratio:
+        :return: mu
+        """
+        B, C, D, E = cls.B, cls.C, cls.D, cls.E
+        return D * np.sin(C * np.arctan(B * slip_ratio - E * (B * slip_ratio - np.arctan(B * slip_ratio))))
+
+    @classmethod
+    def linear_inverse_magic_formula(cls, mu: float | np.ndarray) -> float | np.ndarray:
+        """
+        :param mu:
+        :return: slip_ratio
+        """
+        return mu / cls.BCD
 
 
-    def magic_formula(self, Fz, kappa, alpha) -> float:
-        B = self.B
-        C = self.C
-        D = self.D
-        E = self.E
-        return D * np.sin(C * np.arctan(B * kappa - E * (B * kappa - np.arctan(B * kappa)))) + alpha
+if __name__ == '__main__':
+    slip_range = np.linspace(-0.3, 0.3, 100)
+    mus = [VehicleParams().magic_formula(s) for s in slip_range]
+    fmus = list(filter(lambda x: abs(x) < 1.5, mus))
+    slip_range_inv = [VehicleParams().linear_inverse_magic_formula(mu) for mu in fmus]
 
+    plt.plot(slip_range, mus, label="magic formula")
+    plt.plot(slip_range_inv, fmus, label="linear")
+    plt.axvline(x=0.05, color='r')
+    plt.axvline(x=-0.05, color='r')
 
-    def inverse_magic_formula(self, Fz, Fx, alpha) -> float:
-        B = self.B
-        C = self.C
-        D = self.D
-        E = self.E
-        return np.tan((1 / B) * (np.arctan(Fx / (D * Fz)) + E * np.arctan(Fx / (D * Fz))))
+    plt.show()

@@ -15,7 +15,7 @@ b = VehicleParams.b
 z_cg = VehicleParams.z_cg
 
 
-def get_normal_force(state: np.ndarray, wheel_id: int) -> float:
+def estimate_normal_force(state: np.ndarray, wheel_id: int) -> float:
     vx, ax, ay = state[0], state[2], state[3]
     F_lift = (A_front * c_lift * rho_air * (vx ** 2)) / 8.0
     x_mass_trans_cog = m * ax * z_cg / (2 * l)
@@ -35,7 +35,7 @@ def get_normal_force(state: np.ndarray, wheel_id: int) -> float:
     return Fz + F_lift
 
 
-def get_normal_forces(state: np.ndarray) -> np.ndarray:
+def estimate_normal_forces(state: np.ndarray) -> np.ndarray:
     vx, ax, ay = state[0], state[2], state[3]
     F_lift = (A_front * c_lift * rho_air * (vx ** 2)) / 8.0
 
