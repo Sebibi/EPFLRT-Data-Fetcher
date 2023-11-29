@@ -6,7 +6,7 @@ from src.state_estimation.kalman_filters.estimation_transformation.wheel_speed i
     estimate_wheel_speeds
 from src.state_estimation.kalman_filters.estimation_transformation.longitudinal_tire_force import \
     estimate_longitudinal_tire_force, estimate_longitudinal_tire_forces
-from src.state_estimation.inputs.measurement_transformation.longitudonal_tire_force import \
+from src.state_estimation.measurments.measurement_transformation.longitudonal_tire_force import \
     measure_tire_longitudinal_force, measure_tire_longitudinal_forces
 
 

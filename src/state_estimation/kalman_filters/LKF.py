@@ -7,8 +7,8 @@ from filterpy import kalman
 class LKF:
     dim_x = 9
     dim_z = 3
+    history_size = 5  # Number of measurements to use for bias estimation
     measurement_cov = [0.9, 0.9, 0.1]
-    history_size = 5
 
     def __init__(self):
         self.H = np.zeros((self.dim_z, self.dim_x))
@@ -24,19 +24,19 @@ class LKF:
             self.ax_bias = np.mean(self.ax_queue)
             self.ay_bias = np.mean(self.ay_queue)
 
-    def update(self, x: np.array, P: np.ndarray, z: np.ndarray):
+    def update(self, x: np.array, P: np.ndarray, ins: np.ndarray):
         """
         Compute the update step of the LKF
         :param x: vy vy ax ay yaw rate slip
         :param P: covariance matrix
-        :param z: ax ay yaw rate
+        :param ins: ax ay yaw rate
         :return: x, P
         """
-        self.ax_queue.append(z[0])
-        self.ay_queue.append(z[1])
-        ax = z[0] - self.ax_bias
-        ay = z[1] - self.ay_bias
-        yaw_rate = z[2]
+        self.ax_queue.append(ins[0])
+        self.ay_queue.append(ins[1])
+        ax = ins[0] - self.ax_bias
+        ay = ins[1] - self.ay_bias
+        yaw_rate = ins[2]
         x, P = kalman.update(x, P, np.array([ax, ay, yaw_rate]), self.R, self.H)
         return x, P
 
