@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.state_estimation.config.vehicle_params import VehicleParams
+from src.backend.state_estimation.config.vehicle_params import VehicleParams
 
 px = [VehicleParams.lf, VehicleParams.lf, -VehicleParams.lr, -VehicleParams.lr]
 py = [VehicleParams.a / 2, -VehicleParams.a / 2, VehicleParams.b / 2, -VehicleParams.b / 2]

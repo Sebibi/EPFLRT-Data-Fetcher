@@ -1,8 +1,6 @@
-from collections import deque
-
 import numpy as np
 
-from src.state_estimation.config.vehicle_params import VehicleParams
+from src.backend.state_estimation.config.vehicle_params import VehicleParams
 
 
 def measure_wheel_speeds(motor_speeds: np.ndarray) -> np.ndarray:

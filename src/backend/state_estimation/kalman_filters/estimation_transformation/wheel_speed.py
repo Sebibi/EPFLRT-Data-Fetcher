@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.state_estimation.config.vehicle_params import VehicleParams
-from src.state_estimation.kalman_filters.estimation_transformation.longitudonal_speed import estimate_longitudinal_velocity
+from src.backend.state_estimation.config.vehicle_params import VehicleParams
+from src.backend.state_estimation.kalman_filters.estimation_transformation.longitudonal_speed import estimate_longitudinal_velocity
 
 
 def estimate_wheel_speed(x: np.array, steering_deltas: np.array, wheel_id: int) -> np.ndarray:

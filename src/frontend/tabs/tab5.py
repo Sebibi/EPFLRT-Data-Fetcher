@@ -2,7 +2,8 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from src.backend.functionnal.create_sessions import SessionCreator
+from src.backend.sessions.create_sessions import SessionCreator
+from src.backend.state_estimation.state_estimator_file_upload import upload_estimated_states
 from src.frontend.plotting.plotting import plot_data
 from src.frontend.tabs.base import Tab
 
@@ -37,25 +38,13 @@ class Tab5(Tab):
             # Import the new estimated data
             cols = st.columns([1, 1])
             estimation_type = cols[1].radio("Choose the data to import", options=['Full', 'No_slips'], index=1)
-            uploaded_file = cols[0].file_uploader(
-                "Choose a file", type="csv", key=f"{self.name} file uploader",
-                label_visibility='collapsed',
+
+            self.memory['data'] = upload_estimated_states(
+                tab_name=self.name,
+                data=self.memory['data'],
+                columns=self.state_estimation_df_cols[estimation_type],
+                cols=cols
             )
-
-            # Load the state estimation data and Replace the new data with the old one
-            if uploaded_file is not None:
-                if cols[1].button("Update the state estimation data", key=f"{self.name} save estimation data button"):
-                    state_estimation_df = pd.read_csv(uploaded_file, header=None)
-                    state_estimation_df = state_estimation_df.iloc[:, :len(self.state_estimation_df_cols[estimation_type])]
-                    state_estimation_df.columns = self.state_estimation_df_cols[estimation_type]
-                    state_estimation_df.set_index('_time', inplace=True)
-                    cols[0].dataframe(data[state_estimation_df.columns], use_container_width=True)
-                    cols[0].info(data[state_estimation_df.columns].shape)
-                    cols[1].dataframe(state_estimation_df, use_container_width=True)
-                    cols[1].info(state_estimation_df.shape)
-                    data.loc[state_estimation_df.index[0]:state_estimation_df.index[-1], state_estimation_df.columns] = state_estimation_df.values
-                    self.memory['data'] = data
-
 
             # Send data to Other Tabs
             with st.expander("Send data to another TAB"):
@@ -70,6 +59,7 @@ class Tab5(Tab):
             if st.button("Smooth raw acceleration data"):
                 raw_data = ['sensors_accX', 'sensors_accY']
                 data[raw_data] = data[raw_data].rolling(window=10).mean()
-            column_names, samples = plot_data(data, self.name, title='X-Estimation observation', default_columns=self.state_estimation_df_cols['No_slips'][1:])
+            column_names, samples = plot_data(data, self.name, title='X-Estimation observation',
+                                              default_columns=self.state_estimation_df_cols['No_slips'][1:])
             st.dataframe(data[column_names].describe().T)
         return True

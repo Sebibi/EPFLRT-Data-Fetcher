@@ -2,20 +2,21 @@ import numpy as np
 from filterpy.kalman import MerweScaledSigmaPoints
 from filterpy.kalman import UnscentedKalmanFilter
 
-from src.state_estimation.kalman_filters.estimation_transformation.wheel_speed import estimate_wheel_speed, \
-    estimate_wheel_speeds
-from src.state_estimation.kalman_filters.estimation_transformation.longitudinal_tire_force import \
-    estimate_longitudinal_tire_force, estimate_longitudinal_tire_forces
-from src.state_estimation.measurments.measurement_transformation.longitudonal_tire_force import \
-    measure_tire_longitudinal_force, measure_tire_longitudinal_forces
+from src.backend.state_estimation.config.state_estimation_param import SE_param
+from src.backend.state_estimation.config.vehicle_params import VehicleParams
+from src.backend.state_estimation.kalman_filters.estimation_transformation.wheel_speed import estimate_wheel_speeds
+from src.backend.state_estimation.kalman_filters.estimation_transformation.longitudinal_tire_force import \
+    estimate_longitudinal_tire_forces
+from src.backend.state_estimation.measurments.measurement_transformation.longitudonal_tire_force import \
+    measure_tire_longitudinal_forces
 
 
 class UKF:
-    dt = 0.01
-    dim_x = 9
+    dt = VehicleParams.dt
+    dim_x = SE_param.dim_x
     dim_z = 4
-    wheel_speeds_meas_noise = 1 * np.eye(4)
-    longitudinal_meas_noise = 1 * np.eye(4)
+    wheel_speeds_meas_noise = SE_param.wheel_speed_measurement_noise.copy()
+    longitudinal_force_meas_noise = SE_param.longitudinal_force_measurement_noise.copy()
     points = MerweScaledSigmaPoints(n=dim_x, alpha=0.1, beta=2., kappa=-1)
 
     def __init__(self):
@@ -29,6 +30,14 @@ class UKF:
         )
 
     def update1(self, x: np.ndarray, P: np.ndarray, wheel_speeds: np.ndarray, steering_deltas: np.ndarray):
+        """
+        Update the UKF with the wheel speed measurements
+        :param x: shape(n,)
+        :param P: shape(n,n)
+        :param wheel_speeds: shape(4,) [fl, fr, rl, rr]
+        :param steering_deltas: shape(4,) [fl, fr, rl, rr]
+        :return:
+        """
         hx_params = dict(steering_deltas=steering_deltas)
         self.ukf.x = x
         self.ukf.P = P
@@ -39,11 +48,21 @@ class UKF:
         return self.ukf.x, self.ukf.P
 
     def update2(self, x: np.ndarray, P: np.ndarray, torques, bp, wheel_speeds, wheel_acc):
+        """
+        Update the UKF with the longitudinal tire force measurements
+        :param x: shape(n,)
+        :param P: shape(n,n)
+        :param torques: shape(4,) [fl, fr, rl, rr]
+        :param bp: shape(4,) [fl, fr, rl, rr] => fl == fr, rl == rr
+        :param wheel_speeds: shape(4,) [fl, fr, rl, rr]
+        :param wheel_acc: shape(4,) [fl, fr, rl, rr]
+        :return: x, P
+        """
         self.ukf.x = x
         self.ukf.P = P
 
         # Set the measurement noise to a very high value to prevent the filter from diverging
-        R = self.longitudinal_meas_noise.copy()
+        R = self.longitudinal_force_meas_noise.copy()
         out_of_bound_slip_ratios_index = np.where(np.abs(x[5:9]) > 0.1)[0]
         for i in out_of_bound_slip_ratios_index:
             R[i, i] = 1e6

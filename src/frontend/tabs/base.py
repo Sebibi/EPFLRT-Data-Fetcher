@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 import streamlit as st
 
-from src.backend.functionnal.create_sessions import SessionCreator
+from src.backend.sessions.create_sessions import SessionCreator
 
 
 class Tab(ABC):

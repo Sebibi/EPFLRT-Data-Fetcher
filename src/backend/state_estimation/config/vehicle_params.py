@@ -3,6 +3,10 @@ import matplotlib.pyplot as plt
 
 
 class VehicleParams:
+
+    # Sampling time
+    dt = 0.01
+
     # Aero
     A_front = 1.61
     c_drag = 0.97
@@ -36,6 +40,7 @@ class VehicleParams:
     kb = 0.18
     kd = 0.17
     ks = 15
+    wheel_names = ['FL', 'FR', 'RL', 'RR']
 
     # Tire parameters
     B = 11.15

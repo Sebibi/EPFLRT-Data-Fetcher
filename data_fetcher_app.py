@@ -6,7 +6,7 @@ import streamlit as st
 
 from config.config import Config
 from src.backend.api_call.influxdb_api import InfluxDbFetcher
-from src.backend.functionnal.create_sessions import SessionCreator
+from src.backend.sessions.create_sessions import SessionCreator
 from src.frontend.tabs import create_tabs, Tab
 
 

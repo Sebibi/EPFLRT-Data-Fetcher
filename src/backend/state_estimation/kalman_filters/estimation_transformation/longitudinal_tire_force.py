@@ -1,7 +1,7 @@
 import numpy as np
 
-from src.state_estimation.config.vehicle_params import VehicleParams
-from src.state_estimation.kalman_filters.estimation_transformation.normal_forces import estimate_normal_force, \
+from src.backend.state_estimation.config.vehicle_params import VehicleParams
+from src.backend.state_estimation.kalman_filters.estimation_transformation.normal_forces import estimate_normal_force, \
     estimate_normal_forces
 
 

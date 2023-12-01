@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
-from src.backend.functionnal.create_sessions import SessionCreator
+from src.backend.sessions.create_sessions import SessionCreator
 from src.frontend.signal_processing.correlation_lag import plot_correlation_log
 from src.frontend.signal_processing.moving_average import moving_avg_input
 from src.frontend.tabs import Tab

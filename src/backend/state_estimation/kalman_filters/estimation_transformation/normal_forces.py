@@ -1,6 +1,6 @@
 import numpy as np
 
-from src.state_estimation.config.vehicle_params import VehicleParams
+from src.backend.state_estimation.config.vehicle_params import VehicleParams
 
 A_front = VehicleParams.A_front
 c_lift = VehicleParams.c_lift

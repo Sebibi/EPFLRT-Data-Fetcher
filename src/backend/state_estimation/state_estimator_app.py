@@ -1,11 +1,13 @@
 import numpy as np
+import pandas as pd
 
-from src.state_estimation.kalman_filters.MKF import MKF
-from src.state_estimation.measurments.sensors import Sensors
+from src.backend.state_estimation.kalman_filters.MKF import MKF
+from src.backend.state_estimation.measurments.sensors import Sensors
 
-from src.state_estimation.measurments.measurement_transformation.wheel_speed import measure_wheel_speeds
-from src.state_estimation.measurments.measurement_transformation.wheel_acceleration import measure_wheel_acceleration
-from src.state_estimation.measurments.measurement_transformation.steering_to_wheel_angle import \
+from src.backend.state_estimation.measurments.measurement_transformation.wheel_speed import measure_wheel_speeds
+from src.backend.state_estimation.measurments.measurement_transformation.wheel_acceleration import \
+    measure_wheel_acceleration
+from src.backend.state_estimation.measurments.measurement_transformation.steering_to_wheel_angle import \
     measure_delta_wheel_angle
 
 
@@ -16,7 +18,7 @@ class StateEstimatorApp:
 
     def __init__(self):
         self.mkf = MKF()
-        self.x = np.zeros((self.mkf.dim_x, 1))  # initial state (location and velocity)
+        self.x = np.zeros(self.mkf.dim_x)  # initial state (location and velocity)
         self.P = np.eye(self.mkf.dim_x)  # initial uncertainty
 
     def run(self, sensors: Sensors) -> tuple[np.ndarray, np.ndarray]:
@@ -39,3 +41,17 @@ class StateEstimatorApp:
             bp=sensors['bps'],
         )
         return self.x.copy(), self.P.copy()
+
+
+if __name__ == '__main__':
+    sensors = Sensors(
+        ins=np.array([0, 0, 0], dtype=float),
+        motor_speeds=np.array([0, 0, 0, 0], dtype=float),
+        torques=np.array([0, 0, 0, 0], dtype=float),
+        bps=np.array([0, 0, 0, 0], dtype=float),
+        steering_angle=0,
+    )
+
+    app = StateEstimatorApp()
+    x, P = app.run(sensors)
+    print(x)
