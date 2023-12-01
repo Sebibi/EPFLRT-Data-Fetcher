@@ -51,16 +51,51 @@ class Tab6(Tab):
                         state, cov = estimator_app.run(sensors)
                         estimations[i] = state
                         progress_bar.progress((i + 1) / len(sensors_list), text=f"Computing state estimation...")
-                        st.info(np.diag(cov).round(4))
 
-                    # Update the data
+                        # Update the data
                     columns = SE_param.estimated_states_names
                     data.loc[samples[0]: samples[1], columns] = np.array(estimations)
                     self.memory['data'] = data.copy()
 
+            # Tune the state estimation parameters
+            cols_ref = [1, 3]
+
+            st.markdown("## Tune the state estimation parameters")
+            cols = st.columns(cols_ref)
+            cols[0].markdown("### LKF")
+            sub_cols = cols[1].columns(3)
+            vx = sub_cols[0].number_input("vx", value=0.09, step=0.01, key=f"{self.name} vx_lkf")
+            vy = sub_cols[1].number_input("vy", value=0.09, step=0.01, key=f"{self.name} vy_lkf")
+            yaw_rate = sub_cols[2].number_input("yaw rate", value=2.5e-7, step=1e-7, key=f"{self.name} yaw rate_lkf")
+            SE_param.set_ins_measurement_noise(vx, vy, yaw_rate)
+            st.divider()
+
+            cols = st.columns(cols_ref)
+            cols[0].markdown("### LKF vy reset")
+            vy_reset = cols[1].number_input("vy reset", value=0.1, step=0.01, key=f"{self.name} vy reset")
+            SE_param.set_vy_reset_noise(vy_reset_noise=vy_reset)
+            st.divider()
+
+            cols = st.columns(cols_ref)
+            cols[0].markdown("### EKF")
+            sub_cols = cols[1].columns(2)
+            vx = sub_cols[0].number_input("vx", value=0.009, step=0.001, key=f"{self.name} vx_ekf")
+            vy = sub_cols[1].number_input("vy", value=0.01, step=0.001, key=f"{self.name} vy_ekf")
+            ax = sub_cols[0].number_input("ax", value=0.0004, step=0.0001, key=f"{self.name} ax")
+            ay = sub_cols[1].number_input("ay", value=0.00001, step=1e-7, key=f"{self.name} ay")
+            w = sub_cols[0].number_input("yaw rate", value=0.00001, step=1e-7, key=f"{self.name} yaw rate_ekf")
+            slip = sub_cols[1].number_input("slip ratio", value=0.00001, step=1e-7, key=f"{self.name} slip")
+            SE_param.set_state_transition_noise(vx, vy, ax, ay, w, slip)
+            st.divider()
+
+            # cols = st.columns(2)
+            # cols[0].markdown("UKF")
+            # cols[1].number_input("alpha", value=0.001, step=0.001, key=f"{self.name} alpha")
+            # cols[1].number_input("beta", value=2., step=0.1, key=f"{self.name} beta")
+            # cols[1].number_input("kappa", value=0, step=1, key=f"{self.name} kappa")
+            # cols[1].number_input("wheel speed", value=0.1, step=0.01, key=f"{self.name} wheel speed")
+            # cols[1].number_input("longitudinal force", value=0.1, step=0.01,
+            #                      key=f"{self.name} longitudinal force")
 
 
-
-
-
-
+        return True

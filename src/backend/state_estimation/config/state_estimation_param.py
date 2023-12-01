@@ -30,7 +30,7 @@ class SE_param:
 
     @classmethod
     def set_vy_reset_noise(cls, vy_reset_noise: float):
-        cls.vy_reset_noise = np.array([vy_reset_noise])
+        cls.vy_reset_noise = np.array([[vy_reset_noise]])
 
     @classmethod
     def set_state_transition_noise(cls, vx: float, vy: float, ax: float, ay: float, yaw_rate: float, slip: float):
