@@ -31,6 +31,7 @@ class MKF:
             bp: np.ndarray,
             wheel_acc: np.ndarray,
     ):
+        self.lkf.update_bias(wheel_speeds=wheel_speeds)
         x, P = self.lkf.update(x, P, ins)  # Update ax, ay, yaw_rate from ins
         x, P = self.lkf.update_vy_reset(x, P)  # Update vy == 0 if steady state
         x, P = self.ukf.update1(x, P, wheel_speeds, steering_deltas)  # Update vx, vy, yaw_rate from wheel speeds

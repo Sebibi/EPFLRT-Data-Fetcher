@@ -11,18 +11,18 @@ class SE_param:
     dim_x = 9
 
     # LKF
-    ins_measurement_noise = np.diag([0.09, 0.09, 2.5e-7])
+    ins_measurement_noise = np.diag([1.0, 1.0, 0.001])
     vy_reset_noise = np.array([[0.1]])
 
     # EKF
-    state_transition_noise = np.diag([0.0009, 0.01, 0.0004, 0.04, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6])
+    state_transition_noise = np.diag([1.0, 0.01, 0.01, 0.01, 1.0, 0.001, 0.001, 0.001, 0.001])
 
     # UKF
     alpha, beta, kappa = (0.001, 2., 0.)  # Sigma points parameter
     # alpha, beta, kappa = (0.1, 2., -1)  # Sigma points parameter
 
-    wheel_speed_measurement_noise = np.diag([0.1, 0.1, 0.1, 0.1]) * 10.0 * 16
-    longitudinal_force_measurement_noise = np.diag([0.1, 0.1, 0.1, 0.1]) * 10.0 * 16
+    wheel_speed_measurement_noise = np.diag([1.0 for _ in range(4)])
+    longitudinal_force_measurement_noise = np.diag([1.0 for _ in range(4)])
 
     @classmethod
     def set_ins_measurement_noise(cls, ax: float, ay: float, yaw_rate: float):

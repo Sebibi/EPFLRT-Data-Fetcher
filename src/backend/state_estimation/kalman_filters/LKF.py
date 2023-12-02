@@ -29,10 +29,17 @@ class LKF:
         self.ax_bias = 0
         self.ay_bias = 0
 
-    def update_bias(self, motor_speeds: np.ndarray):
-        if np.sum(motor_speeds) == 0:
+    def update_bias(self, wheel_speeds: np.ndarray) -> bool:
+        """
+        If the vehicle is not moving, estimate the bias of the accelerometer
+        :param wheel_speeds:
+        :return: (bool) True if the bias was estimated else False
+        """
+        if np.sum(wheel_speeds) == 0:
             self.ax_bias = np.mean(self.ax_hist)
             self.ay_bias = np.mean(self.ay_hist)
+            return True
+        return False
 
     def update(self, x: np.array, P: np.ndarray, ins: np.ndarray):
         """
@@ -74,6 +81,6 @@ if __name__ == '__main__':
     print(x.round(3))
 
     z = np.array([0, 0, 0])
-    x, P = lkf.update_vy_reset(x, P, z)
+    x, P = lkf.update_vy_reset(x, P)
     print(x.round(3))
 
