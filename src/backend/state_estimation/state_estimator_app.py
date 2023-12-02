@@ -10,6 +10,8 @@ from src.backend.state_estimation.measurments.measurement_transformation.wheel_a
 from src.backend.state_estimation.measurments.measurement_transformation.steering_to_wheel_angle import \
     measure_delta_wheel_angle
 
+from src.backend.state_estimation.measurments.measurement_transformation.wheel_acceleration import measure_wheel_acceleration
+
 
 class StateEstimatorApp:
     mkf: MKF
@@ -19,7 +21,12 @@ class StateEstimatorApp:
     def __init__(self):
         self.mkf = MKF()
         self.x = np.zeros(self.mkf.dim_x)  # initial state (location and velocity)
-        self.P = np.eye(self.mkf.dim_x)  # initial uncertainty
+        self.P = np.eye(self.mkf.dim_x) * 1e-6  # initial uncertainty
+
+        # reset wheel_acc:
+        for i in range(30):
+            measure_wheel_acceleration(wheel_speeds=np.array([0, 0, 0, 0], dtype=float))
+
 
     def run(self, sensors: Sensors) -> tuple[np.ndarray, np.ndarray]:
         wheel_speeds = measure_wheel_speeds(motor_speeds=sensors['motor_speeds'])

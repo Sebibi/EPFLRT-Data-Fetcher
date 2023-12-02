@@ -5,7 +5,7 @@ import numpy as np
 delta = 20
 
 
-def measure_wheel_acceleration(wheel_speeds: np.ndarray, hist=deque([np.zeros(4) for _ in range(delta)], maxlen=delta)) -> np.ndarray:
+def measure_wheel_acceleration(wheel_speeds: np.ndarray, hist=deque([np.zeros(4)], maxlen=delta)) -> np.ndarray:
     old_wheel_speeds = hist[0]
     hist.append(wheel_speeds)
     return (wheel_speeds - old_wheel_speeds) / (delta * 0.01)

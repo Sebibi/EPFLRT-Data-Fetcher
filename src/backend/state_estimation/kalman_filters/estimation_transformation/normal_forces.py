@@ -47,4 +47,10 @@ def estimate_normal_forces(state: np.ndarray) -> np.ndarray:
     Fz_FR = lr * fz_cog - y_mass_trans_cog / (2 * a) - x_mass_trans_cog
     Fz_RL = lf * fz_cog + y_mass_trans_cog / (2 * b) + x_mass_trans_cog
     Fz_RR = lf * fz_cog - y_mass_trans_cog / (2 * b) + x_mass_trans_cog
-    return np.array([Fz_FL, Fz_FR, Fz_RL, Fz_RR]) + F_lift
+    Fzs = np.array([Fz_FL, Fz_FR, Fz_RL, Fz_RR]) + F_lift
+    return Fzs
+
+
+if __name__ == '__main__':
+    res = estimate_normal_forces(np.array([0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=float))
+    print(res, sum(res))

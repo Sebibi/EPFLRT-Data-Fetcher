@@ -4,7 +4,7 @@ from src.backend.state_estimation.config.state_estimation_param import SE_param
 from src.backend.state_estimation.config.vehicle_params import VehicleParams
 from src.backend.state_estimation.kalman_filters.EKF import EKF
 from src.backend.state_estimation.kalman_filters.LKF import LKF
-from src.backend.state_estimation.kalman_filters.UKF import UKF
+from src.backend.state_estimation.kalman_filters.UKF import UKF, UKF_one
 
 
 class MKF:
@@ -33,8 +33,8 @@ class MKF:
     ):
         x, P = self.lkf.update(x, P, ins)  # Update ax, ay, yaw_rate from ins
         x, P = self.lkf.update_vy_reset(x, P)  # Update vy == 0 if steady state
-        # x, P = self.ukf.update1(x, P, wheel_speeds, steering_deltas)  # Update vx, vy, yaw_rate from wheel speeds
-        # x, P = self.ukf.update2(x, P, torques, bp, wheel_speeds, wheel_acc)  # Update ax, ay, yaw_rate from wheel acc
+        x, P = self.ukf.update1(x, P, wheel_speeds, steering_deltas)  # Update vx, vy, yaw_rate from wheel speeds
+        x, P = self.ukf.update2(x, P, torques, bp, wheel_speeds, wheel_acc)  # Update ax, ay, yaw_rate from wheel acc
         return x, P
 
 
