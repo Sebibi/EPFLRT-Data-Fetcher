@@ -3,7 +3,7 @@ import numpy as np
 from src.backend.state_estimation.config.vehicle_params import VehicleParams
 
 px = [VehicleParams.lf, VehicleParams.lf, -VehicleParams.lr, -VehicleParams.lr]
-py = [VehicleParams.a / 2, -VehicleParams.a / 2, VehicleParams.b / 2, -VehicleParams.b / 2]
+py = [-VehicleParams.a / 2, VehicleParams.a / 2, -VehicleParams.b / 2, VehicleParams.b / 2]
 
 
 def estimate_longitudinal_velocity(x: np.array, steering_deltas: np.array, wheel_id: int) -> np.ndarray:
