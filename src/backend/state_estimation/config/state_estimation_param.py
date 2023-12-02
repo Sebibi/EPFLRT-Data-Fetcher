@@ -36,7 +36,6 @@ class SE_param:
     def set_state_transition_noise(cls, vx: float, vy: float, ax: float, ay: float, yaw_rate: float, slip: float):
         cls.state_transition_noise = np.diag([vx, vy, ax, ay, yaw_rate, slip, slip, slip, slip])
 
-
     @classmethod
     def set_sigma_points_param(cls, alpha: float, beta: float, kappa: float):
         cls.alpha = alpha
