@@ -37,7 +37,7 @@ class Tab6(Tab):
             # Add wheel speeds in m/s
             wheel_speeds_cols = ['VSI_Motor_Speed_FL', 'VSI_Motor_Speed_FR', 'VSI_Motor_Speed_RL', 'VSI_Motor_Speed_RR']
             wheel_speeds_cols_m_s = [col + '_m_s' for col in wheel_speeds_cols]
-            data[wheel_speeds_cols_m_s] = data[wheel_speeds_cols] * np.pi * VehicleParams.Rw / (30 * VehicleParams.gear_ratio)
+            data[wheel_speeds_cols_m_s] = data[wheel_speeds_cols].values * np.pi * VehicleParams.Rw / (30 * VehicleParams.gear_ratio)
             self.memory['data'] = data.copy()
 
         if len(self.memory['data']) > 0:
@@ -57,24 +57,33 @@ class Tab6(Tab):
                 default_columns=['sensors_vXEst', 'sensors_vYEst', 'sensors_aXEst', 'sensors_aYEst'],
             )
 
-            st.dataframe(data[column_names].describe().T)
+            cols = st.columns(2)
+            cols[0].subheader("Data description")
+            cols[0].dataframe(data[column_names].describe().T)
 
             # Compute state estimation
+            estimator_app = StateEstimatorApp()
             if st.button("Compute state estimation", key=f"{self.name} compute state estimation button"):
                 with st.spinner("Computing state estimation..."):
                     sensors_list: list[Sensors] = get_sensors_from_data(data.loc[samples[0]:samples[1]])
                     estimator_app = StateEstimatorApp()
-
                     estimations: list = [None for _ in range(len(sensors_list))]
                     for i, sensors in stqdm(enumerate(sensors_list), total=len(sensors_list)):
                         state, cov = estimator_app.run(sensors)
                         estimations[i] = state
 
-                        # Update the data
+                    # Update the data
                     columns = SE_param.estimated_states_names
                     data.loc[samples[0]: samples[1], columns] = np.array(estimations)
                     self.memory['data'] = data.copy()
                     st.balloons()
+            cols[1].subheader("Estimated - Measured error description")
+            w_error_names = [f"w_speed {wheel}" for wheel in VehicleParams.wheel_names]
+            fi_error_names = [f"Fi_{wheel}" for wheel in VehicleParams.wheel_names]
+            percentiles = [0.01, 0.05, 0.1, 0.9, 0.95, 0.99]
+            w_desc = pd.DataFrame(estimator_app.mkf.ukf.error_z_w, columns=w_error_names).describe(percentiles).T
+            fi_desc = pd.DataFrame(estimator_app.mkf.ukf.error_z_fi, columns=fi_error_names).describe(percentiles).T
+            cols[1].dataframe(pd.concat([w_desc, fi_desc], axis=0))
 
             # Tune the state estimation parameters
             cols_ref = [1, 3]

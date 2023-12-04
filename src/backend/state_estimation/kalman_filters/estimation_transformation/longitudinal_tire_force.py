@@ -13,5 +13,5 @@ def estimate_longitudinal_tire_force(x: np.array, wheel_id: int) -> np.ndarray:
 
 def estimate_longitudinal_tire_forces(x: np.array) -> np.ndarray:
     normal_forces = estimate_normal_forces(x)
-    mu = VehicleParams.magic_formula(x[5:9])
+    mu = np.array([VehicleParams.magic_formula(s) for s in x[5:9]])
     return normal_forces * mu

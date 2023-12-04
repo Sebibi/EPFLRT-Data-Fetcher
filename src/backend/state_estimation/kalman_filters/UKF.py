@@ -20,6 +20,9 @@ class UKF:
     longitudinal_force_meas_noise = SE_param.longitudinal_force_measurement_noise.copy()
     points = MerweScaledSigmaPoints(n=dim_x, alpha=0.1, beta=2., kappa=-1)
 
+    error_z_w = []
+    error_z_fi = []
+
     def __init__(self):
         self.ukf = UnscentedKalmanFilter(
             dim_x=self.dim_x,
@@ -44,8 +47,14 @@ class UKF:
         self.ukf.P = P
 
         # Compute the ukf update
+        z_est = estimate_wheel_speeds(x, steering_deltas)
+        error_z = z_est - wheel_speeds
+        self.error_z_w.append(error_z)
+        # print(z_est - z, z_est, z)
         self.ukf.compute_process_sigmas(dt=self.dt)  # Recompute the sigma points to reflect the new covariance
         self.ukf.update(z=wheel_speeds, hx=estimate_wheel_speeds, R=self.wheel_speeds_meas_noise, **hx_params)
+        # print(np.diag(self.ukf.S))
+        # print(np.diag(self.ukf.K).round(4))
         return self.ukf.x, self.ukf.P
 
     def update2(self, x: np.ndarray, P: np.ndarray, torques, bp, wheel_speeds, wheel_acc):
@@ -71,7 +80,13 @@ class UKF:
         # Compute the ukf update
         self.ukf.compute_process_sigmas(dt=self.dt)  # Recompute the sigma points to reflect the new covariance
         z = measure_tire_longitudinal_forces(torques, bp, wheel_speeds, wheel_acc)
+        z_est = estimate_longitudinal_tire_forces(x)
+        error_z = z_est - z
+        self.error_z_fi.append(error_z)
+        # print(error_z, z_est, z_bis, x[5:9].round(3))
         self.ukf.update(z=z, hx=estimate_longitudinal_tire_forces, R=R)
+        # print(np.diag(self.ukf.K).round(4))
+        # print(np.diag(self.ukf.S))
         return self.ukf.x, self.ukf.P
 
 
