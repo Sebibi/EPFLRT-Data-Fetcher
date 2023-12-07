@@ -19,8 +19,8 @@ class StateEstimatorApp:
     x: np.ndarray
     P: np.ndarray
 
-    def __init__(self):
-        self.mkf = MKF()
+    def __init__(self, independent_updates: bool = False):
+        self.mkf = MKF(independent_updates=independent_updates)
         self.x = np.zeros(self.mkf.dim_x)  # initial state (location and velocity)
         self.P = np.eye(self.mkf.dim_x) * 1e-6  # initial uncertainty
 

@@ -99,6 +99,9 @@ class UKF_one:
     longitudinal_force_meas_noise = SE_param.longitudinal_force_measurement_noise.copy()
     points = MerweScaledSigmaPoints(n=dim_x, alpha=0.1, beta=2., kappa=-1)
 
+    error_z_w = []
+    error_z_fi = []
+
     def __init__(self):
         self.ukf = UnscentedKalmanFilter(
             dim_x=self.dim_x,
@@ -121,13 +124,17 @@ class UKF_one:
         hx_params = dict(steering_deltas=steering_deltas)
         self.ukf.x = x
         self.ukf.P = P
+        error_z = np.zeros(4)
         for wheel_id in range(4):
             hx_params['wheel_id'] = wheel_id
             r = self.wheel_speeds_meas_noise[wheel_id, wheel_id]  # measurement noise
             # Compute the ukf update
+            z_est = estimate_wheel_speed(x, steering_deltas, wheel_id)
+            error_z[wheel_id] = z_est - wheel_speeds[wheel_id]
             wheel_speed = wheel_speeds[wheel_id]
             self.ukf.compute_process_sigmas(dt=self.dt)  # Recompute the sigma points to reflect the new covariance
             self.ukf.update(z=wheel_speed, hx=estimate_wheel_speed, R=r, **hx_params)
+        self.error_z_w.append(error_z)
         return self.ukf.x, self.ukf.P
 
     def update2(self, x: np.ndarray, P: np.ndarray, torques, bp, wheel_speeds, wheel_acc):
@@ -145,12 +152,17 @@ class UKF_one:
         self.ukf.P = P
         R = self.longitudinal_force_meas_noise.copy()
         z = measure_tire_longitudinal_forces(torques, bp, wheel_speeds, wheel_acc)
+        error_z = np.zeros(4)
         for wheel_id in range(4):
-            if x[5 + wheel_id] > 0.05:
+            error_z[wheel_id] = 0
+            if x[5 + wheel_id] < 0.05: # If the slip ratio is too high, do not update the filter
                 # Compute the ukf update
+                z_est = estimate_longitudinal_tire_force(x, wheel_id)
+                error_z[wheel_id] = z_est - z[wheel_id]
                 r = R[wheel_id, wheel_id]  # measurement noise
                 self.ukf.compute_process_sigmas(dt=self.dt)  # Recompute the sigma points to reflect the new covariance
                 self.ukf.update(z=z[wheel_id], hx=estimate_longitudinal_tire_force, R=r, wheel_id=wheel_id)
+        self.error_z_fi.append(error_z)
         return self.ukf.x, self.ukf.P
 
 

@@ -9,11 +9,11 @@ from src.backend.state_estimation.kalman_filters.UKF import UKF, UKF_one
 
 class MKF:
 
-    def __init__(self):
+    def __init__(self, independent_updates: bool = False):
         self.dt = VehicleParams.dt
         self.dim_x = SE_param.dim_x
         self.lkf = LKF()
-        self.ukf = UKF()
+        self.ukf = UKF_one() if independent_updates else UKF()
         self.ekf = EKF()
 
     def predict(self, x: np.array, P: np.ndarray):

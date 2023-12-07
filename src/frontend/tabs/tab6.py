@@ -38,6 +38,14 @@ class Tab6(Tab):
             wheel_speeds_cols = ['VSI_Motor_Speed_FL', 'VSI_Motor_Speed_FR', 'VSI_Motor_Speed_RL', 'VSI_Motor_Speed_RR']
             wheel_speeds_cols_m_s = [col + '_m_s' for col in wheel_speeds_cols]
             data[wheel_speeds_cols_m_s] = data[wheel_speeds_cols].values * np.pi * VehicleParams.Rw / (30 * VehicleParams.gear_ratio)
+
+            # Add wheel slips and dpsi if not present
+            if 'sensors_s_FL_est' not in data.columns:
+                data['sensors_s_FL_est'] = 0
+                data['sensors_s_FR_est'] = 0
+                data['sensors_s_RL_est'] = 0
+                data['sensors_s_RR_est'] = 0
+                data['sensors_dpsi_est'] = 0
             self.memory['data'] = data.copy()
 
         if len(self.memory['data']) > 0:
@@ -62,11 +70,12 @@ class Tab6(Tab):
             cols[0].dataframe(data[column_names].describe().T)
 
             # Compute state estimation
-            estimator_app = StateEstimatorApp()
+            independent_updates = st.checkbox("Independent updates", key=f"{self.name} independent updates", value=False)
+            estimator_app = StateEstimatorApp(independent_updates=independent_updates)
             if st.button("Compute state estimation", key=f"{self.name} compute state estimation button"):
                 with st.spinner("Computing state estimation..."):
                     sensors_list: list[Sensors] = get_sensors_from_data(data.loc[samples[0]:samples[1]])
-                    estimator_app = StateEstimatorApp()
+                    estimator_app = StateEstimatorApp(independent_updates=independent_updates)
                     estimations: list = [None for _ in range(len(sensors_list))]
                     for i, sensors in stqdm(enumerate(sensors_list), total=len(sensors_list)):
                         state, cov = estimator_app.run(sensors)
