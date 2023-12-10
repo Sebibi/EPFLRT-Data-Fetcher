@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 
+
 def measure_delta_wheel_angle(steering_angle: float) -> np.ndarray:
     """
     Convert steering angle (deg) to delta wheel angle (rad)
@@ -8,8 +9,8 @@ def measure_delta_wheel_angle(steering_angle: float) -> np.ndarray:
     :return: np.array([delta_FL, delta_FR, delta_RL, delta_RR]) (rad)
     """
     delta_wheels = np.zeros(4)
-    res0 = 0.165 * steering_angle - 9.5e-4 * (steering_angle ** 2)
-    res1 = 0.207 * steering_angle + 1.02e-4 * (steering_angle ** 2)
+    res0 = 0.165 * steering_angle - 9.5e-4 * (steering_angle ** 2) * np.sign(steering_angle)
+    res1 = 0.207 * steering_angle + 1.02e-4 * (steering_angle ** 2) * np.sign(steering_angle)
     delta_wheels[0] = res0 if steering_angle > 0 else res1
     delta_wheels[1] = res0 if steering_angle < 0 else res1
     return np.deg2rad(delta_wheels)
@@ -25,6 +26,7 @@ if __name__ == '__main__':
     delta_RL = delta_wheel_angles[:, 2]
     delta_RR = delta_wheel_angles[:, 3]
 
+    _ = plt.figure(figsize=(12, 6))
     plt.plot(steering_angles, delta_FL, label='FL')
     plt.plot(steering_angles, delta_FR, label='FR')
     plt.plot(steering_angles, delta_RL, label='RL')
@@ -33,4 +35,3 @@ if __name__ == '__main__':
     plt.xlabel('Steering angle [deg]')
     plt.ylabel('Delta wheel angle [deg]')
     plt.show()
-

@@ -14,3 +14,8 @@ def estimate_longitudinal_velocity(x: np.array, steering_deltas: np.array, wheel
     wheel_long_speed = np.array([vx - yaw_rate * py[wheel_id], vy + yaw_rate * px[wheel_id]])
     vl = steering_effect @ wheel_long_speed
     return vl
+
+
+def estimate_longitudinal_velocities(x: np.array, steering_deltas: np.array) -> np.ndarray:
+    vls = np.array([estimate_longitudinal_velocity(x, steering_deltas, wheel_id) for wheel_id in range(4)]).flatten()
+    return vls

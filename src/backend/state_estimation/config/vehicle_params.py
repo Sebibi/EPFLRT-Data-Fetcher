@@ -78,4 +78,11 @@ if __name__ == '__main__':
     plt.axvline(x=0.05, color='r')
     plt.axvline(x=-0.05, color='r')
 
+    # Plot the maximum and minimum friction coefficient
+    plt.axhline(y=np.max(mus), color='g')
+    plt.axhline(y=np.min(mus), color='g')
+
+    plt.xlabel("Slip ratio")
+    plt.ylabel("Friction coefficient")
+    plt.legend()
     plt.show()
