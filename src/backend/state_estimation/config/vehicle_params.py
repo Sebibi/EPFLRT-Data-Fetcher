@@ -68,7 +68,7 @@ class VehicleParams:
 
 
 if __name__ == '__main__':
-    slip_range = np.linspace(-0.3, 0.3, 100)
+    slip_range = np.linspace(-1.0, 1.0, 100)
     mus = [VehicleParams().magic_formula(s) for s in slip_range]
     fmus = list(filter(lambda x: abs(x) < 1.5, mus))
     slip_range_inv = [VehicleParams().linear_inverse_magic_formula(mu) for mu in fmus]

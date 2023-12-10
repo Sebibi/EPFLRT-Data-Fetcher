@@ -157,12 +157,6 @@ class Tab6(Tab):
                     for state_estimation in data[state_estimation_cols].values
                 ]
 
-                # Compute estimated longitudinal tire forces
-                new_data[long_tire_force_name] = [
-                    estimate_longitudinal_tire_forces(state_estimation)
-                    for state_estimation in new_data[state_estimation_cols].values
-                ]
-
                 # Compute estimated wheel speeds
                 wheel_speeds_cols_m_s_est = [col + '_m_s_est' for col in self.motor_speeds_cols]
                 new_data[wheel_speeds_cols_m_s_est] = [
@@ -199,7 +193,7 @@ class Tab6(Tab):
                 with st.expander("Estimated longitudinal tire forces"):
                     plot_data(
                         new_data, self.name + "_long_tire_force_est", title='Longitudinal Tire Force Estimation',
-                        default_columns=long_tire_force_name + long_tire_force_est_name_est,
+                        default_columns=long_tire_force_est_name_est,
                     )
 
                 with st.expander("Normal forces"):
