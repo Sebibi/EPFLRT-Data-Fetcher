@@ -11,11 +11,11 @@ class SE_param:
     dim_x = 9
 
     # LKF
-    ins_measurement_noise = np.diag([1.0, 1.0, 0.001])
+    ins_measurement_noise = np.diag([0.001, 0.001, 0.001])
     vy_reset_noise = np.array([[0.1]])
 
     # EKF
-    state_transition_noise = np.diag([1.0, 0.001, 0.001, 0.001, 0.001] + [0.00001 for _ in range(4)])
+    state_transition_noise = np.diag([0.001, 0.0001, 0.0001, 0.0001, 0.001] + [0.0005 for _ in range(4)])
 
     # UKF
     alpha, beta, kappa = (0.001, 2., 0.)  # Sigma points parameter
@@ -102,3 +102,13 @@ def tune_param_input(tab_name: str):
                                   format="%0.8f")
     SE_param.set_wheel_speed_measurement_noise(wheel_speed=w)
     SE_param.set_longitudinal_force_measurement_noise(longitudinal_force=lf)
+    st.divider()
+
+    cols = st.columns(cols_ref)
+    cols[0].markdown("### Mu max")
+    sub_cols = cols[1].columns(1)
+    values = [VehicleParams.mu_max]
+    mu_max = sub_cols[0].number_input("mu max", value=values[0], key=f"{tab_name} mu max", format="%0.3f")
+    VehicleParams.set_mu_max(mu_max)
+
+

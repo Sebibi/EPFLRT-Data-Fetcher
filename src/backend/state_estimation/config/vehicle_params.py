@@ -40,6 +40,8 @@ class VehicleParams:
     kb = 0.18
     kd = 0.17
     ks = 15
+    old_mu_max = 1.67
+    mu_max = 1.67
     wheel_names = ['FL', 'FR', 'RL', 'RR']
 
     # Tire parameters
@@ -56,7 +58,8 @@ class VehicleParams:
         :return: mu
         """
         B, C, D, E = cls.B, cls.C, cls.D, cls.E
-        return D * np.sin(C * np.arctan(B * slip_ratio - E * (B * slip_ratio - np.arctan(B * slip_ratio))))
+        mu = D * np.sin(C * np.arctan(B * slip_ratio - E * (B * slip_ratio - np.arctan(B * slip_ratio))))
+        return mu * (cls.mu_max / cls.old_mu_max)
 
     @classmethod
     def linear_inverse_magic_formula(cls, mu: float | np.ndarray) -> float | np.ndarray:
@@ -65,6 +68,10 @@ class VehicleParams:
         :return: slip_ratio
         """
         return mu / cls.BCD
+
+    @classmethod
+    def set_mu_max(cls, mu_max: float):
+        cls.mu_max = mu_max
 
 
 if __name__ == '__main__':
@@ -81,6 +88,9 @@ if __name__ == '__main__':
     # Plot the maximum and minimum friction coefficient
     plt.axhline(y=np.max(mus), color='g')
     plt.axhline(y=np.min(mus), color='g')
+
+    plt.text(0.05, np.max(mus), f"mu_max={np.max(mus):.2f}")
+    plt.text(0.05, np.min(mus), f"mu_min={np.min(mus):.2f}")
 
     plt.xlabel("Slip ratio")
     plt.ylabel("Friction coefficient")

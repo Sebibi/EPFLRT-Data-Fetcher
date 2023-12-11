@@ -6,6 +6,9 @@ from stqdm import stqdm
 
 from src.backend.state_estimation.config.vehicle_params import VehicleParams
 from src.backend.state_estimation.config.state_estimation_param import SE_param, tune_param_input
+from src.backend.state_estimation.observe_measurments.create_new_features import create_new_features
+from src.backend.state_estimation.observe_measurments.new_features_plots import plot_new_features
+from src.backend.state_estimation.observe_measurments.wheel_analysis import plot_wheel_analysis
 from src.backend.state_estimation.state_estimator_app import StateEstimatorApp
 from src.backend.state_estimation.measurments.measurement_transformation.wheel_speed import measure_wheel_speeds
 from src.backend.state_estimation.measurments.sensors import get_sensors_from_data, Sensors
@@ -62,7 +65,9 @@ class Tab6(Tab):
 
             # Multiply slip ratios bs 100
             slip_cols_100 = [col + '_100' for col in self.slip_cols]
+            slip_cols_1000 = [col + '_1000' for col in self.slip_cols]
             data[slip_cols_100] = data[self.slip_cols] * 100
+            data[slip_cols_1000] = data[self.slip_cols] * 1000
 
             # Plot the data
             column_names, samples = plot_data(
@@ -97,121 +102,29 @@ class Tab6(Tab):
             fi_desc = pd.DataFrame(estimator_app.mkf.ukf.error_z_fi, columns=fi_error_names).describe(percentiles).T
             cols[1].dataframe(pd.concat([w_desc, fi_desc], axis=0))
 
-            tune_param_input(self.name)
+            # Allow to tune the state estimation parameters
+            with st.expander("Tune the state estimation parameters"):
+                tune_param_input(self.name)
 
-            ###################################################################################################
-
+            # Show some data from state estimation
             if st.checkbox("Show measurement transformations"):
-                from src.backend.state_estimation.measurments.measurement_transformation import \
-                    measure_wheel_acceleration, measure_delta_wheel_angle, \
-                    measure_tire_longitudinal_forces
-
-                from src.backend.state_estimation.kalman_filters.estimation_transformation import \
-                    estimate_longitudinal_tire_forces, estimate_wheel_speeds, estimate_normal_forces, \
-                    estimate_longitudinal_velocities
                 new_data = data.copy()
-                wheel_acc_cols = [f'wheel_acc_{wheel}' for wheel in VehicleParams.wheel_names]
+                with st.spinner("Computing new features..."):
+                    new_cols = create_new_features(new_data, self.motor_torques_cols, self.brake_pressure_cols, self.motor_speeds_cols)
+                    wheel_acc_cols, long_tire_force_cols, long_tire_force_est_cols_est, normal_force_cols, wheel_speeds_cols_m_s_est, vl_cols = new_cols
+
+                # Plot new features
                 wheel_speeds_cols_m_s = [col + '_m_s' for col in self.motor_speeds_cols]
-
-                # Add 0 line
-                new_data['zero'] = 0
-
-                # Reset wheel acceleration
-                for i in range(30):
-                    measure_wheel_acceleration(wheel_speeds=np.array([0, 0, 0, 0], dtype=float))
-                new_data[wheel_acc_cols] = [
-                    measure_wheel_acceleration(wheel_speeds=wheel_speeds)
-                    for wheel_speeds in data[wheel_speeds_cols_m_s].values
-                ]
-
-                # Compute delta wheel angle
-                new_data[['delta_FL', 'delta_FR']] = [
-                    measure_delta_wheel_angle(steering_angle=steering_angle)[:2]
-                    for steering_angle in data['sensors_steering_angle'].values
-                ]
-                new_data[['delta_FL_deg', 'delta_FR_deg']] = new_data[['delta_FL', 'delta_FR']].values * 180 / np.pi
-
-                # Compute longitudinal tire forces
-                long_tire_force_name = [f'long_tire_force_{wheel}' for wheel in VehicleParams.wheel_names]
-                new_data[long_tire_force_name] = [
-                    measure_tire_longitudinal_forces(torques=torques, bps=bps, wheel_speeds=wheel_speeds,
-                                                     wheel_acc=wheel_acc)
-                    for torques, bps, wheel_speeds, wheel_acc in
-                    zip(data[self.motor_torques_cols].values, data[self.brake_pressure_cols].values,
-                        data[wheel_speeds_cols_m_s].values, new_data[wheel_acc_cols].values)
-                ]
-
-                state_estimation_cols = SE_param.estimated_states_names
-
-                # Compute estimated longitudinal tire forces
-                long_tire_force_est_name_est = [name + '_est' for name in long_tire_force_name]
-                new_data[long_tire_force_est_name_est] = [
-                    estimate_longitudinal_tire_forces(state_estimation)
-                    for state_estimation in data[state_estimation_cols].values
-                ]
-
-                # Compute estimated normal forces
-                normal_force_name = [f'Fz_{wheel}' for wheel in VehicleParams.wheel_names]
-                new_data[normal_force_name] = [
-                    estimate_normal_forces(state_estimation)
-                    for state_estimation in data[state_estimation_cols].values
-                ]
-
-                # Compute estimated wheel speeds
-                wheel_speeds_cols_m_s_est = [col + '_m_s_est' for col in self.motor_speeds_cols]
-                new_data[wheel_speeds_cols_m_s_est] = [
-                    estimate_wheel_speeds(state_estimation, measure_delta_wheel_angle(steering_angle=steering_angle)) * VehicleParams.Rw
-                    for state_estimation, steering_angle in
-                    zip(new_data[state_estimation_cols].values, new_data['sensors_steering_angle'].values)
-                ]
-
-                # Compute estimated longitudinal velocity
-                vl_cols = [f'vl_{wheel}' for wheel in VehicleParams.wheel_names]
-                new_data[vl_cols] = [
-                    estimate_longitudinal_velocities(state_estimation, measure_delta_wheel_angle(steering_angle=steering_angle))
-                    for state_estimation, steering_angle in
-                    zip(new_data[state_estimation_cols].values, new_data['sensors_steering_angle'].values)
-                ]
-
-                # Plot the data
-                with st.expander("Steering deltas"):
-                    plot_data(
-                        new_data, self.name + "_steering", title='Steering wheel and tires',
-                        default_columns=['delta_FL_deg', 'delta_FR_deg', 'sensors_steering_angle'],
-                    )
-                with st.expander("Wheel accelerations"):
-                    plot_data(
-                        new_data, self.name + "_acceleration", title='Accelerations observation',
-                        default_columns=['sensors_accX'] + wheel_acc_cols[2:],
+                if st.checkbox("Plot new features"):
+                    plot_new_features(
+                        new_data, self.name, wheel_acc_cols, long_tire_force_cols, long_tire_force_est_cols_est,
+                        normal_force_cols, wheel_speeds_cols_m_s, wheel_speeds_cols_m_s_est, vl_cols
                     )
 
-                with st.expander("Longitudinal tire forces"):
-                    plot_data(
-                        new_data, self.name + "_long_tire_force", title='Longitudinal Tire Force',
-                        default_columns=long_tire_force_name,
+                if st.checkbox("Plot wheel analysis"):
+                    plot_wheel_analysis(
+                        new_data, self.name, wheel_acc_cols, long_tire_force_cols, long_tire_force_est_cols_est,
+                        normal_force_cols, wheel_speeds_cols_m_s, wheel_speeds_cols_m_s_est, vl_cols, slip_cols_100,
+                        slip_cols_1000
                     )
-                with st.expander("Estimated longitudinal tire forces"):
-                    plot_data(
-                        new_data, self.name + "_long_tire_force_est", title='Longitudinal Tire Force Estimation',
-                        default_columns=long_tire_force_est_name_est,
-                    )
-
-                with st.expander("Normal forces"):
-                    plot_data(
-                        new_data, self.name + "_normal_force", title='Normal Force',
-                        default_columns=normal_force_name + ['zero', 'sensors_steering_angle', 'sensors_gyroZ_deg'],
-                    )
-
-                with st.expander("Estimated Wheel speeds"):
-                    plot_data(
-                        new_data, self.name + "_wheel_speeds", title='Wheel speeds',
-                        default_columns=wheel_speeds_cols_m_s + wheel_speeds_cols_m_s_est,
-                    )
-                with st.expander("Longitudinal velocities"):
-
-                    plot_data(
-                        new_data, self.name + "_long_velocities", title='Longitudinal velocities',
-                        default_columns=[vl_cols[i] for i in [0, 2, 1, 3]] + ['zero', 'sensors_gyroZ'],
-                    )
-
         return True

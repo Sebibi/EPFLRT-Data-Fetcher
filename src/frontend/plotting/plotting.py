@@ -22,8 +22,11 @@ def plot_data(
     )
     plot_data = data[columns_to_plot].loc[samples_to_plot[0]:samples_to_plot[1]]
 
+    cols = st.columns(2)
     fig, ax = plt.subplots(figsize=(10, 5)) if fig_ax is None else fig_ax
-    plot_data.plot(ax=ax)
+    window_size = cols[1].number_input(f"Moving average to be applied to data", value=1, step=1, min_value=1, key=f"{tab_name} window size")
+    rolled_plot_data = plot_data.rolling(window=window_size).mean()
+    rolled_plot_data.plot(ax=ax, subplots=cols[0].checkbox("Subplots", value=False, key=f"{tab_name} subplots"))
     ax.legend()
     ax.set_title(title)
     ax.set_xlabel('Time [s]')
