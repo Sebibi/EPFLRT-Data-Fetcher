@@ -98,9 +98,16 @@ class Tab6(Tab):
             w_error_names = [f"w_speed {wheel}" for wheel in VehicleParams.wheel_names]
             fi_error_names = [f"Fi_{wheel}" for wheel in VehicleParams.wheel_names]
             percentiles = [0.01, 0.05, 0.1, 0.9, 0.95, 0.99]
-            w_desc = pd.DataFrame(estimator_app.mkf.ukf.error_z_w, columns=w_error_names).describe(percentiles).T
-            fi_desc = pd.DataFrame(estimator_app.mkf.ukf.error_z_fi, columns=fi_error_names).describe(percentiles).T
-            cols[1].dataframe(pd.concat([w_desc, fi_desc], axis=0))
+
+            error_display = cols[1].radio("Raw or description", ["Raw", "Description"], key=f"{self.name} raw or description")
+            if error_display == "Raw":
+                w_error = pd.DataFrame(estimator_app.mkf.ukf.error_z_w, columns=w_error_names)
+                fi_error = pd.DataFrame(estimator_app.mkf.ukf.error_z_fi, columns=fi_error_names)
+                cols[1].dataframe(pd.concat([w_error, fi_error], axis=1))
+            else:
+                w_desc = pd.DataFrame(estimator_app.mkf.ukf.error_z_w, columns=w_error_names).describe(percentiles)
+                fi_desc = pd.DataFrame(estimator_app.mkf.ukf.error_z_fi, columns=fi_error_names).describe(percentiles)
+                cols[1].dataframe(pd.concat([w_desc, fi_desc], axis=1))
 
             # Allow to tune the state estimation parameters
             with st.expander("Tune the state estimation parameters"):
