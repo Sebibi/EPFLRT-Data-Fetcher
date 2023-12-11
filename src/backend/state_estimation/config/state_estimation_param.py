@@ -15,7 +15,7 @@ class SE_param:
     vy_reset_noise = np.array([[0.1]])
 
     # EKF
-    state_transition_noise = np.diag([0.001, 0.0001, 0.0001, 0.0001, 0.001] + [0.001 for _ in range(4)])
+    state_transition_noise = np.diag([0.0001, 0.0001, 0.0001, 0.0001, 0.0001] + [0.001 for _ in range(4)])
 
     # UKF
     alpha, beta, kappa = (0.001, 2., 0.)  # Sigma points parameter
