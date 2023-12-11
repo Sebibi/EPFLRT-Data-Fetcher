@@ -81,9 +81,9 @@ if __name__ == '__main__':
     slip_range_inv = [VehicleParams().linear_inverse_magic_formula(mu) for mu in fmus]
 
     plt.plot(slip_range, mus, label="magic formula")
-    plt.plot(slip_range_inv, fmus, label="linear")
-    plt.axvline(x=0.05, color='r')
-    plt.axvline(x=-0.05, color='r')
+    # plt.plot(slip_range_inv, fmus, label="linear")
+    # plt.axvline(x=0.05, color='r')
+    # plt.axvline(x=-0.05, color='r')
 
     # Plot the maximum and minimum friction coefficient
     plt.axhline(y=np.max(mus), color='g')
