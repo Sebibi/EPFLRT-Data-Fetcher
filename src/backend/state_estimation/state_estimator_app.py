@@ -47,7 +47,7 @@ class StateEstimatorApp:
             torques=sensors['torques'],
             bp=sensors['bps'],
         )
-        return self.x.copy(), self.P.copy()
+        return self.x.copy(), np.diag(self.P)
 
 
 if __name__ == '__main__':

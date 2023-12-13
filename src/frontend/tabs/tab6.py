@@ -7,6 +7,7 @@ from stqdm import stqdm
 from src.backend.state_estimation.config.vehicle_params import VehicleParams
 from src.backend.state_estimation.config.state_estimation_param import SE_param, tune_param_input
 from src.backend.state_estimation.observe_measurments.create_new_features import create_new_features
+from src.backend.state_estimation.observe_measurments.model_anaysis import plot_model_analysis
 from src.backend.state_estimation.observe_measurments.new_features_plots import plot_new_features
 from src.backend.state_estimation.observe_measurments.wheel_analysis import plot_wheel_analysis
 from src.backend.state_estimation.state_estimator_app import StateEstimatorApp
@@ -29,6 +30,9 @@ class Tab6(Tab):
         if "data" not in self.memory:
             self.memory['data'] = pd.DataFrame()
 
+        if "data_cov" not in self.memory:
+            self.memory['data_cov'] = pd.DataFrame()
+
     def build(self, session_creator: SessionCreator) -> bool:
 
         st.header(self.description)
@@ -49,8 +53,8 @@ class Tab6(Tab):
             data[gyro_cols_deg] = data[gyro_cols].values * 180 / np.pi
 
             # Add wheel speeds in m/s
-            wheel_speeds_cols_m_s = [col + '_m_s' for col in self.motor_speeds_cols]
-            data[wheel_speeds_cols_m_s] = measure_wheel_speeds(data[self.motor_speeds_cols].values) * VehicleParams.Rw
+            ws_cols = [f'vWheel_{wheel}' for wheel in VehicleParams.wheel_names]
+            data[ws_cols] = measure_wheel_speeds(data[self.motor_speeds_cols].values) * VehicleParams.Rw
 
             # Add wheel slips and dpsi if not present
             if 'sensors_s_FL_est' not in data.columns:
@@ -75,25 +79,44 @@ class Tab6(Tab):
                 default_columns=['sensors_vXEst', 'sensors_vYEst', 'sensors_aXEst', 'sensors_aYEst'],
             )
 
+            if st.checkbox("Show covariance"):
+                data_cov = self.memory['data_cov']
+                plot_data(
+                    data_cov, self.name + "_cov", title='X-Estimation observation covariance',
+                    default_columns=['sensors_vXEst', 'sensors_vYEst', 'sensors_aXEst', 'sensors_aYEst'],
+                )
+
             cols = st.columns(2)
             cols[0].subheader("Data description")
             cols[0].dataframe(data[column_names].describe().T)
 
             # Compute state estimation
-            independent_updates = st.checkbox("Independent updates", key=f"{self.name} independent updates",
-                                              value=False)
+            independent_updates = st.checkbox(
+                "Independent updates", key=f"{self.name} independent updates", value=False)
             estimator_app = StateEstimatorApp(independent_updates=independent_updates)
             if st.button("Compute state estimation", key=f"{self.name} compute state estimation button"):
                 with st.spinner("Computing state estimation..."):
                     sensors_list: list[Sensors] = get_sensors_from_data(data.loc[samples[0]:samples[1]])
                     estimator_app = StateEstimatorApp(independent_updates=independent_updates)
-                    estimations = [estimator_app.run(sensors)[0] for sensors in stqdm(sensors_list)]
+
+                    estimations = [np.zeros(SE_param.dim_x) for _ in sensors_list]
+                    estimations_cov = [np.zeros(SE_param.dim_x) for _ in sensors_list]
+
+                    for i, sensors in stqdm(enumerate(sensors_list), total=len(sensors_list)):
+                        state, cov = estimator_app.run(sensors)
+                        estimations[i] = state
+                        estimations_cov[i] = cov
 
                     # Update the data
                     columns = SE_param.estimated_states_names
                     data.loc[samples[0]: samples[1], columns] = np.array(estimations)
                     self.memory['data'] = data.copy()
+
+                    index = data.loc[samples[0]: samples[1]].index
+                    data_cov = pd.DataFrame(estimations_cov, index=index, columns=columns)
+                    self.memory['data_cov'] = data_cov.copy()
                     st.balloons()
+
             cols[1].subheader("Estimated - Measured error description")
             w_error_names = [f"w_speed {wheel}" for wheel in VehicleParams.wheel_names]
             fi_error_names = [f"Fi_{wheel}" for wheel in VehicleParams.wheel_names]
@@ -117,21 +140,25 @@ class Tab6(Tab):
             if st.checkbox("Show measurement transformations"):
                 new_data = data.copy()
                 with st.spinner("Computing new features..."):
-                    new_cols = create_new_features(new_data, self.motor_torques_cols, self.brake_pressure_cols, self.motor_speeds_cols)
-                    wheel_acc_cols, long_tire_force_cols, long_tire_force_est_cols_est, normal_force_cols, wheel_speeds_cols_m_s_est, vl_cols = new_cols
+                    new_cols = create_new_features(new_data, self.motor_torques_cols, self.brake_pressure_cols)
+                    ws_cols, dws_cols, fl_cols, fl_est_cols, fz_est_cols, ws_est_cols, vl_est_cols, acc_fsum_cols, acc_fsum_est_cols = new_cols
 
                 # Plot new features
-                wheel_speeds_cols_m_s = [col + '_m_s' for col in self.motor_speeds_cols]
                 if st.checkbox("Plot new features"):
                     plot_new_features(
-                        new_data, self.name, wheel_acc_cols, long_tire_force_cols, long_tire_force_est_cols_est,
-                        normal_force_cols, wheel_speeds_cols_m_s, wheel_speeds_cols_m_s_est, vl_cols
+                        new_data, self.name, dws_cols, fl_cols, fl_est_cols,
+                        fz_est_cols, ws_cols, ws_est_cols, vl_est_cols
                     )
 
                 if st.checkbox("Plot wheel analysis"):
                     plot_wheel_analysis(
-                        new_data, self.name, wheel_acc_cols, long_tire_force_cols, long_tire_force_est_cols_est,
-                        normal_force_cols, wheel_speeds_cols_m_s, wheel_speeds_cols_m_s_est, vl_cols, slip_cols_100,
+                        new_data, self.name, dws_cols, fl_cols, fl_est_cols,
+                        fz_est_cols, ws_cols, ws_est_cols, vl_est_cols, slip_cols_100,
                         slip_cols_1000
+                    )
+
+                if st.checkbox("Plot model analysis"):
+                    plot_model_analysis(
+                        new_data, self.name, acc_fsum_cols, acc_fsum_est_cols
                     )
         return True

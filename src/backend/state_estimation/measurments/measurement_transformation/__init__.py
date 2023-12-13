@@ -5,3 +5,4 @@ from src.backend.state_estimation.measurments.measurement_transformation.steerin
     measure_delta_wheel_angle
 from src.backend.state_estimation.measurments.measurement_transformation.longitudonal_tire_force import \
     measure_tire_longitudinal_forces
+from src.backend.state_estimation.measurments.measurement_transformation.accelerations import measure_acc_fsum

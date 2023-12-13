@@ -17,10 +17,13 @@ class LKF:
         self.H[:, [2, 3, 4]] = np.eye(self.dim_z)  # observation matrix
         self.R = SE_param.ins_measurement_noise.copy()
 
-        # Velocity reset
+        # Velocity and slip reset
         self.H_vy_reset = np.zeros((1, self.dim_x))
         self.H_vy_reset[0, 1] = 1
+        self.H_slip_reset = np.eye(4, self.dim_x, self.dim_x - 4)
+        self.H_reset = np.concatenate((self.H_vy_reset, self.H_slip_reset))
         self.R_vy_reset = SE_param.vy_reset_noise.copy()
+        self.R_reset = np.diag([0.1, 0.1, 0.1, 0.1, 0.1])
 
         # Bias estimation
         self.ax_hist = deque([0.0 for _ in range(self.history_size)], maxlen=self.history_size)
@@ -68,7 +71,7 @@ class LKF:
         """
         vx = x[0]
         if np.abs(vx) < 0.01:
-            x, P = kalman.update(x, P, z=np.array([0.0]), R=self.R_vy_reset, H=self.H_vy_reset)
+            x, P = kalman.update(x, P, z=np.zeros(5), R=self.R_reset, H=self.H_reset)
         return x, P
 
 

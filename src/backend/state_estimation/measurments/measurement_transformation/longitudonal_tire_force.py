@@ -13,9 +13,9 @@ def measure_tire_longitudinal_force(torque: float, bp: float, wheel_speed: float
 def measure_tire_longitudinal_forces(torques: np.ndarray, bps: np.ndarray, wheel_speeds: np.ndarray,
                                      wheel_acc: np.ndarray) -> np.ndarray:
     l_forces = np.zeros(4)
-    for i, (tau, Pb, w, dw) in enumerate(zip(torques, bps, wheel_speeds, wheel_acc)):
+    for i, (tau, bp, w, dw) in enumerate(zip(torques, bps, wheel_speeds, wheel_acc)):
         if abs(w) > 0.1 or abs(dw) > 0.1:
-            l_forces[i] = (tau - VehicleParams.kd * w - VehicleParams.ks - VehicleParams.Iw * dw) / VehicleParams.Rw
+            l_forces[i] = (tau - VehicleParams.kd * w - VehicleParams.kb * bp - VehicleParams.ks - VehicleParams.Iw * dw) / VehicleParams.Rw
     return l_forces
 
 

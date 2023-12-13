@@ -9,8 +9,8 @@ def measure_delta_wheel_angle_old(steering_angle: float) -> np.ndarray:
     :return: np.array([delta_FL, delta_FR, delta_RL, delta_RR]) (rad)
     """
     delta_wheels = np.zeros(4)
-    res0 = 0.165 * steering_angle - 9.5e-4 * (steering_angle ** 2) * np.sign(steering_angle)
-    res1 = 0.207 * steering_angle + 1.02e-4 * (steering_angle ** 2) * np.sign(steering_angle)
+    res1 = 0.165 * steering_angle - 9.5e-4 * (steering_angle ** 2) * np.sign(steering_angle)
+    res0 = 0.207 * steering_angle + 1.02e-4 * (steering_angle ** 2) * np.sign(steering_angle)
     delta_wheels[0] = res0 if steering_angle > 0 else res1
     delta_wheels[1] = res0 if steering_angle < 0 else res1
     return np.deg2rad(delta_wheels)
@@ -33,7 +33,7 @@ def measure_delta_wheel_angle(steering_angle: float) -> np.ndarray:
 
 if __name__ == '__main__':
     steering_angles = np.linspace(-120, 120, 100)
-    delta_wheel_angles = np.array([measure_delta_wheel_angle(steering_angle) for steering_angle in steering_angles])
+    delta_wheel_angles = np.array([measure_delta_wheel_angle_old(steering_angle) for steering_angle in steering_angles])
 
     delta_wheel_angles = np.rad2deg(delta_wheel_angles)
     delta_FL = delta_wheel_angles[:, 0]
