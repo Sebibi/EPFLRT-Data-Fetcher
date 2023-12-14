@@ -28,5 +28,6 @@ def measure_acc_fsum(long_tire_forces: np.ndarray, wheel_deltas: np.ndarray, sta
 if __name__ == '__main__':
     lf = np.array([1, 2, 3, 4])
     wd = np.array([0, 0, 0, 0])
-    print(measure_acc_fsum(lf, wd))
+    state = np.array([1, 0, 0, 0, 0, 0, 0, 0, 0], dtype=float)
+    print(measure_acc_fsum(lf, wd, state))
 

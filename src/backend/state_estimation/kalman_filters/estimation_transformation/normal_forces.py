@@ -14,10 +14,15 @@ a = VehicleParams.a
 b = VehicleParams.b
 z_cg = VehicleParams.z_cg
 
+def estimate_aero_focre_one_tire(state: np.ndarray) -> float:
+    vx = state[0]
+    F_lift = (A_front * c_lift * rho_air * (vx ** 2)) / 8.0
+    return F_lift
+
 
 def estimate_normal_force(state: np.ndarray, wheel_id: int) -> float:
     vx, ax, ay = state[0], state[2], state[3]
-    F_lift = (A_front * c_lift * rho_air * (vx ** 2)) / 8.0
+    F_lift = estimate_aero_focre_one_tire(state)
     x_mass_trans_cog = m * ax * z_cg / (2 * l)
     y_mass_trans_cog = m * ay * z_cg
     fz_cog = m * g / (2 * l)
@@ -37,7 +42,7 @@ def estimate_normal_force(state: np.ndarray, wheel_id: int) -> float:
 
 def estimate_normal_forces(state: np.ndarray) -> np.ndarray:
     vx, ax, ay = state[0], state[2], state[3]
-    F_lift = (A_front * c_lift * rho_air * (vx ** 2)) / 8.0
+    F_lift = estimate_aero_focre_one_tire(state)
 
     x_mass_trans_cog = m * ax * z_cg / (2 * l)
     y_mass_trans_cog = m * ay * z_cg

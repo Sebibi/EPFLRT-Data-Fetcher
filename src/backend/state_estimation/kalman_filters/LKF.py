@@ -71,7 +71,10 @@ class LKF:
         """
         vx = x[0]
         if np.abs(vx) < 0.01:
-            x, P = kalman.update(x, P, z=np.zeros(5), R=self.R_reset, H=self.H_reset)
+            R = self.R_vy_reset
+            H = self.H_vy_reset
+            z = np.zeros(len(R))
+            x, P = kalman.update(x, P, z=z, R=R, H=H)
         return x, P
 
 
