@@ -18,7 +18,7 @@ class UKF:
     dim_z = 4
     wheel_speeds_meas_noise = SE_param.wheel_speed_measurement_noise.copy()
     longitudinal_force_meas_noise = SE_param.longitudinal_force_measurement_noise.copy()
-    points = MerweScaledSigmaPoints(n=dim_x, alpha=0.1, beta=2., kappa=-1)
+    points = MerweScaledSigmaPoints(n=dim_x, alpha=SE_param.alpha, beta=SE_param.beta, kappa=SE_param.kappa)
 
     error_z_w = []
     error_z_fi = []
@@ -97,7 +97,7 @@ class UKF_one:
     dim_z = 1
     wheel_speeds_meas_noise = SE_param.wheel_speed_measurement_noise.copy()
     longitudinal_force_meas_noise = SE_param.longitudinal_force_measurement_noise.copy()
-    points = MerweScaledSigmaPoints(n=dim_x, alpha=0.1, beta=2., kappa=-1)
+    points = MerweScaledSigmaPoints(n=dim_x, alpha=SE_param.alpha, beta=SE_param.beta, kappa=SE_param.kappa)
 
     error_z_w = []
     error_z_fi = []

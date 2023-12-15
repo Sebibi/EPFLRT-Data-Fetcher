@@ -59,3 +59,7 @@ def estimate_normal_forces(state: np.ndarray) -> np.ndarray:
 if __name__ == '__main__':
     res = estimate_normal_forces(np.array([0, 0, 0, 0, 0, 0, 0, 0, 0], dtype=float))
     print(res, sum(res))
+
+    f = estimate_aero_focre_one_tire(np.array([10, 0, 0, 0, 0, 0, 0, 0, 0], dtype=float)) * 4
+    print(f)
+    print(f / VehicleParams.m_car)

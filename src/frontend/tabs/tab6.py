@@ -52,6 +52,11 @@ class Tab6(Tab):
             gyro_cols_deg = [col + '_deg' for col in gyro_cols]
             data[gyro_cols_deg] = data[gyro_cols].values * 180 / np.pi
 
+            # Add steering angle in rad
+            data['sensors_steering_angle_rad'] = np.deg2rad(data['sensors_steering_angle'].values)
+            data['mean_brake_pressure'] = data[['sensors_brake_pressure_R', 'sensors_brake_pressure_L']].mean(
+                axis=1)
+
             # Add wheel speeds in m/s
             ws_cols = [f'vWheel_{wheel}' for wheel in VehicleParams.wheel_names]
             data[ws_cols] = measure_wheel_speeds(data[self.motor_speeds_cols].values) * VehicleParams.Rw

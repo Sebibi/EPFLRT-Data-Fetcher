@@ -26,8 +26,10 @@ def plot_data(
     fig, ax = plt.subplots(figsize=(10, 5)) if fig_ax is None else fig_ax
     window_size = cols[1].number_input(f"Moving average to be applied to data", value=1, step=1, min_value=1, key=f"{tab_name} window size")
     rolled_plot_data = plot_data.rolling(window=window_size).mean()
-    rolled_plot_data.plot(ax=ax, subplots=cols[0].checkbox("Subplots", value=False, key=f"{tab_name} subplots"))
-    ax.legend()
+    legend = cols[0].checkbox("Show legend", value=True, key=f"{tab_name} show legend")
+    rolled_plot_data.plot(ax=ax, subplots=cols[0].checkbox("Subplots", value=False, key=f"{tab_name} subplots"), legend=legend)
+    if legend:
+        ax.legend()
     ax.set_title(title)
     ax.set_xlabel('Time [s]')
     st.pyplot(fig)

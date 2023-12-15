@@ -5,7 +5,7 @@ from src.backend.state_estimation.config.vehicle_params import VehicleParams
 
 def measure_tire_longitudinal_force(torque: float, bp: float, wheel_speed: float, wheel_acc: float) -> float:
     if abs(wheel_speed) > 0.1 or abs(wheel_acc) > 0.1:
-        return (torque - VehicleParams.kd * wheel_speed - VehicleParams.ks - VehicleParams.Iw * wheel_acc) / VehicleParams.Rw
+        return (torque - VehicleParams.kd * wheel_speed - VehicleParams.kb * bp - VehicleParams.ks - VehicleParams.Iw * wheel_acc) / VehicleParams.Rw
     else:
         return 0.0
 
