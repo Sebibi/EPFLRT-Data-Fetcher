@@ -43,18 +43,26 @@ def sum_to_one(likelihood: Likelihood) -> Likelihood:
         return {k: v if v != 0 else fill_value for k, v in likelihood.items()}
     return likelihood
 
+# Input the node count
+node_types = ['A', 'B', 'C', 'D']
+
+n_A = st.number_input(label="Number of A nodes", value=8, min_value=0, max_value=100)
+n_B = st.number_input(label="Number of B nodes", value=4, min_value=0, max_value=100)
+n_C = st.number_input(label="Number of C nodes", value=4, min_value=0, max_value=100)
+n_D = st.number_input(label="Number of D nodes", value=3, min_value=0, max_value=100)
+
+node_count = [n_A, n_B, n_C, n_D]
+node_count_dict = dict(zip(node_types, node_count))
+n_questions = sum(node_count)
+
 # Load the data from load button
 data = st.file_uploader("Upload a CSV file", type="csv")
 
 if data is not None:
     node_types = ['A', 'B', 'C', 'D']
-    node_count = [8, 4, 4, 3]
-    node_count_dict = dict(zip(node_types, node_count))
-    n_questions = sum(node_count)
-
     init_answers_df = pd.read_csv(data, index_col=0)[:n_questions]
     st.subheader('Initial answers')
-    st.dataframe(init_answers_df)
+    st.dataframe(init_answers_df.T)
 
     init_answers = init_answers_df.to_dict('records')
     init_answers = [sum_to_one(x) for x in init_answers]
@@ -76,8 +84,6 @@ if data is not None:
                 answer_node = f"{node_type}{k + 1}"
                 G.add_edge(question_node, answer_node, weight=init_answer[node_type])
 
-    print(G)
-    print(f"Number of answers: {len(node_answers_type)}")
 
     # Perform the matching
     matching = nx.max_weight_matching(G, maxcardinality=True)
@@ -108,6 +114,12 @@ if data is not None:
     df.drop('Answer_int', axis=1, inplace=True)
     df = df.round(2)
     st.subheader('Matching')
+    st.dataframe(df.T)
+    st.info(f"Answers: {df['Answer'].tolist()}")
+
     cols = st.columns(2)
+    cols[0].subheader('Matching view')
     cols[0].dataframe(df)
+
+    cols[1].subheader('Matching description')
     cols[1].dataframe(df['Likeliness'].describe())
