@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 from itertools import combinations
 from qpsolvers import solve_qp
+from scipy.optimize import linprog
 from scipy.sparse import csc_matrix
 import streamlit as st
 
@@ -102,16 +103,25 @@ for i in range(n_answers):
 
 
 # Solve
-P = csc_matrix(np.zeros((n_variables, n_variables)))
-q = c
-G = csc_matrix(A_ub)
-h = b_ub
-A = csc_matrix(A_eq)
-b = b_eq
-lb = np.array([elem[0] for elem in bounds])
-ub = np.array([elem[1] for elem in bounds])
-x = solve_qp(P, q, G, h, A, b, lb=lb, ub=ub, solver='osqp')
 
+solvers = ['osqp', 'scipy']
+selected_solver = st.radio("Choose the solver", options=solvers, index=0)
+if selected_solver == 'osqp':
+    P = csc_matrix(np.zeros((n_variables, n_variables)))
+    q = c
+    G = csc_matrix(A_ub)
+    h = b_ub
+    A = csc_matrix(A_eq)
+    b = b_eq
+    lb = np.array([elem[0] for elem in bounds])
+    ub = np.array([elem[1] for elem in bounds])
+    x = solve_qp(P, q, G, h, A, b, lb=lb, ub=ub, solver='osqp')
+
+else:
+    var_type = st.radio("Variable type", options=['Continuous', 'Integer'], index=0)
+    integrality = 1 if var_type == 'Integer' else 0
+    res = linprog(c, A_ub=A_ub, b_ub=b_ub, A_eq=A_eq, b_eq=b_eq, bounds=bounds, integrality=integrality)
+    x = res.x
 
 # Show results
 data = x[:(n_letters * n_questions)].reshape(n_questions, n_letters)
