@@ -17,6 +17,8 @@ from src.backend.sessions.create_sessions import SessionCreator
 from src.frontend.plotting.plotting import plot_data
 from src.frontend.tabs import Tab
 
+from src.backend.state_estimation.state_estimator_file_upload import upload_estimated_states
+
 
 class Tab6(Tab):
     brake_pressure_cols = ['sensors_brake_pressure_L' for _ in range(4)]
@@ -99,35 +101,45 @@ class Tab6(Tab):
             independent_updates = st.checkbox(
                 "Independent updates", key=f"{self.name} independent updates", value=False)
             estimator_app = StateEstimatorApp(independent_updates=independent_updates)
-            if st.button("Compute state estimation", key=f"{self.name} compute state estimation button"):
-                with st.spinner("Computing state estimation..."):
-                    sensors_list: list[Sensors] = get_sensors_from_data(data.loc[samples[0]:samples[1]])
-                    estimator_app = StateEstimatorApp(independent_updates=independent_updates)
 
-                    estimations = [np.zeros(SE_param.dim_x) for _ in sensors_list]
-                    estimations_cov = [np.zeros(SE_param.dim_x) for _ in sensors_list]
+            estimation_mode = ['compute', 'from_file']
+            selected_mode = st.radio("Choose the estimation mode", options=estimation_mode, index=0, horizontal=True)
+            if selected_mode == estimation_mode[0]:
+                if st.button("Compute state estimation", key=f"{self.name} compute state estimation button"):
+                    with st.spinner("Computing state estimation..."):
+                        sensors_list: list[Sensors] = get_sensors_from_data(data.loc[samples[0]:samples[1]])
+                        estimator_app = StateEstimatorApp(independent_updates=independent_updates)
 
-                    for i, sensors in stqdm(enumerate(sensors_list), total=len(sensors_list)):
-                        state, cov = estimator_app.run(sensors)
-                        estimations[i] = state
-                        estimations_cov[i] = cov
+                        estimations = [np.zeros(SE_param.dim_x) for _ in sensors_list]
+                        estimations_cov = [np.zeros(SE_param.dim_x) for _ in sensors_list]
 
-                    # Update the data
-                    columns = SE_param.estimated_states_names
-                    data.loc[samples[0]: samples[1], columns] = np.array(estimations)
-                    self.memory['data'] = data.copy()
+                        for i, sensors in stqdm(enumerate(sensors_list), total=len(sensors_list)):
+                            state, cov = estimator_app.run(sensors)
+                            estimations[i] = state
+                            estimations_cov[i] = cov
 
-                    index = data.loc[samples[0]: samples[1]].index
-                    data_cov = pd.DataFrame(estimations_cov, index=index, columns=columns)
-                    self.memory['data_cov'] = data_cov.copy()
-                    st.balloons()
+                        # Update the data
+                        columns = SE_param.estimated_states_names
+                        data.loc[samples[0]: samples[1], columns] = np.array(estimations)
+                        self.memory['data'] = data.copy()
+
+                        index = data.loc[samples[0]: samples[1]].index
+                        data_cov = pd.DataFrame(estimations_cov, index=index, columns=columns)
+                        self.memory['data_cov'] = data_cov.copy()
+                        st.balloons()
+
+            else:
+                columns = ['_time'] + SE_param.estimated_states_names
+                uploaded_data = upload_estimated_states(tab_name=self.name, data=self.memory['data'], columns=columns)
+                self.memory['data'] = uploaded_data.copy()
 
             cols[1].subheader("Estimated - Measured error description")
             w_error_names = [f"w_speed {wheel}" for wheel in VehicleParams.wheel_names]
             fi_error_names = [f"Fi_{wheel}" for wheel in VehicleParams.wheel_names]
             percentiles = [0.01, 0.05, 0.1, 0.9, 0.95, 0.99]
 
-            error_display = cols[1].radio("Raw or description", ["Raw", "Description"], key=f"{self.name} raw or description")
+            error_display = cols[1].radio("Raw or description", ["Raw", "Description"],
+                                          key=f"{self.name} raw or description")
             if error_display == "Raw":
                 w_error = pd.DataFrame(estimator_app.mkf.ukf.error_z_w, columns=w_error_names)
                 fi_error = pd.DataFrame(estimator_app.mkf.ukf.error_z_fi, columns=fi_error_names)

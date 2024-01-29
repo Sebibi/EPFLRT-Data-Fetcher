@@ -54,7 +54,6 @@ data = np.random.random((n_questions, n_letters))
 data = np.zeros((n_questions, n_letters))
 df = pd.DataFrame(data, columns=letters)
 df.index += 1
-df.index.name = 'Question'
 cols = st.columns(2)
 df_target = cols[0].data_editor(df)
 
@@ -133,7 +132,6 @@ for i in range(n_answers):
             data = np.zeros((n_questions, n_letters)).astype(bool)
         df_data = pd.DataFrame(data, columns=letters)
         df_data.index += 1
-        df_data.index.name = 'Question'
 
         df_data = cols[0].data_editor(df_data.T, key=f"answer {i}")
         answer = df_data.T.idxmax(axis=1).tolist()
@@ -166,7 +164,6 @@ else:
 data = x[:(n_letters * n_questions)].reshape(n_questions, n_letters)
 df = pd.DataFrame(data, columns=letters)
 df.index += 1
-df.index.name = 'Question'
 
 cols = st.columns(3)
 with cols[0]:
