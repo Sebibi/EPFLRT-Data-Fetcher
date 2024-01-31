@@ -46,7 +46,7 @@ if __name__ == '__main__':
                                                (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")))
 
         # Enable / Disable SSL verification
-        st.session_state.verify_ssl = st.checkbox("Fetch with SSL", value=True)
+        st.session_state.verify_ssl = st.checkbox("Fetch with SSL", value=False)
 
         # Fetch R2D sessions
         fetch = st.button("Fetch R2D sessions")

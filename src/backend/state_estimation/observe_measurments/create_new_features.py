@@ -7,6 +7,7 @@ from src.backend.state_estimation.kalman_filters.estimation_transformation impor
     estimate_normal_forces, estimate_longitudinal_velocities, estimate_wheel_speeds
 from src.backend.state_estimation.measurments.measurement_transformation import measure_wheel_acceleration, \
     measure_delta_wheel_angle, measure_tire_longitudinal_forces, measure_acc_fsum
+from src.backend.state_estimation.measurments.measurement_transformation.vy_difference import measure_velocities
 
 
 def create_new_features(
@@ -92,4 +93,12 @@ def create_new_features(
             new_data[state_estimation_cols].values)
     ]
 
-    return ws_cols, dws_cols, fl_cols, fl_est_cols, fz_est_cols, ws_est_cols, vl_est_cols, acc_fsum_cols, acc_fsum_est_cols
+    v_adiff = ['vX_acc_diff', 'vY_acc_diff']
+    new_data[v_adiff] = [
+        measure_velocities(long_tire_forces=long_tire_forces, wheel_deltas=wheel_deltas, state=state)
+        for long_tire_forces, wheel_deltas, state in
+        zip(new_data[fl_cols].values, new_data[['delta_FL', 'delta_FR', 'zero', 'zero']].values,
+            new_data[state_estimation_cols].values)
+    ]
+
+    return ws_cols, dws_cols, fl_cols, fl_est_cols, fz_est_cols, ws_est_cols, vl_est_cols, acc_fsum_cols, acc_fsum_est_cols, v_adiff

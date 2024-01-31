@@ -158,13 +158,13 @@ class Tab6(Tab):
                 new_data = data.copy()
                 with st.spinner("Computing new features..."):
                     new_cols = create_new_features(new_data, self.motor_torques_cols, self.brake_pressure_cols)
-                    ws_cols, dws_cols, fl_cols, fl_est_cols, fz_est_cols, ws_est_cols, vl_est_cols, acc_fsum_cols, acc_fsum_est_cols = new_cols
+                    ws_cols, dws_cols, fl_cols, fl_est_cols, fz_est_cols, ws_est_cols, vl_est_cols, acc_fsum_cols, acc_fsum_est_cols, v_adiff = new_cols
 
                 # Plot new features
                 if st.checkbox("Plot new features"):
                     plot_new_features(
                         new_data, self.name, dws_cols, fl_cols, fl_est_cols,
-                        fz_est_cols, ws_cols, ws_est_cols, vl_est_cols
+                        fz_est_cols, ws_cols, ws_est_cols, vl_est_cols, v_adiff
                     )
 
                 if st.checkbox("Plot wheel analysis"):

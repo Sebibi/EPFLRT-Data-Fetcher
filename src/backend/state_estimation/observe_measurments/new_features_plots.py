@@ -6,7 +6,7 @@ import streamlit as st
 
 def plot_new_features(new_data: pd.DataFrame, tab_name: str, wheel_acc_cols: list, long_tire_force_name: list,
                       long_tire_force_est_name_est: list, normal_force_name: list, wheel_speeds_cols_m_s: list,
-                      wheel_speeds_cols_m_s_est: list, vl_cols: list):
+                      wheel_speeds_cols_m_s_est: list, vl_cols: list, v_adiff: list):
     # Plot the data
     with st.expander("Steering deltas"):
         plot_data(
@@ -45,6 +45,12 @@ def plot_new_features(new_data: pd.DataFrame, tab_name: str, wheel_acc_cols: lis
         plot_data(
             new_data, tab_name + "_long_velocities", title='Longitudinal velocities',
             default_columns=[vl_cols[i] for i in [0, 2, 1, 3]] + ['zero', 'sensors_gyroZ'],
+        )
+
+    with st.expander("Velocities from acc difference"):
+        plot_data(
+            new_data, tab_name + "_v_adiff", title='Velocities from acceleration difference',
+            default_columns=[v_adiff[0], 'sensors_vXEst', v_adiff[1], 'sensors_vYEst']
         )
 
 
