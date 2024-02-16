@@ -40,8 +40,6 @@ class VehicleParams:
     kb = 0.18
     kd = 0.17
     ks = 15
-    old_mu_max = 1.67
-    mu_max = 1.67
     wheel_names = ['FL', 'FR', 'RL', 'RR']
 
     # Tire parameters
@@ -50,6 +48,12 @@ class VehicleParams:
     D = 1.67
     E = 0.97
     BCD = B * C * D
+    old_mu_max = 1.67
+
+    # Cornering stiffness
+    kf = B
+    kr = B
+
 
     @classmethod
     def magic_formula(cls, slip_ratio: float | np.ndarray) -> float | np.ndarray:
@@ -71,7 +75,7 @@ class VehicleParams:
 
     @classmethod
     def set_mu_max(cls, mu_max: float):
-        cls.mu_max = mu_max
+        cls.D = mu_max
 
 
 if __name__ == '__main__':

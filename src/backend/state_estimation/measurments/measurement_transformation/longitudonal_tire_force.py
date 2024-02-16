@@ -19,4 +19,11 @@ def measure_tire_longitudinal_forces(torques: np.ndarray, bps: np.ndarray, wheel
     return l_forces
 
 
+def simple_measure_tire_longitudinal_force(torque: float, bp: float) -> float:
+    return (torque - VehicleParams.kb * bp) / VehicleParams.Rw
+
+
+
+
+
 
