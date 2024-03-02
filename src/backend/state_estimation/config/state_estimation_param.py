@@ -107,7 +107,7 @@ def tune_param_input(tab_name: str):
     cols = st.columns(cols_ref)
     cols[0].markdown("### Mu max")
     sub_cols = cols[1].columns(1)
-    values = [VehicleParams.mu_max]
+    values = [VehicleParams.D]
     mu_max = sub_cols[0].number_input("mu max", value=values[0], key=f"{tab_name} mu max", format="%0.3f")
     VehicleParams.set_mu_max(mu_max)
 

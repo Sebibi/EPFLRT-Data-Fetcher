@@ -130,7 +130,7 @@ class UKF_one:
             r = self.wheel_speeds_meas_noise[wheel_id, wheel_id]  # measurement noise
             # Compute the ukf update
             z_est = estimate_wheel_speed(x, steering_deltas, wheel_id)
-            error_z[wheel_id] = z_est - wheel_speeds[wheel_id]
+            error_z[wheel_id] = z_est[0] - wheel_speeds[wheel_id]
             wheel_speed = wheel_speeds[wheel_id]
             self.ukf.compute_process_sigmas(dt=self.dt)  # Recompute the sigma points to reflect the new covariance
             self.ukf.update(z=wheel_speed, hx=estimate_wheel_speed, R=r, **hx_params)
@@ -168,28 +168,22 @@ class UKF_one:
 
 if __name__ == '__main__':
     np.set_printoptions(suppress=True)
-    ukf = UKF_one()
+    ukf = UKF()
+    print(ukf.points)
     x = np.array([0, 0, 0, 0, 0, 0.01, 0.01, 0.01, 0.01], dtype=float)
     P = np.eye(ukf.dim_x)
     steering_deltas = np.array([0, 0, 0, 0])
     wheel_speed_meas = np.array([1, 1, 1, 1])
-    print(ukf.ukf.P.round(4))
+    wheel_acc_meas = np.array([0, 0, 0, 0])
 
-    for i in range(1000):
-        print(x.astype(float).round(4))
-        print(estimate_wheel_speeds(x, steering_deltas).round(1))
-        print()
-        x, P = ukf.update1(x, P, wheel_speed_meas, steering_deltas)
-        print(P.round(1))
-
-    x = np.array([0, 0, 0, 0, 0, 0.01, 0.01, 0.01, 0.01], dtype=float)
-    torques = np.array([0, 0, 0, 0])
+    torques = np.array([1, 1, 1, 1]) * 200
     bp = np.array([0, 0, 0, 0])
-    wheel_speeds = np.array([0, 0, 0, 0])
-    wheel_acc = np.array([0, 0, 0, 0])
 
-    for i in range(1000):
+    for i in range(20):
+        x, P = ukf.update2(x, P, torques, bp, wheel_speed_meas, wheel_acc_meas)
         print(x.astype(float).round(4))
-        print(estimate_longitudinal_tire_forces(x).round(1))
+        print(estimate_longitudinal_tire_forces(x))
+        print(ukf.ukf.z)
         print()
-        x, P = ukf.update2(x, P, torques, bp, wheel_speeds, wheel_acc)
+
+
