@@ -155,7 +155,7 @@ class UKF_one:
         error_z = np.zeros(4)
         for wheel_id in range(4):
             error_z[wheel_id] = 0
-            if x[5 + wheel_id] < 0.05: # If the slip ratio is too high, do not update the filter
+            if -0.05 < x[5 + wheel_id] < 0.05: # If the slip ratio is too high, do not update the filter
                 # Compute the ukf update
                 z_est = estimate_longitudinal_tire_force(x, wheel_id)
                 error_z[wheel_id] = z_est - z[wheel_id]
@@ -170,20 +170,28 @@ if __name__ == '__main__':
     np.set_printoptions(suppress=True)
     ukf = UKF()
     print(ukf.points)
-    x = np.array([0, 0, 0, 0, 0, 0.01, 0.01, 0.01, 0.01], dtype=float)
+    x = np.array([3, 0, 1, 0, 0, 0.1, 0.1, 0.1, 0.1], dtype=float)
     P = np.eye(ukf.dim_x)
     steering_deltas = np.array([0, 0, 0, 0])
-    wheel_speed_meas = np.array([1, 1, 1, 1])
-    wheel_acc_meas = np.array([0, 0, 0, 0])
+    wheel_speed_meas = np.array([10, 10, 10, 10])
+    wheel_acc_meas = np.array([10, 10, 10, 10])
 
     torques = np.array([1, 1, 1, 1]) * 200
     bp = np.array([0, 0, 0, 0])
 
-    for i in range(20):
-        x, P = ukf.update2(x, P, torques, bp, wheel_speed_meas, wheel_acc_meas)
+    for i in range(1):
+        x, P = ukf.update1(x, P, wheel_speed_meas, steering_deltas)
         print(x.astype(float).round(4))
-        print(estimate_longitudinal_tire_forces(x))
+        print(ukf.ukf.S)
+        print(ukf.ukf.P)
         print(ukf.ukf.z)
         print()
+
+    # for i in range(1):
+    #     x, P = ukf.update2(x, P, torques, bp, wheel_speed_meas, wheel_acc_meas)
+    #     print(x.astype(float).round(4))
+    #     print(estimate_longitudinal_tire_forces(x))
+    #     print(ukf.ukf.z)
+    #     print()
 
 
