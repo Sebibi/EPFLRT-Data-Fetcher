@@ -38,7 +38,7 @@ class VehicleParams:
     Iw = 0.3
     Rw = 0.202
     kb = 0.18
-    kd = 0 # 0.17
+    kd = 0.17
     ks = 0# 15
     wheel_names = ['FL', 'FR', 'RL', 'RR']
 
