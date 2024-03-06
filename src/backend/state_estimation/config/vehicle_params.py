@@ -39,13 +39,13 @@ class VehicleParams:
     Rw = 0.202
     kb = 0.18
     kd = 0.17
-    ks = 15
+    ks = 0# 15
     wheel_names = ['FL', 'FR', 'RL', 'RR']
 
     # Tire parameters
     B = 11.15
     C = 1.98
-    D = 1.67
+    D = 1.4
     E = 0.97
     BCD = B * C * D
     old_mu_max = 1.67
