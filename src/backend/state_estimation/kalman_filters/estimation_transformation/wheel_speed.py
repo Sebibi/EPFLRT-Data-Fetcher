@@ -12,7 +12,7 @@ def estimate_wheel_speed(x: np.array, steering_deltas: np.array, wheel_id: int) 
     #     wheel_speed = (vl / VehicleParams.Rw) * (1 + slip_ratio)
     # else:
     #     wheel_speed = vl / (VehicleParams.Rw * (1 - slip_ratio))
-    wheel_speed = (vl / VehicleParams.Rw) * (1 + slip_ratio)
+    wheel_speed = (vl / VehicleParams.Rw) / (1 - slip_ratio)
     return np.array([wheel_speed])
 
 
