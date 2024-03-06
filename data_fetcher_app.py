@@ -4,7 +4,7 @@ from typing import List
 import pandas as pd
 import streamlit as st
 
-from config.config import Config
+from config.config import Config, ConfigLive
 from src.backend.api_call.influxdb_api import InfluxDbFetcher
 from src.backend.sessions.create_sessions import SessionCreator
 from src.frontend.tabs import create_tabs, Tab
@@ -47,6 +47,9 @@ if __name__ == '__main__':
 
         # Enable / Disable SSL verification
         st.session_state.verify_ssl = st.checkbox("Fetch with SSL", value=False)
+        if st.checkbox("Fetch Live Data", value=False):
+            st.session_state.fetcher = InfluxDbFetcher(token=ConfigLive.token, org=ConfigLive.org, url=ConfigLive.url)
+            st.session_state.session_creator = SessionCreator(fetcher=st.session_state.fetcher)
 
         # Fetch R2D sessions
         fetch = st.button("Fetch R2D sessions")

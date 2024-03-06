@@ -4,4 +4,10 @@ class Config:
     url = "https://epfl-rt-data-logging.epfl.ch:8443"
 
 
+class ConfigLive:
+    token = ""
+    org = ""
+    url = "https://192.168.1.10:8086"
+
+
 

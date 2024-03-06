@@ -15,3 +15,21 @@ def estimate_longitudinal_tire_forces(x: np.array) -> np.ndarray:
     normal_forces = estimate_normal_forces(x)
     mu = np.array([VehicleParams.magic_formula(s) for s in x[5:9]])
     return normal_forces * mu
+
+
+if __name__ == '__main__':
+    slips = np.linspace(-1.5, 1.5, 100)
+
+    forces = []
+    for s in slips:
+        x = np.array([0, 0, 0, 0, 0, s, 0, 0, 0])
+        f = estimate_longitudinal_tire_force(x, 0)
+        forces.append(f)
+        print(x)
+        print(f)
+
+    # plot the forces
+    import matplotlib.pyplot as plt
+    plt.plot(slips, [f[0] for f in forces])
+    plt.plot(slips, slips * 1000, 'ro')
+    plt.show()
