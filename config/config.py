@@ -5,8 +5,8 @@ class Config:
 
 
 class ConfigLive:
-    token = ""
-    org = ""
+    token = "O8lM3ToG3BmtgYqK8TZF_Bu6XxYvImWX2R_nBOAXvE-u0Gpgs2fkViKviIG5hRZmjgHqX4IJhNNb399bbEE5jg=="
+    org = "racingteam"
     url = "https://192.168.1.10:8086"
 
 
