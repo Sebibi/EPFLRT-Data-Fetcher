@@ -1,3 +1,5 @@
+import copy
+
 from src.backend.state_estimation.config.vehicle_params import VehicleParams
 import numpy as np
 
@@ -11,6 +13,7 @@ class MuEstimator:
 
     def __init__(self, mu_init, init_cov, measurement_noise, steering_noise) -> None:
         self.mu_init = mu_init
+        self.mu = copy.deepcopy(mu_init)
         self.measurement_noise = measurement_noise
         self.steering_noise = steering_noise
 
@@ -19,9 +22,13 @@ class MuEstimator:
         self.H = np.ones((4, 1)) / 4
 
     def get_mu(self) -> (float, float):
-        return self.mu_init + self.mu_error[0], self.mu_error_cov[0, 0]
+        self.mu = self.mu_init + self.mu_error[0]
+        mu_var = self.mu_error_cov[0, 0]
+        return self.mu, mu_var
 
     def update_mu(self, x: np.array, torques: np.array, brakes: np.array, wheel_speeds: np.array, steering: float) -> np.array:
+        VehicleParams.D = self.mu
+
         fzs_est = estimate_normal_forces(x)
         fls_est = estimate_longitudinal_tire_forces(x)
         wheel_acc = measure_wheel_acceleration(wheel_speeds)
@@ -46,7 +53,7 @@ if __name__ == '__main__':
 
     estimator = MuEstimator(0.8, 0.02, 1, 0.1)
     x = np.array([2, 0, 0, 0, 0, 0.1, 0.1, 0.1, 0.1])
-    torques = np.array([10, 10, 10, 10]) * 21.5
+    torques = np.array([10, 10, 10, 10]) * 10
     brakes = np.array([0, 0, 0, 0])
     wheel_speeds = np.array([10, 10, 10, 10])
     steering = 0

@@ -45,7 +45,7 @@ class VehicleParams:
     # Tire parameters
     B = 11.15
     C = 1.98
-    D = 1.4
+    D = 1.67
     E = 0.97
     BCD = B * C * D
     old_mu_max = 1.67
