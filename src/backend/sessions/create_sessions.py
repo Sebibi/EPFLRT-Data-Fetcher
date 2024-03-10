@@ -19,7 +19,7 @@ class SessionCreator:
         start_date = date_to_influx(start_date)
         end_date = date_to_influx(end_date)
 
-        query_r2d = f"""from(bucket:"ariane") 
+        query_r2d = f"""from(bucket:"{self.fetcher.bucket_name}") 
         |> range(start: {start_date}, stop: {end_date})
         |> filter(fn: (r) => r["_measurement"] == "MISC")
         |> filter(fn: (r) => r["_field"] == "FSM")
@@ -42,8 +42,8 @@ class SessionCreator:
             return dfs
 
     def fetch_data(self, datetime_range: str, verify_ssl: bool) -> pd.DataFrame:
-        query = """from(bucket:"ariane")
-        |> {}
+        query = f"""from(bucket:"{self.fetcher.bucket_name}")
+        |> {{}}
         |> pivot(rowKey:["_time"], columnKey: ["_measurement", "_field"], valueColumn: "_value")
         |> drop(columns: ["_start", "_stop"])
         |> yield(name: "mean")

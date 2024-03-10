@@ -1,15 +1,17 @@
 import pandas as pd
 from influxdb_client import InfluxDBClient
 
+from config.config import Config
 from src.backend.api_call.base import Fetcher
 
 
 class InfluxDbFetcher(Fetcher):
 
-    def __init__(self, token, org, url):
-        self.token = token
-        self.org = org
-        self.url = url
+    def __init__(self, config: Config):
+        self.token = config.token
+        self.org = config.org
+        self.url = config.url
+        self.bucket_name = config.bucket_name
 
     def fetch_data(self, query: str, verify_sll: bool) -> pd.DataFrame:
         with InfluxDBClient(url=self.url, token=self.token, org=self.org, verify_ssl=verify_sll) as client:

@@ -11,5 +11,5 @@ networkx==3.0
 scipy==1.11.3
 stqdm==0.0.5
 
-qpsolvers==4.3.0
-osqp==0.6.3
+# qpsolvers==4.3.0
+# osqp==0.6.3

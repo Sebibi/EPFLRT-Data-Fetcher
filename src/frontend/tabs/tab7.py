@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 from src.backend.sessions.create_sessions import SessionCreator
 from src.backend.state_estimation.measurments.measurement_transformation import measure_delta_wheel_angle
 from src.backend.torque_vectoring.config_tv import TVParams
-from src.frontend.plotting.plotting import plot_data
+from src.frontend.plotting.plotting import plot_data, plot_data_comparaison
 from src.frontend.tabs.base import Tab
 
 from src.backend.torque_vectoring.tv_reference import tv_reference, tv_references
@@ -56,6 +56,14 @@ class Tab7(Tab):
                 tab_name=self.name + "_tv_reference",
                 default_columns=["sensors_gyroZ", "TV_ref"] + names[:2],
                 title="TV reference",
+            )
+
+            plot_data_comparaison(
+                data=self.memory['data'],
+                tab_name=self.name + "_tv_reference_comparison",
+                default_columns=["sensors_gyroZ", "TV_ref"],
+                title="TV reference_comparison",
+                comparison_names=["Oversteer", "Understeer"]
             )
 
 
