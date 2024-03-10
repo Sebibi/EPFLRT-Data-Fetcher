@@ -46,7 +46,7 @@ if __name__ == '__main__':
                                                (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")))
 
         # Enable / Disable SSL verification
-        st.session_state.verify_ssl = st.checkbox("Fetch with SSL", value=False)
+        st.session_state.verify_ssl = st.checkbox("Fetch with SSL", value=True)
         if st.checkbox("Fetch Live Data", value=False):
             st.session_state.fetcher = InfluxDbFetcher(config=ConfigLive)
             st.session_state.session_creator = SessionCreator(fetcher=st.session_state.fetcher)
