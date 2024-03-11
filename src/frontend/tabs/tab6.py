@@ -93,6 +93,27 @@ class Tab6(Tab):
                     default_columns=['sensors_vXEst', 'sensors_vYEst', 'sensors_aXEst', 'sensors_aYEst'],
                 )
 
+            # Download the state estimation data
+            st.markdown("### Download the state estimation data")
+            cols = st.columns([2, 1, 4])
+            file_name = cols[2].text_input("File name", value="state_estimation_data.csv", label_visibility="collapsed")
+            header = cols[1].checkbox("Add header", value=False, key=f"{self.name} add header")
+            cols[0].download_button(
+                label="Download the state estimation data",
+                data=data[SE_param.estimated_states_names].to_csv(header=False),
+                file_name=file_name,
+                mime="text/csv"
+            )
+
+            # Send data to Other Tabs
+            with st.expander("Send data to another TAB"):
+                other_tabs = [f'tab{i}' for i in range(1, 8) if i != 6]
+                for i, other_tab in enumerate(other_tabs):
+                    cols = st.columns([1, 3])
+                    if cols[0].button(f"Send data to {other_tab}", key=f"{self.name} send data to {other_tab} button"):
+                        st.session_state[other_tab]['data'] = self.memory['data'].copy()
+                        cols[1].success(f"Data sent to {other_tab}")
+
             cols = st.columns(2)
             cols[0].subheader("Data description")
             cols[0].dataframe(data[column_names].describe().T)
