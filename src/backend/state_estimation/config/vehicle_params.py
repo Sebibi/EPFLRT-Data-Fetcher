@@ -51,8 +51,8 @@ class VehicleParams:
     old_mu_max = 1.67
 
     # Cornering stiffness
-    kf = B
-    kr = B
+    kf = 1.0
+    kr = 1.0
 
 
     @classmethod

@@ -49,8 +49,10 @@ class Tab9(Tab):
             )
 
             ekf_slip_angle = EKF_slip_angle()
+            ekf_slip_angle.x = np.array([0.00001, 0.000001, 1]).reshape(3, 1)
 
             steering = data[self.steering_angle_cols].values
+            steering = np.deg2rad(steering)
             axs = data['sensors_aXEst'].values
             ays = data['sensors_aYEst'].values
 
