@@ -21,8 +21,8 @@ class EKF_slip_angle:
         self.Q = np.diag([0.1, 0.1, 0.1])
         self.R = np.array([[0.1]]) * self.dt
 
-        self.x = np.zeros(self.dim_x)
-        self.P = np.eye(self.dim_x) * 1e-6
+        self.x = np.array([0, 0, 0.000000001]).reshape(3, 1)
+        self.P = np.eye(self.dim_x)
 
     def f(self, x: np.ndarray, steering_angle: float, ax: float) -> np.ndarray:
         """
@@ -51,7 +51,7 @@ class EKF_slip_angle:
         :param steering_angle: (rad)
         :param state: [yaw rate, slip angle, vx]
         """
-        yr, beta, vx = self.x
+        yr, beta, vx = self.x[0, 0], self.x[1, 0], self.x[2, 0]
 
         F = np.array([
             [(lf ** 2 * kf + lr ** 2 * kr) / (Iz * vx),
@@ -67,7 +67,8 @@ class EKF_slip_angle:
             [beta * vx, yr * vx, beta * yr]
         ])
 
-        phi = expm(F * self.dt)
+        # phi = expm(F * self.dt)
+        phi = np.eye(self.dim_x) + F * self.dt
 
         self.x += self.f(self.x, steering_angle, ax) * self.dt
         self.P = phi @ self.P @ phi.T + self.Q
@@ -78,7 +79,7 @@ class EKF_slip_angle:
         Predict the state with the EKF
         :param steering_angle: (rad)
         """
-        yr, beta, vx = self.x
+        yr, beta, vx = self.x[0, 0], self.x[1, 0], self.x[2, 0]
         return ((lf * kf - lr * kr) * yr / (m * vx)
                 + (kf + kr) / m
                 - kf * steering_angle / m)
@@ -88,13 +89,13 @@ class EKF_slip_angle:
         Update the state with the EKF
         :param ay: lateral acceleration
         """
-        yr, beta, vx = self.x
-        H = np.array([(lf * kf - lr * kr) / (m * vx), (kf + kr) / m, -(kf * lf - kr * lr) * yr / (m * vx ** 2)])
+        yr, beta, vx = self.x[0, 0], self.x[1, 0], self.x[2, 0]
+        H = np.array([(lf * kf - lr * kr) / (m * vx), (kf + kr) / m, -(kf * lf - kr * lr) * yr / (m * vx ** 2)]).reshape(1, 3)
 
         S = H @ self.P @ H.T + self.R
-        K = self.P @ H.T @ np.linalg.inv(S)
+        K = self.P @ H.T * np.linalg.inv(S)
 
-        self.x = self.x + K @ (ay - self.h(steering_angle))
+        self.x = self.x + K * (ay - self.h(steering_angle))
         self.P = (np.eye(self.dim_x) - K @ H) @ self.P
         return self.x, self.P
 
@@ -108,3 +109,19 @@ class EKF_slip_angle:
         self.predict(steering_angle, ax)
         self.update(steering_angle, ay)
         return self.x, self.P
+
+
+
+if __name__ == '__main__':
+    ekf_slip_angle = EKF_slip_angle()
+
+    steering = 0.1
+    axs = 0.1
+    ays = 0.1
+
+    iter_n = 10
+    all_states = np.zeros((iter_n, 3))
+    for i in range(iter_n):
+        state, cov = ekf_slip_angle.predict_update(steering, axs, ays)
+        all_states[i] = state.reshape(3)
+    print(all_states)

@@ -4,8 +4,10 @@ from src.backend.state_estimation.measurments.measurement_transformation import 
 from src.backend.torque_vectoring.config_tv import TVParams
 def tv_reference(vx_est: float, steering_wheel: float) -> float:
     delta_wheels = measure_delta_wheel_angle(steering_wheel)
-    delta_wheel_mean = np.mean(delta_wheels)
-    yaw_ref = vx_est/(TVParams.wheel_base + TVParams.K_understeer*TVParams.wheel_base*vx_est**2) * delta_wheel_mean
+    delta_wheel_mean = np.mean(delta_wheels) * 2 # Mean between FL and FR
+
+    l = TVParams.wheel_base
+    yaw_ref = vx_est/(l + TVParams.K_understeer*l*vx_est**2) * delta_wheel_mean
     return yaw_ref
 
 

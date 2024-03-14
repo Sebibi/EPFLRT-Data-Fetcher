@@ -12,18 +12,20 @@ from src.frontend.tabs.base import Tab
 
 from src.backend.torque_vectoring.tv_reference import tv_reference, tv_references
 
+from src.backend.state_estimation.slip_angle_estimation.slip_angle_estimator import EKF_slip_angle
 
-class Tab8(Tab):
+
+class Tab9(Tab):
     brake_pressure_cols = ['sensors_brake_pressure_L' for _ in range(4)]
     motor_torques_cols = [f'VSI_TrqFeedback_{wheel}' for wheel in VehicleParams.wheel_names]
     motor_speeds_cols = [f'VSI_Motor_Speed_{wheel}' for wheel in VehicleParams.wheel_names]
     steering_angle_cols = 'sensors_steering_angle'
+    state_estimation_cols = ['']
 
     def __init__(self):
-        super().__init__("tab8", "Mu Estimation")
+        super().__init__("tab9", "Slip Angle Estimation")
         if "data" not in self.memory:
             self.memory['data'] = pd.DataFrame()
-
 
 
     def build(self, session_creator: SessionCreator) -> bool:
@@ -41,36 +43,49 @@ class Tab8(Tab):
 
             plot_data(
                 data=data,
-                tab_name=self.name + "_mu_estimation",
-                default_columns=["sensors_gyroZ"],
-                title="Mu estimation",
+                tab_name=self.name + "state_estimation",
+                default_columns=SE_param.estimated_states_names,
+                title="Slip Angle estimation",
             )
 
-            mu_estimator = MuEstimator(mu_init=1.67, init_cov=0.02, measurement_noise=1, steering_noise=0.0)
+            ekf_slip_angle = EKF_slip_angle()
 
-            torques = data[self.motor_torques_cols].values
-            brakes = data[self.brake_pressure_cols].values
-            wheel_speeds = data[self.motor_speeds_cols].values
             steering = data[self.steering_angle_cols].values
+            axs = data['sensors_aXEst'].values
+            ays = data['sensors_aYEst'].values
 
-            states = data[SE_param.estimated_states_names].values
-
-            mu = np.zeros(len(data))
-            mu_var = np.zeros(len(data))
+            all_states = np.zeros((len(data), 3))
             for i in range(len(data)):
-                mu[i], mu_var[i] = mu_estimator.update_mu(x=states[i], torques=torques[i], brakes=brakes[i], wheel_speeds=wheel_speeds[i], steering=steering[i])
-                print(mu[i], mu_var[i])
+                state, cov = ekf_slip_angle.predict_update(steering[i], axs[i], ays[i])
+                all_states[i] = state.reshape(3)
 
+            data['beta_est'] = all_states[:, 1]
+            data['gyroZ_est'] = all_states[:, 0]
+            data['vX_est'] = all_states[:, 2]
 
-            data['mu'] = mu
-            data['mu_var'] = mu_var
+            st.dataframe(data[['beta_est', 'gyroZ_est', 'vX_est']])
+
+            plot_data_comparaison(
+                data=data,
+                tab_name=self.name + "yaw rate estimation",
+                default_columns=['sensors_gyroZ', 'gyroZ_est'],
+                title="yaw rate estimation",
+            )
 
             plot_data(
                 data=data,
-                tab_name=self.name + "_mu_estimation2",
-                default_columns=["mu", "mu_var"],
-                title="Mu estimation2",
+                tab_name=self.name + "beta estimation",
+                default_columns=["beta_est"],
+                title="beta estimation",
             )
+
+
+
+
+
+
+
+
 
 
 

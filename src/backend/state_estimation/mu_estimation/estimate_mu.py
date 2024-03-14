@@ -24,6 +24,11 @@ class MuEstimator:
     def update_mu(self, x: np.array, torques: np.array, brakes: np.array, wheel_speeds: np.array, steering: float) -> (float, float):
         fzs_est = estimate_normal_forces(x)
         fls_est = estimate_longitudinal_tire_forces(x)
+
+        # Use the current mu:
+        scale = self.mu / VehicleParams.D
+        fls_est = fls_est * scale
+
         wheel_acc = measure_wheel_acceleration(wheel_speeds)
         fls_meas = measure_tire_longitudinal_forces(torques, brakes, wheel_speeds, wheel_acc)
 
@@ -40,10 +45,9 @@ class MuEstimator:
         self.mu_error = self.mu_error + kalman_gain @ error_obs
         self.mu_error_cov = (1 - kalman_gain @ self.H) @ self.mu_error_cov
 
-        # Update mu
+        # Update internal mu
         self.mu = self.mu_init + self.mu_error[0]
         mu_var = self.mu_error_cov[0, 0]
-        VehicleParams.D = self.mu
         return self.mu, mu_var
 
 

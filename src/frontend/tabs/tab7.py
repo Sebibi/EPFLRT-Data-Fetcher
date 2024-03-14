@@ -4,6 +4,7 @@ import streamlit as st
 from matplotlib import pyplot as plt
 
 from src.backend.sessions.create_sessions import SessionCreator
+from src.backend.state_estimation.config.state_estimation_param import SE_param
 from src.backend.state_estimation.measurments.measurement_transformation import measure_delta_wheel_angle
 from src.backend.torque_vectoring.config_tv import TVParams
 from src.frontend.plotting.plotting import plot_data, plot_data_comparaison
@@ -45,29 +46,57 @@ class Tab7(Tab):
 
             v = self.memory['data'][v_selected]
             tv_ref = tv_references(v, steer_angle)
-            self.memory['data']['TV_ref'] = tv_ref
+
+            # Rename some columns
+            self.memory['data']['yaw_rate_ref'] = tv_ref
+            self.memory['data']['yaw_rate'] = self.memory['data']['sensors_gyroZ']
+            self.memory['data']['steering_angle_rad'] = self.memory['data']['sensors_steering_angle'] * np.pi / 180
 
             delta_wheels = np.array([measure_delta_wheel_angle(s) for s in steer_angle])
             names = ["delta_wheel_FL", "delta_wheel_FR", "delta_wheel_RL", "delta_wheel_RR"]
             self.memory['data'][names] = delta_wheels
 
-            plot_data(
-                data=self.memory['data'],
-                tab_name=self.name + "_tv_reference",
-                default_columns=["sensors_gyroZ", "TV_ref"] + names[:2],
-                title="TV reference",
-            )
+            mean_delta_wheels = np.mean(delta_wheels, axis=1)
+            self.memory['data']['mean_delta_wheel'] = mean_delta_wheels * 2
+
+            # Compute acceleration nrom
+            self.memory['data']['a_norm'] = np.sqrt(self.memory['data']['sensors_aXEst']**2 + self.memory['data']['sensors_aYEst']**2)
 
             plot_data_comparaison(
                 data=self.memory['data'],
                 tab_name=self.name + "_tv_reference_comparison",
-                default_columns=["sensors_gyroZ", "TV_ref"],
-                title="TV reference_comparison",
-                comparison_names=["Oversteer", "Understeer"]
+                default_columns=["yaw_rate", "yaw_rate_ref"],
+                title="TV reference tracking",
+                comparison_names=["Oversteer", "Understeer"],
+                extra_columns=['steering_angle_rad'],
+            )
+
+            plot_data(
+                data=self.memory['data'],
+                tab_name=self.name + "_acceleration",
+                default_columns=["a_norm", "sensors_aXEst", "sensors_aYEst"],
+                title="Acceleration",
             )
 
 
 
-            # st.dataframe(self.memory['data'][['sensors_vXEst', 'sensors_steering_angle', 'sensors_gyroZ', 'sensors_Best_Vx'] + names[:2]])
+            plot_data(
+                data=self.memory['data'],
+                tab_name=self.name + "_steering",
+                default_columns=["yaw_rate", "yaw_rate_ref"] + names[:2],
+                title="Steering action",
+            )
+
+            plot_data(
+                data=self.memory['data'],
+                tab_name=self.name + "_session_viz",
+                default_columns=SE_param.estimated_states_names[:4],
+                title="Session visualization",
+            )
+
+
+
+
+
 
 

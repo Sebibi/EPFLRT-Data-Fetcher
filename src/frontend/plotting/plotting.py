@@ -40,7 +40,8 @@ def plot_data(
 def plot_data_comparaison(
         data: pd.DataFrame, tab_name: str, title: str = "Sensors",
         default_columns: list = None, fig_ax: Tuple[plt.Figure, plt.Axes] = None,
-        comparison_names: List[str] = ["positive", "negative"]
+        comparison_names: List[str] = ["positive", "negative"],
+        extra_columns: List[str] = [],
 ) -> Tuple[List[str], List[str]]:
 
     columns_to_plot = default_columns
@@ -51,7 +52,8 @@ def plot_data_comparaison(
         value=[data.index[0], data.index[-1]], format_func=lambda x: f"{x:.2f}",
         key=f"{tab_name} samples to plot",
     )
-    plot_data = data[columns_to_plot].loc[samples_to_plot[0]:samples_to_plot[1]]
+    plot_data = data[columns_to_plot + extra_columns].loc[samples_to_plot[0]:samples_to_plot[1]]
+
 
     cols = st.columns(2)
     fig, ax = plt.subplots(figsize=(10, 5)) if fig_ax is None else fig_ax
@@ -59,6 +61,7 @@ def plot_data_comparaison(
     rolled_plot_data = plot_data.rolling(window=window_size).mean()
 
     legend = cols[0].checkbox("Show legend", value=True, key=f"{tab_name} show legend")
+    extra = cols[1].checkbox("Show extra columns", value=True, key=f"{tab_name} show extra columns")
 
     time = rolled_plot_data.index
     series1 = rolled_plot_data[columns_to_plot[0]]
@@ -68,6 +71,10 @@ def plot_data_comparaison(
     ax.plot(time, series2, label=columns_to_plot[1], color='black')
     ax.fill_between(time, series1, series2, where=(np.abs(series1) > np.abs(series2)), facecolor='green', alpha=0.3, interpolate=True, label=comparison_names[0])
     ax.fill_between(time, series1, series2, where=(np.abs(series1) < np.abs(series2)), facecolor='red', alpha=0.3, interpolate=True, label=comparison_names[1])
+
+    if extra:
+        for c in extra_columns:
+            ax.plot(time, rolled_plot_data[c], label=c)
 
     # Compute performance metrics and display them
     mse = ((series1 - series2) ** 2).mean()

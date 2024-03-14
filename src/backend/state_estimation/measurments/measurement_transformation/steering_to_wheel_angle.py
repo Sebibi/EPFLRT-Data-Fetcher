@@ -32,7 +32,7 @@ def measure_delta_wheel_angle(steering_angle: float) -> np.ndarray:
 
 
 if __name__ == '__main__':
-    steering_angles = np.linspace(-120, 120, 100)
+    steering_angles = np.linspace(-80, 80, 100)
     delta_wheel_angles = np.array([measure_delta_wheel_angle_old(steering_angle) for steering_angle in steering_angles])
 
     delta_wheel_angles = np.rad2deg(delta_wheel_angles)
