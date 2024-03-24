@@ -27,10 +27,11 @@ class ConfigLive(Config):
 
 
 class FSM:
+    error = "Error"
     init = "Init"
-    ts_on = "TS On"
     ts_off = "TS off"
-    r2d = "R2D"
     pre_charge = "PreCharge"
+    ts_on = "TS On"
     amk_start = "AMK Start"
-    all_states = [init, ts_on, ts_off, r2d, pre_charge, amk_start]
+    r2d = "R2D"
+    all_states = [error, init, ts_off, pre_charge, ts_on, amk_start, r2d]
