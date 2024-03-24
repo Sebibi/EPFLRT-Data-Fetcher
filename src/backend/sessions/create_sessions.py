@@ -6,7 +6,10 @@ import streamlit as st
 import urllib3
 
 from src.backend.api_call.base import Fetcher
+from src.backend.api_call.influxdb_api import InfluxDbFetcher
 from src.utils import date_to_influx, timestamp_to_datetime_range
+
+from config.config import FSM, ConfigLive, ConfigLogging
 
 
 class SessionCreator:
@@ -14,8 +17,12 @@ class SessionCreator:
     def __init__(self, fetcher: Fetcher):
         self.fetcher = fetcher
 
-    def fetch_r2d_session(self, start_date: pd.Timestamp, end_date: pd.Timestamp, verify_ssl: bool) -> List[
+    def fetch_r2d_session(self, start_date: pd.Timestamp, end_date: pd.Timestamp, verify_ssl: bool, fsm_value=None) -> List[
         pd.DataFrame]:
+
+        if fsm_value is None:
+            fsm_value = FSM.r2d
+
         start_date = date_to_influx(start_date)
         end_date = date_to_influx(end_date)
 
@@ -23,7 +30,7 @@ class SessionCreator:
         |> range(start: {start_date}, stop: {end_date})
         |> filter(fn: (r) => r["_measurement"] == "MISC")
         |> filter(fn: (r) => r["_field"] == "FSM")
-        |> filter(fn: (r) => r["_value"] == "R2D")
+        |> filter(fn: (r) => r["_value"] == "{fsm_value}")
         |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
         |> drop(columns: ["_start", "_stop"])
         |> yield(name: "max")
@@ -101,3 +108,88 @@ class SessionCreator:
             format_func=lambda i: f"{i} - Duration ({dfs_elapsed_time[i]}) : " + dfs_options[i]
         )
         return [dfs_options[i] for i in session_indexes]
+
+
+
+    def fetch_fsm(self, start_date: pd.Timestamp, end_date: pd.Timestamp, verify_ssl: bool) -> pd.DataFrame:
+        start_date = date_to_influx(start_date)
+        end_date = date_to_influx(end_date)
+
+        query_r2d = f"""from(bucket:"{self.fetcher.bucket_name}") 
+        |> range(start: {start_date}, stop: {end_date})
+        |> filter(fn: (r) => r["_measurement"] == "MISC")
+        |> filter(fn: (r) => r["_field"] == "FSM")
+        |> pivot(rowKey:["_time"], columnKey: ["_field"], valueColumn: "_value")
+        |> drop(columns: ["_start", "_stop", "_measurement"])
+        |> yield(name: "max")
+        """
+
+        with st.spinner("Fetching r2d sessions from InfluxDB..."):
+            df = self.fetcher.fetch_data(query=query_r2d, verify_sll=verify_ssl)
+            df = df['FSM']
+
+            # Group by continuous values and aggreate timestamps
+            df = df.groupby((df != df.shift()).cumsum())
+            df = df.aggregate(lambda x: (x.iloc[0], (x.index[-1] - x.index[0]).total_seconds(), x.index[0], x.index[-1]))
+            df = df.tolist()
+
+            # Convert to DataFrame
+            df = pd.DataFrame(df, columns=['FSM', 'duration(s)', 'start', 'end'])
+        return df
+
+
+    def fetch_data2(self, start_date: pd.Timestamp, end_date: pd.Timestamp, verify_ssl: bool) -> pd.DataFrame:
+        start_date = date_to_influx(start_date)
+        end_date = date_to_influx(end_date)
+
+        query = f"""from(bucket:"{self.fetcher.bucket_name}") 
+        |> range(start: {start_date}, stop: {end_date})
+        |> pivot(rowKey:["_time"], columnKey: ["_measurement", "_field"], valueColumn: "_value")
+        |> drop(columns: ["_start", "_stop"])
+        |> yield(name: "mean")
+        """
+
+        with st.spinner("Fetching session data from InfluxDB..."):
+            try:
+                df = self.fetcher.fetch_data(query, verify_sll=verify_ssl)
+            except urllib3.exceptions.ReadTimeoutError as e:
+                st.warning("The connection to the database timed out. Tyring again with divide and conquer strategy...")
+
+                # Split the datetime range in two
+                datetime_range = timestamp_to_datetime_range(start_date, end_date)
+                start = pd.to_datetime(datetime_range[0].split()[1])
+                end = pd.to_datetime(datetime_range[1].split()[1][:-1])
+                mid = start + (end - start) / 2
+
+                # Fetch the data into 2 steps
+                first_datetime_range = timestamp_to_datetime_range(start, mid)
+                second_datetime_range = timestamp_to_datetime_range(mid, end)
+                df1 = self.fetch_data(first_datetime_range, verify_ssl)
+                df2 = self.fetch_data(second_datetime_range, verify_ssl)
+
+                # Merge the data
+                df = pd.concat([df1, df2], ignore_index=True)
+                df.index = df1.index.tolist() + df2.index.tolist()
+                df.index = pd.to_datetime(df.index)
+
+                st.success("The data has been fetched in two steps and merged.")
+            df.index = (df.index - df.index[0]).total_seconds().round(3)
+            return df
+
+
+
+if __name__ == '__main__':
+
+    fetcher = InfluxDbFetcher(ConfigLogging)
+    session_creator = SessionCreator(fetcher)
+    start_date = pd.Timestamp("2023-11-04T10:04:18Z")
+    end_date = pd.Timestamp("2023-11-04T10:09:57Z")
+    verify_ssl = False
+    res = session_creator.fetch_fsm(start_date, end_date, verify_ssl)
+    # print(res.apply(lambda x: {'val': x[0], "duration": (x.index[-1] - x.index[0]).total_seconds()}))
+    print(res)
+
+
+
+
+

@@ -11,6 +11,8 @@ from src.frontend.tabs.tab7 import Tab7
 from src.frontend.tabs.tab8 import Tab8
 from src.frontend.tabs.tab9 import Tab9
 
+from src.frontend.tabs.fsm_state_tab import FSMStateTab
+
 
 
 

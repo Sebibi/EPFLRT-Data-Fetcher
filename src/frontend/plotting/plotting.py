@@ -29,6 +29,7 @@ def plot_data(
     rolled_plot_data = plot_data.rolling(window=window_size).mean()
     legend = cols[0].checkbox("Show legend", value=True, key=f"{tab_name} show legend")
     rolled_plot_data.plot(ax=ax, subplots=cols[0].checkbox("Subplots", value=False, key=f"{tab_name} subplots"), legend=legend)
+    plt.tight_layout()
     if legend:
         ax.legend()
     ax.set_title(title)

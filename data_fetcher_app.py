@@ -4,10 +4,11 @@ from typing import List
 import pandas as pd
 import streamlit as st
 
-from config.config import ConfigLogging, ConfigLive
+from config.config import ConfigLogging, ConfigLive, FSM
 from src.backend.api_call.influxdb_api import InfluxDbFetcher
 from src.backend.sessions.create_sessions import SessionCreator
-from src.frontend.tabs import create_tabs, Tab
+from src.frontend.tabs import create_tabs, Tab, FSMStateTab
+from stqdm import stqdm
 
 
 def init_sessions_state():
@@ -22,6 +23,9 @@ def init_sessions_state():
 
     if "verify_ssl" not in st.session_state:
         st.session_state.verify_ssl = True
+
+    if "fsm_states" not in st.session_state:
+        st.session_state.fsm_states = pd.DataFrame()
 
 
 if __name__ == '__main__':
@@ -54,24 +58,38 @@ if __name__ == '__main__':
             st.session_state.fetcher = InfluxDbFetcher(config=ConfigLogging)
             st.session_state.session_creator = SessionCreator(fetcher=st.session_state.fetcher)
 
+        # Choose FSM value to fetch
+        st.divider()
+        fsm_values = FSM.all_states
+        fsm_value = st.selectbox("FSM value", fsm_values, index=fsm_values.index(FSM.r2d))
+
         # Fetch R2D sessions
-        fetch = st.button("Fetch R2D sessions")
+        fetch = st.button(f"Fetch '{fsm_value}' sessions")
         session_creator: SessionCreator = st.session_state.session_creator
 
-        # API information and Fetcher initialization
-        # st.divider()
-        # with st.expander("API information"):
-        #     st.markdown(f"**Organisation**: {Config.org}")
-        #     st.markdown(f"**Api token**: {Config.token}")
-
         if fetch:
-            dfs = session_creator.fetch_r2d_session(start_date, end_date, verify_ssl=st.session_state.verify_ssl)
+            st.session_state.fsm_states = pd.DataFrame()
+            dfs = session_creator.fetch_r2d_session(start_date, end_date, verify_ssl=st.session_state.verify_ssl,
+                                                    fsm_value=fsm_value)
             st.session_state.sessions = dfs
             if len(dfs) == 0:
                 st.error(
                     "No R2D session found in the selected date range (if the requested data is recent, it might not have been uploaded yet)")
             else:
                 st.success(f"Fetched {len(dfs)} sessions, select one in the dropdown menu")
+
+        st.divider()
+        fetch_fsm = st.button("Fetch FSM states")
+        if fetch_fsm:
+            st.session_state.sessions = []
+            dfs = session_creator.fetch_fsm(start_date, end_date, verify_ssl=st.session_state.verify_ssl)
+            st.session_state.fsm_states = dfs
+            if len(dfs) == 0:
+                st.error(
+                    "No FSM states found in the selected date range (if the requested data is recent, it might not "
+                    "have been uploaded yet)")
+            else:
+                st.success(f"Fetched {len(dfs)} states, select one or multiple in the data editor")
 
     # Build the tabs
     if len(st.session_state.sessions) > 0:
@@ -81,3 +99,7 @@ if __name__ == '__main__':
         for tab, st_tab in zip(tabs, st_tabs):
             with st_tab:
                 tab.build(session_creator=session_creator)
+
+    if len(st.session_state.fsm_states) > 0:
+        fsm_state_tab = FSMStateTab()
+        fsm_state_tab.build(session_creator=session_creator)
