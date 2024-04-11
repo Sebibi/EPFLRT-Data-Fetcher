@@ -1,12 +1,12 @@
 {
     "AMS": {
         "Current": {
-            "description": "The current measured at the big big big battery",
+            "description": "Current at the high voltage battery",
             "unit": "I"
         },
         "CurrentLV": {
             "description": null,
-            "unit": "I"
+            "unit": null
         },
         "Tavg": {
             "description": null,
@@ -61,6 +61,512 @@
             "unit": null
         },
         "VminLV": {
+            "description": null,
+            "unit": null
+        }
+    },
+    "MISC": {
+        "AIR_PC": {
+            "description": null,
+            "unit": null
+        },
+        "AIRm": {
+            "description": null,
+            "unit": null
+        },
+        "AIRp": {
+            "description": null,
+            "unit": null
+        },
+        "AntiBSPD": {
+            "description": null,
+            "unit": null
+        },
+        "CmdMotor_FL": {
+            "description": null,
+            "unit": null
+        },
+        "CmdMotor_FR": {
+            "description": null,
+            "unit": null
+        },
+        "CmdMotor_RL": {
+            "description": null,
+            "unit": null
+        },
+        "CmdMotor_RR": {
+            "description": null,
+            "unit": null
+        },
+        "FSM": {
+            "description": "Final State Machine according to the Formula Student Rules",
+            "unit": "text"
+        },
+        "FeedForwardL": {
+            "description": null,
+            "unit": null
+        },
+        "FeedForwardR": {
+            "description": null,
+            "unit": null
+        },
+        "Fz": {
+            "description": null,
+            "unit": null
+        },
+        "Implausibility": {
+            "description": null,
+            "unit": null
+        },
+        "InStateError": {
+            "description": null,
+            "unit": null
+        },
+        "Ki": {
+            "description": null,
+            "unit": null
+        },
+        "Kp": {
+            "description": null,
+            "unit": null
+        },
+        "MissingAPPS": {
+            "description": null,
+            "unit": null
+        },
+        "Neg_Trq_Limit_FL": {
+            "description": null,
+            "unit": null
+        },
+        "Neg_Trq_Limit_FR": {
+            "description": null,
+            "unit": null
+        },
+        "Neg_Trq_Limit_RL": {
+            "description": null,
+            "unit": null
+        },
+        "Neg_Trq_Limit_RR": {
+            "description": null,
+            "unit": null
+        },
+        "Pos_Trq_Limit_FL": {
+            "description": null,
+            "unit": null
+        },
+        "Pos_Trq_Limit_FR": {
+            "description": null,
+            "unit": null
+        },
+        "Pos_Trq_Limit_RL": {
+            "description": null,
+            "unit": null
+        },
+        "Pos_Trq_Limit_RR": {
+            "description": null,
+            "unit": null
+        },
+        "SC_Closed": {
+            "description": null,
+            "unit": null
+        },
+        "TC_mode": {
+            "description": null,
+            "unit": null
+        },
+        "VDC_Bus": {
+            "description": null,
+            "unit": null
+        },
+        "V_Pump_Bat": {
+            "description": null,
+            "unit": null
+        },
+        "V_Pump_Power": {
+            "description": null,
+            "unit": null
+        }
+    },
+    "VSI": {
+        "ErrorCode_FL": {
+            "description": null,
+            "unit": null
+        },
+        "ErrorCode_FR": {
+            "description": null,
+            "unit": null
+        },
+        "ErrorCode_RL": {
+            "description": null,
+            "unit": null
+        },
+        "ErrorCode_RR": {
+            "description": null,
+            "unit": null
+        },
+        "MagCurrent_FL": {
+            "description": null,
+            "unit": null
+        },
+        "MagCurrent_FR": {
+            "description": null,
+            "unit": null
+        },
+        "MagCurrent_RL": {
+            "description": null,
+            "unit": null
+        },
+        "MagCurrent_RR": {
+            "description": null,
+            "unit": null
+        },
+        "Motor_Speed_FL": {
+            "description": "Motor Speed of the Front Left tire",
+            "unit": "rpm"
+        },
+        "Motor_Speed_FR": {
+            "description": null,
+            "unit": null
+        },
+        "Motor_Speed_RL": {
+            "description": null,
+            "unit": null
+        },
+        "Motor_Speed_RR": {
+            "description": null,
+            "unit": null
+        },
+        "Motor_Temp_FL": {
+            "description": null,
+            "unit": null
+        },
+        "Motor_Temp_FR": {
+            "description": null,
+            "unit": null
+        },
+        "Motor_Temp_RR": {
+            "description": null,
+            "unit": null
+        },
+        "Motor_temp_RL": {
+            "description": null,
+            "unit": null
+        },
+        "TrqCurrent_FL": {
+            "description": null,
+            "unit": null
+        },
+        "TrqCurrent_FR": {
+            "description": null,
+            "unit": null
+        },
+        "TrqCurrent_RL": {
+            "description": null,
+            "unit": null
+        },
+        "TrqCurrent_RR": {
+            "description": null,
+            "unit": null
+        },
+        "TrqFeedback_FL": {
+            "description": null,
+            "unit": null
+        },
+        "TrqFeedback_FR": {
+            "description": null,
+            "unit": null
+        },
+        "TrqFeedback_RL": {
+            "description": null,
+            "unit": null
+        },
+        "TrqFeedback_RR": {
+            "description": null,
+            "unit": null
+        },
+        "VSI_Temp_FL": {
+            "description": null,
+            "unit": null
+        },
+        "VSI_Temp_FR": {
+            "description": null,
+            "unit": null
+        },
+        "VSI_Temp_RL": {
+            "description": null,
+            "unit": null
+        },
+        "VSI_Temp_RR": {
+            "description": null,
+            "unit": null
+        },
+        "e_ERROR_FL": {
+            "description": null,
+            "unit": null
+        },
+        "e_ERROR_FR": {
+            "description": null,
+            "unit": null
+        },
+        "e_ERROR_RL": {
+            "description": null,
+            "unit": null
+        },
+        "e_ERROR_RR": {
+            "description": null,
+            "unit": null
+        },
+        "w_DERATING_FL": {
+            "description": null,
+            "unit": null
+        },
+        "w_DERATING_FRL": {
+            "description": null,
+            "unit": null
+        },
+        "w_DERATING_RL": {
+            "description": null,
+            "unit": null
+        },
+        "w_DERATING_RR": {
+            "description": null,
+            "unit": null
+        },
+        "w_WARNING_FL": {
+            "description": null,
+            "unit": null
+        },
+        "w_WARNING_FR": {
+            "description": null,
+            "unit": null
+        },
+        "w_WARNING_RL": {
+            "description": null,
+            "unit": null
+        },
+        "w_WARNING_RR": {
+            "description": null,
+            "unit": null
+        }
+    },
+    "sensors": {
+        "AIn1": {
+            "description": null,
+            "unit": null
+        },
+        "AIn2": {
+            "description": null,
+            "unit": null
+        },
+        "APPS_L_PC": {
+            "description": null,
+            "unit": null
+        },
+        "APPS_R_PC": {
+            "description": null,
+            "unit": null
+        },
+        "APPS_Travel": {
+            "description": "Mean Travel of the acceleration Pedal [0, 100]",
+            "unit": "int"
+        },
+        "BPF": {
+            "description": "Force applied by the pilot on the braking pedal (used for regenerative braking)",
+            "unit": "N"
+        },
+        "BP_1_R": {
+            "description": null,
+            "unit": null
+        },
+        "BP_2_F": {
+            "description": null,
+            "unit": null
+        },
+        "BP_3": {
+            "description": null,
+            "unit": null
+        },
+        "BP_4": {
+            "description": null,
+            "unit": null
+        },
+        "Best_Vx": {
+            "description": null,
+            "unit": null
+        },
+        "Fl_RR": {
+            "description": null,
+            "unit": null
+        },
+        "Knob1_Mode": {
+            "description": null,
+            "unit": null
+        },
+        "Knob2_Mode": {
+            "description": null,
+            "unit": null
+        },
+        "Knob3_Mode": {
+            "description": null,
+            "unit": null
+        },
+        "Latitude": {
+            "description": null,
+            "unit": null
+        },
+        "Longitude": {
+            "description": null,
+            "unit": null
+        },
+        "Pitch": {
+            "description": null,
+            "unit": null
+        },
+        "QM_1": {
+            "description": null,
+            "unit": null
+        },
+        "QM_2": {
+            "description": null,
+            "unit": null
+        },
+        "Roll": {
+            "description": null,
+            "unit": null
+        },
+        "SlipRatio_L": {
+            "description": null,
+            "unit": null
+        },
+        "SlipRatio_R": {
+            "description": null,
+            "unit": null
+        },
+        "Yaw": {
+            "description": null,
+            "unit": null
+        },
+        "aXEst": {
+            "description": null,
+            "unit": null
+        },
+        "aYEst": {
+            "description": null,
+            "unit": null
+        },
+        "accX": {
+            "description": null,
+            "unit": null
+        },
+        "accY": {
+            "description": null,
+            "unit": null
+        },
+        "accZ": {
+            "description": null,
+            "unit": null
+        },
+        "aiding_status": {
+            "description": null,
+            "unit": null
+        },
+        "angle_slip": {
+            "description": null,
+            "unit": null
+        },
+        "angle_track": {
+            "description": null,
+            "unit": null
+        },
+        "auto_status": {
+            "description": null,
+            "unit": null
+        },
+        "brake_pressure_L": {
+            "description": "Brake pressure in manual mode ",
+            "unit": "bar"
+        },
+        "brake_pressure_R": {
+            "description": "Brake pressure in manual mode ",
+            "unit": "bar"
+        },
+        "com_status": {
+            "description": null,
+            "unit": null
+        },
+        "curvature_rad": {
+            "description": null,
+            "unit": null
+        },
+        "dpsi_est": {
+            "description": "Estimated yaw rate",
+            "unit": "rad/s"
+        },
+        "dw_w_RR": {
+            "description": null,
+            "unit": null
+        },
+        "general_status": {
+            "description": null,
+            "unit": null
+        },
+        "gyroX": {
+            "description": "INS roll rate",
+            "unit": "rad/s"
+        },
+        "gyroY": {
+            "description": "INS pitch rate",
+            "unit": "rad/s"
+        },
+        "gyroZ": {
+            "description": "INS yaw rate",
+            "unit": "rad/s"
+        },
+        "s_FL_est": {
+            "description": null,
+            "unit": null
+        },
+        "s_FR_est": {
+            "description": null,
+            "unit": null
+        },
+        "s_RL_est": {
+            "description": null,
+            "unit": null
+        },
+        "s_RR_est": {
+            "description": null,
+            "unit": null
+        },
+        "solution_status": {
+            "description": null,
+            "unit": null
+        },
+        "steering_angle": {
+            "description": "Steering angle, positive in the clockwise direction",
+            "unit": "deg"
+        },
+        "vX": {
+            "description": null,
+            "unit": null
+        },
+        "vXEst": {
+            "description": null,
+            "unit": null
+        },
+        "vY": {
+            "description": null,
+            "unit": null
+        },
+        "vYEst": {
+            "description": null,
+            "unit": null
+        },
+        "vZ": {
+            "description": null,
+            "unit": null
+        },
+        "yawRateEst": {
             "description": null,
             "unit": null
         }

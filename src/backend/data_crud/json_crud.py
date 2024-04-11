@@ -45,7 +45,7 @@ class JsonCRUD(CRUD):
     def create(self, field_name: str, unit: str, description: str) -> bool:
         self._set_data(self._get_keys(field_name), unit, description)
         with open(self.file_path_name, 'w') as f:
-            f.write(json.dumps(self.data, sort_keys=True, indent=4))
+            f.write(json.dumps(self.data, sort_keys=True, indent=4, ensure_ascii=False))
         return True
 
     def update(self, field_name: str, unit: str, description: str) -> bool:
@@ -64,7 +64,7 @@ class JsonCRUD(CRUD):
             if keys[1] in self.data[keys[0]]:
                 del self.data[keys[0]][keys[1]]
                 with open(self.file_path_name, 'w') as f:
-                    json.dumps(f, sort_keys=True, indent=4)
+                    f.write(json.dumps(self.data, sort_keys=True, indent=4, ensure_ascii=False))
                 return True
         return False
 

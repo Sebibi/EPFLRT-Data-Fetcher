@@ -10,7 +10,7 @@ from src.frontend.tabs.base import Tab
 class TelemetryDescriptionTab(Tab):
     telemetry_description_file_path = "data/telemetry_description.json"
     bucket_data_names = ["AMS", "MISC", "VSI", "sensors"]
-    units = list(sorted(["m/s", "rad", "°", "rad/s", "m", "m/s²", "A", "mA", "rpm", "I", "U", "None"]))
+    units = list(sorted(["m/s", "rad", "deg", "rad/s", "m", "m/s²", "A", "mA", "rpm", "I", "U", "int", "bool", "text", "%", "°C", "°F", "Pa", "kPa", "bar", "mbar", "N", "N/m", "value", "ratio"]))
 
     def __init__(self):
         super().__init__("telemetry_description_tab", "Telemetry Description")
@@ -18,8 +18,11 @@ class TelemetryDescriptionTab(Tab):
         if "data" not in self.memory:
             self.memory['data'] = pd.DataFrame()
 
-        if "telemetry_description" not in self.memory:
+        if "telemetry_description_crud" not in self.memory:
             self.memory['telemetry_description_crud'] = JsonCRUD(self.telemetry_description_file_path)
+
+        if "telemetry_description_data" not in self.memory:
+            self.memory['telemetry_description_data'] = pd.DataFrame()
 
     def build(self, session_creator: SessionCreator):
 
@@ -37,14 +40,16 @@ class TelemetryDescriptionTab(Tab):
             data_fields = [field for field in self.memory['data'].columns if data_bucket in field]
 
             crud = self.memory['telemetry_description_crud']
-            data = pd.DataFrame([crud.read(data_bucket, field) for field in data_fields], index=data_fields)
 
-            text_mode = st.checkbox("Text mode", key=f"{self.name} text mode")
+            if st.button("Load telemetry description", key=f"{self.name} load button"):
+                self.memory['telemetry_description_data'] = pd.DataFrame([crud.read(data_bucket, field) for field in data_fields], index=data_fields)
+
+            text_mode = st.checkbox("Text mode for the unit column (check this box if predefined options don't contain the wanted unit)", key=f"{self.name} text mode")
             text_config = st.column_config.TextColumn(width='small')
             select_box_config = st.column_config.SelectboxColumn(options=self.units, default="None", width='small')
             unit_config = text_config if text_mode else select_box_config
             edited_data = st.data_editor(
-                data, use_container_width=True,
+                self.memory['telemetry_description_data'], use_container_width=True,
                 key=f"{self.name} data editor",
                 column_config={
                     "unit": unit_config,
@@ -57,7 +62,6 @@ class TelemetryDescriptionTab(Tab):
                 for field, row in edited_data.iterrows():
                     crud.create(field, row['unit'], row['description'])
                 st.success("Data saved")
-
 
             # Download the telemetry description
             st.download_button(

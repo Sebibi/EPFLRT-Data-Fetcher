@@ -7,7 +7,7 @@ import streamlit as st
 from config.config import ConfigLogging, ConfigLive, FSM
 from src.backend.api_call.influxdb_api import InfluxDbFetcher
 from src.backend.sessions.create_sessions import SessionCreator
-from src.frontend.tabs import create_tabs, Tab, FSMStateTab
+from src.frontend.tabs import create_tabs, Tab, FSMStateTab, TelemetryDescriptionTab
 from stqdm import stqdm
 
 
@@ -90,6 +90,11 @@ if __name__ == '__main__':
                     "have been uploaded yet)")
             else:
                 st.success(f"Fetched {len(dfs)} states, select one or multiple in the data editor")
+
+    # Show the Telemetry Description Tab
+    with st.expander("Telemetry Description"):
+        telemetry_description_tab = TelemetryDescriptionTab()
+        telemetry_description_tab.build(session_creator=session_creator)
 
     # Build the tabs
     if len(st.session_state.sessions) > 0:
