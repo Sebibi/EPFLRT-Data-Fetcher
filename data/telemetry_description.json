@@ -1,0 +1,68 @@
+{
+    "AMS": {
+        "Current": {
+            "description": "The current measured at the big big big battery",
+            "unit": "I"
+        },
+        "CurrentLV": {
+            "description": null,
+            "unit": "I"
+        },
+        "Tavg": {
+            "description": null,
+            "unit": null
+        },
+        "TavgLV": {
+            "description": null,
+            "unit": null
+        },
+        "Tmax": {
+            "description": null,
+            "unit": null
+        },
+        "TmaxLV": {
+            "description": null,
+            "unit": null
+        },
+        "Tmin": {
+            "description": null,
+            "unit": null
+        },
+        "TminLV": {
+            "description": null,
+            "unit": null
+        },
+        "VBat": {
+            "description": null,
+            "unit": null
+        },
+        "VBatLV": {
+            "description": null,
+            "unit": null
+        },
+        "Vavg": {
+            "description": null,
+            "unit": null
+        },
+        "VavgLV": {
+            "description": null,
+            "unit": null
+        },
+        "Vmax": {
+            "description": null,
+            "unit": null
+        },
+        "VmaxLV": {
+            "description": null,
+            "unit": null
+        },
+        "Vmin": {
+            "description": null,
+            "unit": null
+        },
+        "VminLV": {
+            "description": null,
+            "unit": null
+        }
+    }
+}
