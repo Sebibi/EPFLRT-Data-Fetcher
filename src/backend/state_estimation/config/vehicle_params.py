@@ -56,12 +56,15 @@ class VehicleParams:
 
 
     @classmethod
-    def magic_formula(cls, slip_ratio: float | np.ndarray) -> float | np.ndarray:
+    def magic_formula(cls, slip_ratio: float | np.ndarray, mux: float = None) -> float | np.ndarray:
         """
+        :param mux: friction coefficient from traction ellipse
         :param slip_ratio:
         :return: mu
         """
         B, C, D, E = cls.B, cls.C, cls.D, cls.E
+        if mux is not None:
+            D = mux
         mu = D * np.sin(C * np.arctan(B * slip_ratio - E * (B * slip_ratio - np.arctan(B * slip_ratio))))
         return mu
 

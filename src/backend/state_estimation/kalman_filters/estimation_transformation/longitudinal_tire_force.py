@@ -5,16 +5,28 @@ from src.backend.state_estimation.kalman_filters.estimation_transformation.norma
     estimate_normal_forces
 
 
-def estimate_longitudinal_tire_force(x: np.array, wheel_id: int) -> np.ndarray:
+def estimate_longitudinal_tire_force(x: np.array, wheel_id: int, use_traction_ellipse: bool = True) -> np.ndarray:
     normal_force = estimate_normal_force(x, wheel_id=wheel_id)
-    mu = VehicleParams.magic_formula(slip_ratio=x[5 + wheel_id])
+    mux = traction_ellipse(x) if use_traction_ellipse else None
+    mu = VehicleParams.magic_formula(slip_ratio=x[5 + wheel_id], mux=mux)
     return np.array([normal_force * mu])
 
 
-def estimate_longitudinal_tire_forces(x: np.array) -> np.ndarray:
+def estimate_longitudinal_tire_forces(x: np.array, use_traction_ellipse: bool = True) -> np.ndarray:
     normal_forces = estimate_normal_forces(x)
-    mu = np.array([VehicleParams.magic_formula(s) for s in x[5:9]])
+    mux = traction_ellipse(x) if use_traction_ellipse else None
+    mu = np.array([VehicleParams.magic_formula(s, mux=mux) for s in x[5:9]])
     return normal_forces * mu
+
+
+def traction_ellipse(x: np.array) -> np.ndarray:
+    # 1 = (ax / ax_max)^2 + (ay / ay_max)^2
+    # 1 = (mux / mux_max)^2 + (ay * (Fz/g) / muy_max * Fz)^2
+    # mux = mux_max * sqrt(1 - (ay / muy_max * g)^2)
+    mux_max = VehicleParams.D
+    muy_max = VehicleParams.D - 0.3
+    mux = mux_max * np.sqrt(1 - min((x[3] / (muy_max * VehicleParams.g)) ** 2, 0.95))
+    return mux
 
 
 if __name__ == '__main__':

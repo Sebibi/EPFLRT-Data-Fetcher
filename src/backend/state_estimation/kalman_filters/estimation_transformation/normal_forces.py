@@ -63,3 +63,9 @@ if __name__ == '__main__':
     f = estimate_aero_focre_one_tire(np.array([10, 0, 0, 0, 0, 0, 0, 0, 0], dtype=float)) * 4
     print(f)
     print(f / VehicleParams.m_car)
+
+    for i in range(15):
+        ax = i
+        ay = 0
+        fzs = estimate_normal_forces(np.array([0, 0, ax, ay, 0, 0, 0, 0, 0], dtype=float))
+        print(f"ax: {ax}, ay: {ay}, fzs: {fzs}, sum: {sum(fzs)}")
