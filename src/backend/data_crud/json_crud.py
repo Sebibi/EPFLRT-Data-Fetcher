@@ -68,5 +68,5 @@ class JsonCRUD(CRUD):
                 return True
         return False
 
-    def get_all(self) -> dict[str, dict[str]]:
+    def get_raw_data(self) -> dict[str, dict[str]]:
         return deepcopy(self.data)

@@ -1,3 +1,5 @@
+import json
+
 import pandas as pd
 import streamlit as st
 from src.backend.sessions.create_sessions import SessionCreator
@@ -55,6 +57,15 @@ class TelemetryDescriptionTab(Tab):
                 for field, row in edited_data.iterrows():
                     crud.create(field, row['unit'], row['description'])
                 st.success("Data saved")
+
+
+            # Download the telemetry description
+            st.download_button(
+                label="Download telemetry description",
+                data=json.dumps(crud.get_raw_data(), indent=4, sort_keys=True),
+                file_name="telemetry_description.json",
+                mime="application/json"
+            )
 
 
 

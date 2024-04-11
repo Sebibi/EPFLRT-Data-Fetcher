@@ -2,6 +2,8 @@ from abc import ABC, abstractmethod
 
 
 class CRUD(ABC):
+    file_path_name: str
+    data: dict
 
     @abstractmethod
     def create(self, *args, **kwargs):
@@ -17,4 +19,8 @@ class CRUD(ABC):
 
     @abstractmethod
     def delete(self, *args, **kwargs):
+        pass
+
+    @abstractmethod
+    def get_raw_data(self) -> dict:
         pass
