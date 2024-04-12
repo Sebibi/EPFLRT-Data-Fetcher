@@ -90,3 +90,41 @@ def plot_data_comparaison(
     ax.set_xlabel('Time [s]')
     st.pyplot(fig)
     return columns_to_plot, samples_to_plot
+
+
+def plot_multiple_data(datas: list[pd.DataFrame], tab_name: str, title: str = "Sensors",
+                       default_columns: list = None, fig_ax: Tuple[plt.Figure, plt.Axes] = None) -> Tuple[List[str], List[str]]:
+
+    # Update column_names
+    for i, data in enumerate(datas[1:]):
+        datas[i+1].columns = [f"{col}_{i+1}" for col in datas[i+1].columns]
+    full_data = pd.concat(datas, axis=1)
+
+    columns_to_plot = full_data.columns
+    samples_to_plot = st.select_slider(
+        label="Number of samples to plot", options=full_data.index,
+        value=[full_data.index[0], full_data.index[-1]], format_func=lambda x: f"{x:.2f}",
+        key=f"{tab_name} samples to plot",
+    )
+
+    cols = st.columns(2)
+    sub_cols = cols[0].columns(2)
+    w = sub_cols[0].number_input("Figure Width", value=10, step=1, min_value=1, key=f"{tab_name} figure width")
+    h= sub_cols[1].number_input("Figure Height ", value=5, step=1, min_value=1, key=f"{tab_name} figure height")
+    fig, ax = plt.subplots(figsize=(w, h)) if fig_ax is None else fig_ax
+    window_size = cols[1].number_input(f"Moving average to be applied to data", value=1, step=1, min_value=1, key=f"{tab_name} window size")
+    rolled_plot_data = full_data[columns_to_plot].loc[samples_to_plot[0]:samples_to_plot[1]].rolling(window=window_size).mean()
+    legend = sub_cols[1].checkbox("Show legend", value=True, key=f"{tab_name} show legend")
+    plot_subplots = sub_cols[0].checkbox("Subplots", value=False, key=f"{tab_name} subplots")
+    if plot_subplots:
+        subplot_columns = [[full_col for full_col in columns_to_plot if col in full_col]for col in datas[0].columns]
+    else:
+        subplot_columns = False
+    rolled_plot_data.plot(ax=ax, subplots=subplot_columns, legend=legend)
+
+    plt.tight_layout()
+    ax.legend()
+    ax.set_title(title)
+    ax.set_xlabel('Time [s]')
+    st.pyplot(fig)
+    return columns_to_plot, samples_to_plot

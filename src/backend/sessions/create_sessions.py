@@ -83,12 +83,12 @@ class SessionCreator:
                 st.success("The data has been fetched in two steps and merged.")
             return df
 
-    def r2d_session_selector(self, dfs: List[pd.DataFrame], key: str) -> str:
+    def r2d_session_selector(self, dfs: List[pd.DataFrame], key: str, pannel = st) -> str:
         dfs_options = [timestamp_to_datetime_range(df.index[0], df.index[-1]) for df in dfs]
         dfs_elapsed_time = [str((df.index[-1] - df.index[0]).floor('s'))[7:] for df in dfs]
 
         options_index = list(np.arange(len(dfs)))
-        session_index = st.selectbox(
+        session_index = pannel.selectbox(
             "Session", options=options_index, index=0,
             label_visibility="collapsed",
             format_func=lambda i: f"{i} - Duration ({dfs_elapsed_time[i]}) : " + dfs_options[i],

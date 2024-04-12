@@ -91,16 +91,18 @@ if __name__ == '__main__':
             else:
                 st.success(f"Fetched {len(dfs)} states, select one or multiple in the data editor")
 
-    # Show the Telemetry Description Tab
-    with st.expander("Telemetry Description"):
-        telemetry_description_tab = TelemetryDescriptionTab()
-        telemetry_description_tab.build(session_creator=session_creator)
-
     # Build the tabs
     if len(st.session_state.sessions) > 0:
+
+        # Show the Telemetry Description Tab
+        with st.expander("Telemetry Description"):
+            telemetry_description_tab = TelemetryDescriptionTab()
+            telemetry_description_tab.build(session_creator=session_creator)
+
         tabs: List[Tab] = create_tabs()
         st_tabs = st.tabs(tabs=[tab.description for tab in tabs])
 
+        # Show the tabs
         for tab, st_tab in zip(tabs, st_tabs):
             with st_tab:
                 tab.build(session_creator=session_creator)
