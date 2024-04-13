@@ -430,6 +430,26 @@
             "description": null,
             "unit": null
         },
+        "RTK_vx": {
+            "description": null,
+            "unit": null
+        },
+        "RTK_vy": {
+            "description": null,
+            "unit": null
+        },
+        "RTK_vz": {
+            "description": null,
+            "unit": null
+        },
+        "RTK_x": {
+            "description": null,
+            "unit": null
+        },
+        "RTK_y": {
+            "description": null,
+            "unit": null
+        },
         "Roll": {
             "description": null,
             "unit": null
@@ -439,6 +459,50 @@
             "unit": null
         },
         "SlipRatio_R": {
+            "description": null,
+            "unit": null
+        },
+        "TC_Tmax_FL": {
+            "description": "Maximum Torque for the Front Left tire in TCO mode",
+            "unit": "N/m"
+        },
+        "TC_Tmax_FR": {
+            "description": null,
+            "unit": null
+        },
+        "TC_Tmax_RL": {
+            "description": null,
+            "unit": null
+        },
+        "TC_Tmax_RR": {
+            "description": null,
+            "unit": null
+        },
+        "TC_Tmin_FL": {
+            "description": null,
+            "unit": null
+        },
+        "TC_Tmin_FR": {
+            "description": null,
+            "unit": null
+        },
+        "TC_Tmin_RL": {
+            "description": null,
+            "unit": null
+        },
+        "TC_Tmin_RR": {
+            "description": null,
+            "unit": null
+        },
+        "TV_delta_torque": {
+            "description": null,
+            "unit": null
+        },
+        "TV_yaw_ref": {
+            "description": null,
+            "unit": null
+        },
+        "Torque_cmd": {
             "description": null,
             "unit": null
         },

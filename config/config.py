@@ -21,7 +21,7 @@ class ConfigLogging(Config):
 class ConfigLive(Config):
     name = "live"
     bucket_name = "Ariane"
-    token = "O8lM3ToG3BmtgYqK8TZF_Bu6XxYvImWX2R_nBOAXvE-u0Gpgs2fkViKviIG5hRZmjgHqX4IJhNNb399bbEE5jg=="
+    token = "uC8xUsjnPK3D2Gd-RJbYLkWYHID3k527OcBHvZQe16SfRTu-LzKSGVaZ9ckLwXDsk9UqlfNCXJhFht9FGLcXiw=="
     org = "racingteam"
     url = "http://192.168.1.10:8086"
 
