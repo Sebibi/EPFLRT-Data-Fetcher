@@ -99,7 +99,10 @@ if __name__ == '__main__':
             telemetry_description_tab = TelemetryDescriptionTab()
             telemetry_description_tab.build(session_creator=session_creator)
 
-        tabs: List[Tab] = create_tabs()
+        
+        tabs: List[Tab] = create_tabs() 
+        if st.checkbox("Reverse Tab order", key="reverse_tabs_order"):
+            tabs = tabs[::-1]
         st_tabs = st.tabs(tabs=[tab.description for tab in tabs])
 
         # Show the tabs
