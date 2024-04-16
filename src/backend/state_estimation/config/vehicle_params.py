@@ -7,6 +7,9 @@ class VehicleParams:
     # Sampling time
     dt = 0.01
 
+    # Control Modes
+    ControlMode = {1:'No control', 2:'TV', 3:'TCO', 4:'TCC', 5:'TCO + TV', 6:'TCC + TV'}
+
     # Aero
     A_front = 1.61
     c_drag = 0.97

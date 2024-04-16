@@ -107,7 +107,7 @@ class Tab6(Tab):
 
             # Send data to Other Tabs
             with st.expander("Send data to another TAB"):
-                other_tabs = [f'tab{i}' for i in range(1, 8) if i != 6]
+                other_tabs = [f'tab{i}' for i in range(1, 14) if i != 6]
                 for i, other_tab in enumerate(other_tabs):
                     cols = st.columns([1, 3])
                     if cols[0].button(f"Send data to {other_tab}", key=f"{self.name} send data to {other_tab} button"):
@@ -199,4 +199,5 @@ class Tab6(Tab):
                     plot_model_analysis(
                         new_data, self.name, acc_fsum_cols, acc_fsum_est_cols
                     )
+                self.memory['data'] = new_data.copy()
         return True

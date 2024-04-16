@@ -43,9 +43,9 @@ if __name__ == '__main__':
         # Choose date range
         st.header("Select a date range")
         date_cols = st.columns(2)
-        start_date = date_cols[0].date_input("Start date", value=pd.to_datetime("2023-11-18"),
+        start_date = date_cols[0].date_input("Start date", value=pd.to_datetime("2024-04-14"),
                                              max_value=pd.to_datetime(datetime.now().strftime("%Y-%m-%d")))
-        end_date = date_cols[1].date_input("End date", value=pd.to_datetime("2023-11-19"),
+        end_date = date_cols[1].date_input("End date", value=pd.to_datetime("2024-04-15"),
                                            max_value=pd.to_datetime(
                                                (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")))
 
