@@ -150,7 +150,7 @@ class Tab13(Tab):
             with cols[2].status("Computing state estimation..."):
                 self.compute_state_estimator()
 
-        if len(self.memory['data_cov']) > 0:
+        if 'data_cov' in self.memory:
             cols[3].success("Computed")
 
         if cols[4].button("Create new features", key=f"{self.name} create new features"):
