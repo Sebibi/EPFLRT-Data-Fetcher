@@ -2,7 +2,7 @@ from collections import deque
 
 import numpy as np
 
-delta = 1
+delta = 20
 
 
 def measure_wheel_acceleration(wheel_speeds: np.ndarray, hist=deque([np.zeros(4)], maxlen=delta)) -> np.ndarray:
