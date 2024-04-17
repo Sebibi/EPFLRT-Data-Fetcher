@@ -69,6 +69,14 @@ class Tab13(Tab):
         data[self.slip_cols100] = data[self.slip_cols].copy() * 100
         data[self.slip_cols1000] = data[self.slip_cols].copy() * 1000
 
+        # BPF 100
+        max_bpf = 35
+        data['sensors_BPF_100'] = data['sensors_BPF'] * 100 / max_bpf
+        data['sensors_BPF_Torque'] = data['sensors_BPF'] * 597 / max_bpf
+
+        # Motor Torque Cmd mean
+        data['sensors_Torque_cmd_mean'] = data['sensors_Torque_cmd'].copy() / 4
+
         # Create wheel speeds and longitudinal velocity
         data[self.wheel_speeds_cols] = data[self.motor_speeds_cols].apply(
             lambda x: measure_wheel_speeds(x) * VehicleParams.Rw, axis=1, result_type='expand')
@@ -131,6 +139,8 @@ class Tab13(Tab):
         self.memory['data_cov'] = data_cov.copy()
         st.balloons()
 
+        self.create_new_feature()
+
     def build(self, session_creator) -> bool:
 
         st.header(self.description)
@@ -142,6 +152,7 @@ class Tab13(Tab):
             data = session_creator.fetch_data(datetime_range, verify_ssl=st.session_state.verify_ssl)
             data.index = (data.index - data.index[0]).total_seconds()
             self.memory['data'] = data
+            self.create_new_feature()
 
         if len(self.memory['data']) > 0:
             cols[1].success("Data fetched")
@@ -185,8 +196,8 @@ class Tab13(Tab):
                 mean_accx = data['sensors_aXEst'].mean()
 
                 # Compute distance from velocity
-                data['sensors_vXEst_integrated'] = data['sensors_vXEst'].cumsum() * 0.01
-                distance = data['sensors_vXEst_integrated'].iloc[-1]
+                data['distance'] = data['sensors_vXEst'].cumsum() * 0.01
+                distance = data['distance'].iloc[-1]
 
                 # Show metrics
                 cols = st.columns([2, 2, 3, 3, 3, 3])
@@ -199,15 +210,15 @@ class Tab13(Tab):
 
             # PLot acceleration and speed
             with st.expander("Acceleration and Speed"):
-                data['v_acc_integrated'] = data['sensors_accX'].cumsum() * 0.01
+                data['v_accX_integrated'] = data['sensors_accX'].cumsum() * 0.01
                 plot_data(data=data, tab_name=self.name + "AS", title="Overview",
-                          default_columns=self.acc_cols + self.speed_cols + ['v_acc_integrated'])
+                          default_columns=self.acc_cols + self.speed_cols + ['v_accX_integrated'])
 
             # Plot wheel speeds
             with st.expander("Wheel Speeds"):
                 if st.toggle("Show wheel speeds", key=f"{self.name} show wheel speeds"):
                     plot_data(data=data, tab_name=self.name + "WS", title="Wheel Speeds",
-                          default_columns=self.wheel_speeds_cols + self.speed_cols[:1] + ['v_acc_integrated'])
+                          default_columns=self.wheel_speeds_cols + self.speed_cols[:1] + ['v_accX_integrated'])
 
             # Plot the wheel slip
             with st.expander("Wheel Slip"):
@@ -251,12 +262,14 @@ class Tab13(Tab):
             with st.expander("Wheel MIN/MAX Torques"):
                 if st.toggle("Show wheel torques", key=f"{self.name} show wheel min/max torques"):
                     add_slips = st.checkbox("Add slip ratios", key=f"{self.name} add slips")
+                    window_size = st.number_input("Moving average window size", value=1, key=f"{self.name} window size")
                     fig, ax = plt.subplots(2, 2, figsize=(15, 10))
+
                     for i, wheel in enumerate(VehicleParams.wheel_names):
                         cols = [self.motor_torques_cols[i], self.max_motor_torques_cols[i], self.min_motor_torques_cols[i]]
                         if add_slips:
                             cols += [self.slip_cols1000[i]]
-                        data[cols].plot(ax=ax[i // 2, i % 2], title=f"Wheel {wheel} torques")
+                        data[cols].rolling(window_size).mean().plot(ax=ax[i // 2, i % 2], title=f"Wheel {wheel} torques")
                     plt.tight_layout()
                     st.pyplot(fig)
 
