@@ -12,8 +12,8 @@ class VehicleParams:
 
     # Aero
     A_front = 1.61
-    c_drag = 0.97
-    c_lift = 2.33
+    c_drag = 0.8 # 1.55 #
+    c_lift = 0.8 # 4.6 # 0.8
     rho_air = 1.2
 
     # Motor

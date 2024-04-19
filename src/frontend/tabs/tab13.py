@@ -6,6 +6,8 @@ from stqdm import stqdm
 
 from src.backend.state_estimation.config.state_estimation_param import SE_param
 from src.backend.state_estimation.kalman_filters.estimation_transformation import estimate_normal_forces
+from src.backend.state_estimation.kalman_filters.estimation_transformation.normal_forces import \
+    estimate_aero_focre_one_tire
 from src.backend.state_estimation.measurments.sensors import Sensors, get_sensors_from_data
 from src.backend.state_estimation.state_estimator_app import StateEstimatorApp
 from src.frontend.plotting.plotting import plot_data
@@ -112,6 +114,14 @@ class Tab13(Tab):
             result_type='expand'
         )
 
+        # Create Fsum and Fsum_est
+        data['Fdrag'] = data[SE_param.estimated_states_names].apply(
+            lambda x: estimate_aero_focre_one_tire(x), axis=1)
+
+        data['Fsum'] = data[self.longitudinal_forces_cols].sum(axis=1) - data['Fdrag']
+        data['Fsum_est'] = data[self.longitudinal_forces_est_cols].sum(axis=1) - data['Fdrag']
+        data['Fsum_accx'] = data['sensors_accX'].copy() * VehicleParams.m_car
+        data['Fsum_accxEst'] = data['sensors_aXEst'].copy() * VehicleParams.m_car
         self.memory['data'] = data.copy()
 
     def compute_state_estimator(self):
@@ -277,3 +287,8 @@ class Tab13(Tab):
                 if st.toggle("Show wheel torques", key=f"{self.name} show wheel torques"):
                     plot_data(data=data, tab_name=self.name + "WT", title="Wheel Torques",
                               default_columns=self.motor_torques_cols)
+
+            with st.expander("Fsum"):
+                if st.toggle("Show Fsum", key=f"{self.name} show Fsum"):
+                    plot_data(data=data, tab_name=self.name + "Fsum", title="Fsum",
+                              default_columns=['Fsum', 'Fsum_est', 'Fsum_accx', 'Fsum_accxEst'])
