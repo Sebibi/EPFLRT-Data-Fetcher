@@ -5,6 +5,8 @@ import numpy as np
 import pandas as pd
 import streamlit as st
 
+import plotly.graph_objects as go
+
 
 def plot_data(
         data: pd.DataFrame, tab_name: str, title: str = "Sensors",
@@ -27,14 +29,28 @@ def plot_data(
     fig, ax = plt.subplots(figsize=(10, 5)) if fig_ax is None else fig_ax
     window_size = cols[1].number_input(f"Moving average to be applied to data", value=1, step=1, min_value=1, key=f"{tab_name} window size")
     rolled_plot_data = plot_data.rolling(window=window_size).mean()
-    legend = cols[0].checkbox("Show legend", value=True, key=f"{tab_name} show legend")
-    rolled_plot_data.plot(ax=ax, subplots=cols[0].checkbox("Subplots", value=False, key=f"{tab_name} subplots"), legend=legend)
-    plt.tight_layout()
-    if legend:
-        ax.legend()
-    ax.set_title(title)
-    ax.set_xlabel('Time [s]')
-    st.pyplot(fig)
+    use_plotly = cols[0].checkbox("Use Plotly", value=False, key=f"{tab_name} use plotly")
+    legend = cols[0].checkbox("Show legend", value=True, key=f"{tab_name} show legend") if not use_plotly else False
+    subplots = cols[0].checkbox("Subplots", value=False, key=f"{tab_name} subplots") if not use_plotly else False
+
+    if use_plotly:
+        if fig_ax is not None:
+            st.warning("Plotly backend does not support custom axis, using default one")
+        pd.options.plotting.backend = "plotly"
+        plotly_fig = go.Figure()
+        res = rolled_plot_data.plot()
+        st.plotly_chart(res, use_container_width=True)
+    else:
+        pd.options.plotting.backend = "matplotlib"
+        rolled_plot_data.plot(ax=ax, subplots=subplots, legend=legend)
+        plt.tight_layout()
+        if legend:
+            ax.legend()
+        ax.set_title(title)
+        ax.set_xlabel('Time [s]')
+        st.pyplot(fig)
+    # Reset backend to default
+    pd.options.plotting.backend = "matplotlib"
     return columns_to_plot, samples_to_plot
 
 

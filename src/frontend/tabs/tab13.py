@@ -236,7 +236,7 @@ class Tab13(Tab):
                     plot_data(data=data, tab_name=self.name + "Slip", title="Slip Ratios", default_columns=self.slip_cols)
 
             # Sanity check: plot the wheel speeds estimation
-            with st.expander("Wheel Speeds Estimation"):
+            with st.expander("Wheel Speeds Estimation subplots"):
                 if st.toggle("Show wheel speeds estimation", key=f"{self.name} show wheel speeds estimation"):
                     fig, ax = plt.subplots(2, 2, figsize=(15, 10))
                     for i, wheel in enumerate(VehicleParams.wheel_names):
@@ -244,6 +244,16 @@ class Tab13(Tab):
                         data[cols].plot(ax=ax[i // 2, i % 2], title=f"Wheel {wheel} speed")
                     plt.tight_layout()
                     st.pyplot(fig)
+
+            # Plot longitudinal force
+            with st.expander("Wheel Speeds Estimation"):
+                if st.toggle("Show longitudinal forces", key=f"{self.name} show wheel speed estimation"):
+                    wheel = st.selectbox("Wheel", VehicleParams.wheel_names + ['all'], key=f"{self.name} wheel selection long force")
+                    cols = self.wheel_speeds_cols + self.wheel_speeds_est_cols + self.vl_cols
+                    if wheel != 'all':
+                        cols = [col for col in cols if wheel in col]
+                    plot_data(data=data, tab_name=self.name + "LF", title="Longitudinal Forces",
+                              default_columns=cols)
 
             # Plot the normal forces
             with st.expander("Normal Forces"):
@@ -258,7 +268,7 @@ class Tab13(Tab):
                               default_columns=self.wheel_acceleration_cols)
 
             # Plot the longitudinal forces
-            with st.expander("Longitudinal Forces"):
+            with st.expander("Longitudinal Forces subplots"):
                 if st.toggle("Show longitudinal forces", key=f"{self.name} show longitudinal forces"):
                     fig, ax = plt.subplots(2, 2, figsize=(15, 10))
                     for i, wheel in enumerate(VehicleParams.wheel_names):
@@ -267,6 +277,16 @@ class Tab13(Tab):
                         data[cols].plot(ax=ax[i // 2, i % 2], title=f"Wheel {wheel} longitudinal force")
                     plt.tight_layout()
                     st.pyplot(fig)
+
+            # Plot longitudinal force
+            with st.expander("Longitudinal Forces"):
+                if st.toggle("Show longitudinal forces", key=f"{self.name} show longitudinal force"):
+                    wheel = st.selectbox("Wheel", VehicleParams.wheel_names + ['all'], key=f"{self.name} wheel selection long force")
+                    cols = self.longitudinal_forces_cols + self.longitudinal_forces_est_cols + self.slip_cols1000
+                    if wheel != 'all':
+                        cols = [col for col in cols if wheel in col]
+                    plot_data(data=data, tab_name=self.name + "LF", title="Longitudinal Forces",
+                              default_columns=cols)
 
             # Plot wheel torques
             with st.expander("Wheel MIN/MAX Torques"):
