@@ -140,7 +140,7 @@ class Tab13(Tab):
         data[rtk_columns] = data[rtk_columns].interpolate(method='linear', axis=0)
 
         # Compute the v norm from RTK data
-        data['sensors_RTK_v_norm'] = data[['sensors_RTK_vx', 'sensors_RTK_vy']].apply(lambda x: np.linalg.norm(x), axis=1)
+        data['sensors_RTK_v_norm'] = np.sqrt(data['sensors_RTK_vx'].values ** 2 + data['sensors_RTK_vy'].values ** 2)
         self.memory['data'] = data.copy()
 
     def compute_state_estimator(self):
@@ -284,7 +284,7 @@ class Tab13(Tab):
                 car_outputs_cols = self.motor_torques_cols
                 plot_data(data=data, tab_name=self.name + "CO", title="Car Outputs", default_columns=car_outputs_cols, simple_plot=True)
             with cols[2]:
-                sensors_cols = ['sensors_accX', 'sensors_accY'] + self.wheel_speeds_cols
+                sensors_cols = ['sensors_accX', 'sensors_accY'] + self.wheel_speeds_cols + ['sensors_RTK_v_norm']
                 plot_data(data=data, tab_name=self.name + "S", title="Sensors", default_columns=sensors_cols, simple_plot=True)
             st.divider()
 
