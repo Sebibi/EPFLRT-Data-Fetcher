@@ -10,7 +10,21 @@ import plotly.graph_objects as go
 
 def plot_data(
         data: pd.DataFrame, tab_name: str, title: str = "Sensors",
-        default_columns: list = None, fig_ax: Tuple[plt.Figure, plt.Axes] = None) -> Tuple[List[str], List[str]]:
+        default_columns: list = None, fig_ax: Tuple[plt.Figure, plt.Axes] = None,
+        simple_plot: bool = False
+) -> Tuple[List[str], List[str]]:
+
+    if simple_plot:
+        fig, ax = plt.subplots(figsize=(10, 5)) if fig_ax is None else fig_ax
+        data[default_columns].plot(ax=ax)
+        plt.tight_layout()
+        ax.legend()
+        ax.set_title(title)
+        ax.set_xlabel('Time [s]')
+        st.pyplot(fig)
+        return default_columns, [data.index[0], data.index[-1]]
+
+
 
     columns_to_plot = st.multiselect(
         label="Select the labels to plot",

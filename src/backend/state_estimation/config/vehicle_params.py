@@ -1,3 +1,5 @@
+from collections import defaultdict
+
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -8,7 +10,7 @@ class VehicleParams:
     dt = 0.01
 
     # Control Modes
-    ControlMode = {1:'No control', 2:'TV', 3:'TCO', 4:'TCC', 5:'TCO + TV', 6:'TCC + TV'}
+    ControlMode = defaultdict(lambda: 'Unkown', {1:'Rien', 2:'TV', 3:'TCO', 4:'TCC', 5:'TCO + TV', 6:'TCC + TV'})
 
     # Aero
     A_front = 1.61
