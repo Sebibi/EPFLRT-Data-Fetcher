@@ -10,6 +10,8 @@ from src.backend.sessions.create_sessions import SessionCreator
 from src.frontend.tabs import create_tabs, Tab, FSMStateTab, TelemetryDescriptionTab
 from stqdm import stqdm
 
+import json
+
 
 def init_sessions_state():
     if "sessions" not in st.session_state:
@@ -40,12 +42,18 @@ if __name__ == '__main__':
     cols[1].image("data/img/epflrt_logo.png", width=200)
 
     with st.sidebar:
+        # Show testing schedules
+        with st.expander("Testing Schedules"):
+            with open("data/test_description/schedule.json", 'r') as f:
+                schedule = json.load(f)
+                st.write(schedule)
+
         # Choose date range
         st.header("Select a date range")
         date_cols = st.columns(2)
-        start_date = date_cols[0].date_input("Start date", value=pd.to_datetime("2024-04-14"),
+        start_date = date_cols[0].date_input("Start date", value=pd.to_datetime("2024-04-20"),
                                              max_value=pd.to_datetime(datetime.now().strftime("%Y-%m-%d")))
-        end_date = date_cols[1].date_input("End date", value=pd.to_datetime("2024-04-15"),
+        end_date = date_cols[1].date_input("End date", value=pd.to_datetime("2024-04-21"),
                                            max_value=pd.to_datetime(
                                                (datetime.now() + timedelta(days=1)).strftime("%Y-%m-%d")))
 
