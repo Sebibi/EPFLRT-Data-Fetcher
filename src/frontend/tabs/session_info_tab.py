@@ -24,8 +24,8 @@ class SessionInfoTab(Tab):
 
         st.header(self.description)
         datetime_ranges = session_creator.r2d_multi_session_selector(st.session_state.sessions, key=f"{self.name} session selector session info")
-
-        if st.button("Fetch these sessions", key=f"{self.name} fetch data button"):
+        cols = st.cols = st.columns([1, 1, 4])
+        if cols[0].button("Get sessions infos", key=f"{self.name} fetch data button"):
             session_infos = {key: self.crud.read(key) for key in datetime_ranges}
             self.memory['session_info_data'] = pd.DataFrame(session_infos).T
 
@@ -43,10 +43,11 @@ class SessionInfoTab(Tab):
                 column_order=["control_mode", "driver", "weather_condition", "description"],
                 use_container_width=True,
             )
-            if st.button("Save", key=f"{self.name} save button"):
+
+            if cols[1].button("Save", key=f"{self.name} save button"):
                 for key, row in new_df.iterrows():
                     self.crud.create(key, **row.to_dict())
-
+                cols[2].success("Data saved")
 
 
 

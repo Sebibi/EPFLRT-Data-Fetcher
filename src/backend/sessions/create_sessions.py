@@ -89,18 +89,19 @@ class SessionCreator:
         dfs_elapsed_time = [str((df.index[-1] - df.index[0]).floor('s'))[7:] for df in dfs]
 
         options_index = list(np.arange(len(dfs)))
-        session_index = st.selectbox(
+        cols = st.columns([1, 8])
+        session_index = cols[1].selectbox(
             "Session", options=options_index, index=0,
             label_visibility="collapsed",
             format_func=lambda i: f"{i} - Duration ({dfs_elapsed_time[i]}) : " + dfs_options[i],
             key=key,
         )
 
-        if session_info:
+        if cols[0].toggle("Show Info", session_info, key=f"{key} toggle session info"):
             session_info_crud = st.session_state.session_info_crud
             session_info = session_info_crud.read(dfs_options[session_index])
             # session_info['driver'] = drivers.get(session_info['driver'], 'Unknown')
-            st.json(session_info, expanded=True)
+            cols[1].json(session_info, expanded=True)
         return dfs_options[session_index]
 
     def r2d_multi_session_selector(self, dfs: List[pd.DataFrame], key: str = None) -> List[str]:
