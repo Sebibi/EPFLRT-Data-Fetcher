@@ -22,7 +22,7 @@ from src.backend.state_estimation.kalman_filters.estimation_transformation.longi
 from src.backend.state_estimation.measurments.measurement_transformation.longitudonal_tire_force import \
     measure_tire_longitudinal_forces
 from src.backend.state_estimation.kalman_filters.estimation_transformation.longitudinal_tire_force import \
-    estimate_longitudinal_tire_forces
+    estimate_longitudinal_tire_forces, traction_ellipse
 from src.backend.state_estimation.measurments.measurement_transformation.wheel_acceleration import \
     measure_wheel_acceleration
 
@@ -117,7 +117,7 @@ class Tab13(Tab):
             result_type='expand'
         )
         data[self.longitudinal_forces_est_cols] = data[SE_param.estimated_states_names].apply(
-            lambda x: estimate_longitudinal_tire_forces(x, use_traction_ellipse=False), axis=1,
+            lambda x: estimate_longitudinal_tire_forces(x, use_traction_ellipse=True), axis=1,
             result_type='expand'
         )
 
@@ -142,9 +142,13 @@ class Tab13(Tab):
         # Compute the v norm from RTK data
         data['sensors_RTK_v_norm'] = np.sqrt(data['sensors_RTK_vx'].values ** 2 + data['sensors_RTK_vy'].values ** 2)
 
-        data['sensors_pitch_rate_integ_deg'] = data['sensors_gyroY'].cumsum() * self.sampling_time * 180 / np.pi
-        data['sensors_pitch_rate_deg'] = data['sensors_gyroY']* 180 / np.pi
+        data['sensors_pitch_rate_deg'] = data['sensors_gyroY'] * (180 / np.pi)
+        data['sensors_pitch_rate_integ_deg'] = data['sensors_pitch_rate_deg'].cumsum() * self.sampling_time
 
+        # Create trcation ellipse mu
+        data['sensors_mu_est'] = data[SE_param.estimated_states_names].apply(
+            lambda x: traction_ellipse(x), axis=1
+        )
 
         self.memory['data'] = data.copy()
 

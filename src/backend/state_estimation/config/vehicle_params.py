@@ -42,7 +42,7 @@ class VehicleParams:
     # Wheel parameters
     Iw = 0.3
     Rw = 0.202
-    kb = 0.18
+    kb = 0 # 0.18
     kd = 0.17
     ks = 15
     wheel_names = ['FL', 'FR', 'RL', 'RR']
@@ -50,9 +50,10 @@ class VehicleParams:
     # Tire parameters
     B = 11.15
     C = 1.98
-    D = 1.50
+    D = 1.5
     E = 0.97
     BCD = B * C * D
+    mu_init = 1.1
     # old_mu_max = 1.67
 
     # Cornering stiffness
@@ -87,7 +88,7 @@ class VehicleParams:
 
 
 if __name__ == '__main__':
-    slip_range = np.linspace(-1.0, 1.0, 100)
+    slip_range = np.linspace(-0.5, 0.5, 100)
     mus = [VehicleParams().magic_formula(s) for s in slip_range]
     fmus = list(filter(lambda x: abs(x) < 1.5, mus))
     slip_range_inv = [VehicleParams().linear_inverse_magic_formula(mu) for mu in fmus]
@@ -101,6 +102,9 @@ if __name__ == '__main__':
     plt.axhline(y=np.max(mus), color='g')
     plt.axhline(y=np.min(mus), color='g')
 
+    # Plot the slip ratio corresponding to 1.0 friction coefficient
+    plt.axvline(x=VehicleParams().linear_inverse_magic_formula(1.2), color='black')
+
     plt.text(0.05, np.max(mus), f"mu_max={np.max(mus):.2f}")
     plt.text(0.05, np.min(mus), f"mu_min={np.min(mus):.2f}")
 
@@ -109,6 +113,10 @@ if __name__ == '__main__':
     plt.axvline(x=slip_range[np.argmin(mus)], color='r')
     plt.text(slip_range[np.argmax(mus)], 0.5, f"optimal slip ratio={slip_range[np.argmax(mus)]:.5f}")
 
+    # Set x axis resolution to 0.1
+    plt.xticks(np.arange(-0.5, 0.5, 0.1))
+    
+    plt.grid()
     plt.xlabel("Slip ratio")
     plt.ylabel("Friction coefficient")
     plt.legend()
