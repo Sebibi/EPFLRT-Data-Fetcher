@@ -141,6 +141,11 @@ class Tab13(Tab):
 
         # Compute the v norm from RTK data
         data['sensors_RTK_v_norm'] = np.sqrt(data['sensors_RTK_vx'].values ** 2 + data['sensors_RTK_vy'].values ** 2)
+
+        data['sensors_pitch_rate_integ_deg'] = data['sensors_gyroY'].cumsum() * self.sampling_time * 180 / np.pi
+        data['sensors_pitch_rate_deg'] = data['sensors_gyroY']* 180 / np.pi
+
+
         self.memory['data'] = data.copy()
 
     def compute_state_estimator(self):
