@@ -7,9 +7,10 @@ import urllib3
 
 from src.backend.api_call.base import Fetcher
 from src.backend.api_call.influxdb_api import InfluxDbFetcher
+from src.backend.data_crud.base import CRUD
 from src.utils import date_to_influx, timestamp_to_datetime_range
 
-from config.config import FSM, ConfigLive, ConfigLogging
+from config.config import FSM, ConfigLive, ConfigLogging, drivers
 
 
 class SessionCreator:
@@ -83,20 +84,26 @@ class SessionCreator:
                 st.success("The data has been fetched in two steps and merged.")
             return df
 
-    def r2d_session_selector(self, dfs: List[pd.DataFrame], key: str, pannel = st) -> str:
+    def r2d_session_selector(self, dfs: List[pd.DataFrame], key: str, session_info: bool = False) -> str:
         dfs_options = [timestamp_to_datetime_range(df.index[0], df.index[-1]) for df in dfs]
         dfs_elapsed_time = [str((df.index[-1] - df.index[0]).floor('s'))[7:] for df in dfs]
 
         options_index = list(np.arange(len(dfs)))
-        session_index = pannel.selectbox(
+        session_index = st.selectbox(
             "Session", options=options_index, index=0,
             label_visibility="collapsed",
             format_func=lambda i: f"{i} - Duration ({dfs_elapsed_time[i]}) : " + dfs_options[i],
             key=key,
         )
+
+        if session_info:
+            session_info_crud = st.session_state.session_info_crud
+            session_info = session_info_crud.read(dfs_options[session_index])
+            # session_info['driver'] = drivers.get(session_info['driver'], 'Unknown')
+            st.json(session_info, expanded=True)
         return dfs_options[session_index]
 
-    def r2d_multi_session_selector(self, dfs: List[pd.DataFrame]) -> List[str]:
+    def r2d_multi_session_selector(self, dfs: List[pd.DataFrame], key: str = None) -> List[str]:
         dfs_options = [timestamp_to_datetime_range(df.index[0], df.index[-1]) for df in dfs]
         dfs_elapsed_time = [str((df.index[-1] - df.index[0]).floor('s'))[7:] for df in dfs]
 
@@ -105,10 +112,10 @@ class SessionCreator:
             label="Sessions", options=options_index,
             label_visibility="collapsed",
             default=options_index,
-            format_func=lambda i: f"{i} - Duration ({dfs_elapsed_time[i]}) : " + dfs_options[i]
+            format_func=lambda i: f"{i} - Duration ({dfs_elapsed_time[i]}) : " + dfs_options[i],
+            key=key,
         )
         return [dfs_options[i] for i in session_indexes]
-
 
 
     def fetch_fsm(self, start_date: pd.Timestamp, end_date: pd.Timestamp, verify_ssl: bool) -> pd.DataFrame:

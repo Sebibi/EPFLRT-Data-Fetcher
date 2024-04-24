@@ -6,8 +6,9 @@ import streamlit as st
 
 from config.config import ConfigLogging, ConfigLive, FSM
 from src.backend.api_call.influxdb_api import InfluxDbFetcher
+from src.backend.data_crud.json_session_info import SessionInfoJsonCRUD
 from src.backend.sessions.create_sessions import SessionCreator
-from src.frontend.tabs import create_tabs, Tab, FSMStateTab, TelemetryDescriptionTab
+from src.frontend.tabs import create_tabs, Tab, FSMStateTab, TelemetryDescriptionTab, SessionInfoTab
 from stqdm import stqdm
 
 import json
@@ -28,6 +29,9 @@ def init_sessions_state():
 
     if "fsm_states" not in st.session_state:
         st.session_state.fsm_states = pd.DataFrame()
+
+    if "session_info_crud" not in st.session_state:
+        st.session_state.session_info_crud = SessionInfoJsonCRUD("data/test_description/session_info.json")
 
 
 if __name__ == '__main__':
@@ -106,6 +110,10 @@ if __name__ == '__main__':
         with st.expander("Telemetry Description"):
             telemetry_description_tab = TelemetryDescriptionTab()
             telemetry_description_tab.build(session_creator=session_creator)
+
+        with st.expander("Session Info Modification"):
+            session_info_tab = SessionInfoTab()
+            session_info_tab.build(session_creator=session_creator)
 
         
         tabs: List[Tab] = create_tabs() 

@@ -4,14 +4,14 @@ from src.backend.data_crud.base import CRUD
 from copy import deepcopy
 
 
-class SessionDescription(TypedDict):
+class SessionInfo(TypedDict):
     driver: str
     weather_condition: str
     control_mode: str
     description: str
 
 
-class SD_JsonCRUD(CRUD):
+class SessionInfoJsonCRUD(CRUD):
     file_path_name: str
     data: dict[str, dict[str]]
 
@@ -26,10 +26,10 @@ class SD_JsonCRUD(CRUD):
                 self.data = json.load(f)
 
 
-    def _get_data(self, key: str) -> SessionDescription | None:
+    def _get_data(self, key: str) -> SessionInfo | None:
         return self.data.get(key, None)
 
-    def _set_data(self, key: str, data: SessionDescription):
+    def _set_data(self, key: str, data: SessionInfo):
         self.data[key] = data
 
     def create(self, time_str: str, driver: str, weather_condition: str, control_mode: str, description: str) -> bool:
@@ -42,7 +42,7 @@ class SD_JsonCRUD(CRUD):
     def update(self, time_str: str, driver: str, weather_condition: str, control_mode: str, description: str) -> bool:
         return self.create(time_str, driver, weather_condition, control_mode, description)
 
-    def read(self, time_str: str) -> SessionDescription:
+    def read(self, time_str: str) -> SessionInfo:
         res = self._get_data(time_str)
         return res if res else dict(driver=None, weather_condition=None, control_mode=None, description=None)
 
@@ -54,5 +54,5 @@ class SD_JsonCRUD(CRUD):
             return True
         return False
 
-    def get_raw_data(self) -> dict[str, SessionDescription]:
+    def get_raw_data(self) -> dict[str, SessionInfo]:
         return deepcopy(self.data)

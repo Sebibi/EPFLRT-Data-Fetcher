@@ -173,8 +173,11 @@ class Tab13(Tab):
     def build(self, session_creator) -> bool:
 
         st.header(self.description)
-        datetime_range = session_creator.r2d_session_selector(st.session_state.sessions,
-                                                              key=f"{self.name} session selector")
+        datetime_range = session_creator.r2d_session_selector(
+            st.session_state.sessions,
+            key=f"{self.name} session selector",
+            session_info=True
+        )
 
         cols = st.columns(6)
         if cols[0].button("Fetch this session", key=f"{self.name} fetch data button"):

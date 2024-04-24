@@ -1,4 +1,5 @@
 from abc import ABC
+from dataclasses import dataclass
 from typing import TypedDict
 
 
@@ -35,3 +36,19 @@ class FSM:
     amk_start = "AMK Start"
     r2d = "R2D"
     all_states = [error, init, ts_off, pre_charge, ts_on, amk_start, r2d]
+
+
+@dataclass(frozen=True)
+class Driver:
+    name: str
+    weight: float
+    height: float
+
+
+drivers = {
+    'Aubin': Driver(name='Aubin', weight=74.0, height=1.77),
+    'Loic': Driver(name='Loic', weight=76.0, height=1.85),
+    'Alex': Driver(name='Alex', weight=76.0, height=1.85),
+    'Seb': Driver(name='Seb', weight=72.0, height=1.78),
+    'Unknown': Driver(name='Unknown', weight=75.0, height=1.80)
+}

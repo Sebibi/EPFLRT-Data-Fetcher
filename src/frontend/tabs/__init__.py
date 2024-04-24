@@ -17,6 +17,7 @@ from src.frontend.tabs.tab13 import Tab13
 
 from src.frontend.tabs.fsm_state_tab import FSMStateTab
 from src.frontend.tabs.telemetry_description_tab import TelemetryDescriptionTab
+from src.frontend.tabs.session_info_tab import SessionInfoTab
 
 
 def create_tabs() -> List[Tab]:
