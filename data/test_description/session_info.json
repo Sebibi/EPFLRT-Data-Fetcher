@@ -346,7 +346,7 @@
         "control_mode": "TV",
         "description": "TV libre kp=50-80 on knob , K=-0.001",
         "driver": "Seb",
-        "flag": "BESS",
+        "flag": null,
         "weather_condition": "Dry"
     }
 }
