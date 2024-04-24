@@ -3,300 +3,350 @@
         "control_mode": "Rien",
         "description": "r2d spark",
         "driver": "Unknown",
+        "flag": null,
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T07:10:02.118172Z, stop: 2024-04-20T07:10:23.507911Z)": {
         "control_mode": "Rien",
         "description": "r2d spark",
         "driver": "Unknown",
+        "flag": null,
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T07:11:01.067986Z, stop: 2024-04-20T07:11:09.738561Z)": {
         "control_mode": "Rien",
         "description": "r2d spark",
         "driver": "Unknown",
+        "flag": null,
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T07:14:34.837534Z, stop: 2024-04-20T07:14:46.848569Z)": {
         "control_mode": "Rien",
         "description": "r2d spark",
         "driver": "Unknown",
+        "flag": null,
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T10:26:56.767684Z, stop: 2024-04-20T10:28:24.988004Z)": {
         "control_mode": "Rien",
         "description": "System id linear torque",
         "driver": "Aubin",
+        "flag": null,
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T10:30:43.449376Z, stop: 2024-04-20T10:32:15.549497Z)": {
         "control_mode": "Rien",
         "description": "System id linear torque",
         "driver": "Aubin",
+        "flag": null,
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T10:35:32.842472Z, stop: 2024-04-20T10:40:07.170980Z)": {
         "control_mode": "Rien",
         "description": "System id step torques",
         "driver": "Aubin",
+        "flag": null,
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T11:21:33.275303Z, stop: 2024-04-20T11:22:21.602819Z)": {
-        "control_mode": null,
-        "description": null,
-        "driver": null,
-        "weather_condition": null
+        "control_mode": "Rien",
+        "description": "80-20 torque bias is to high, rear motors saturate to quickly and front motor underperforme",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T11:35:59.292468Z, stop: 2024-04-20T11:36:20.962397Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T11:40:34.792343Z, stop: 2024-04-20T11:41:18.702379Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T11:43:57.192681Z, stop: 2024-04-20T11:44:42.032374Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T11:49:58.515429Z, stop: 2024-04-20T11:50:39.435522Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T11:52:59.819382Z, stop: 2024-04-20T11:53:55.519270Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T11:58:13.314777Z, stop: 2024-04-20T11:58:58.503622Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:00:42.843788Z, stop: 2024-04-20T12:01:30.884129Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:12:37.786661Z, stop: 2024-04-20T12:13:25.137078Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:14:18.905692Z, stop: 2024-04-20T12:15:01.286202Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:17:39.177447Z, stop: 2024-04-20T12:18:30.255495Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:19:36.985508Z, stop: 2024-04-20T12:20:21.825574Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:21:59.776050Z, stop: 2024-04-20T12:23:42.776247Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:26:56.845591Z, stop: 2024-04-20T12:28:11.165516Z)": {
         "control_mode": "TCO",
         "description": "Motor FL FR RL stopped working but not at the same time, FL FR time 7.40 and RL time 7.75",
         "driver": "Aubin",
+        "flag": "PE",
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T12:33:25.565474Z, stop: 2024-04-20T12:34:10.115526Z)": {
         "control_mode": "TCO",
         "description": "Motor FL FR RL not working after 5s",
         "driver": "Aubin",
+        "flag": "PE",
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T12:42:37.445499Z, stop: 2024-04-20T12:44:37.703740Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:45:18.083815Z, stop: 2024-04-20T12:46:02.783681Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:46:22.783686Z, stop: 2024-04-20T12:46:58.984685Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:47:49.463703Z, stop: 2024-04-20T12:48:30.283762Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:48:46.753799Z, stop: 2024-04-20T12:49:18.233643Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:50:32.233627Z, stop: 2024-04-20T12:51:07.213654Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:56:07.774952Z, stop: 2024-04-20T12:56:43.973937Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:57:00.523856Z, stop: 2024-04-20T12:57:29.524655Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:58:41.458603Z, stop: 2024-04-20T12:59:11.718072Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:59:34.189724Z, stop: 2024-04-20T13:00:06.118151Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T13:01:52.228002Z, stop: 2024-04-20T13:02:06.468032Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T13:02:21.749067Z, stop: 2024-04-20T13:02:48.968177Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T13:47:23.267073Z, stop: 2024-04-20T13:48:06.816126Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T13:53:45.494806Z, stop: 2024-04-20T13:57:44.122037Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T14:02:24.981585Z, stop: 2024-04-20T14:03:25.681444Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T14:07:26.835969Z, stop: 2024-04-20T14:07:58.156888Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T14:23:27.164504Z, stop: 2024-04-20T14:24:05.244291Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T14:24:29.794579Z, stop: 2024-04-20T14:25:18.554735Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T14:31:30.193492Z, stop: 2024-04-20T14:34:31.381854Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T14:37:05.621785Z, stop: 2024-04-20T14:37:38.671790Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T14:38:34.852554Z, stop: 2024-04-20T14:40:07.491885Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T14:52:34.246649Z, stop: 2024-04-20T14:52:41.686772Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T14:54:53.439461Z, stop: 2024-04-20T14:55:35.929565Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T15:00:01.524582Z, stop: 2024-04-20T15:00:22.624539Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T15:48:38.525022Z, stop: 2024-04-20T15:50:31.874844Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T16:07:44.785885Z, stop: 2024-04-20T16:10:46.146743Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T16:18:22.271753Z, stop: 2024-04-20T16:20:08.942614Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T16:28:11.077691Z, stop: 2024-04-20T16:29:52.149397Z)": {
         "control_mode": null,
         "description": null,
         "driver": null,
+        "flag": null,
         "weather_condition": null
     }
 }

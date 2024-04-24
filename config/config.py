@@ -38,6 +38,20 @@ class FSM:
     all_states = [error, init, ts_off, pre_charge, ts_on, amk_start, r2d]
 
 
+class Divisons:
+    vd = "VD"
+    ss = "S&S"
+    pe = "PE"
+    bess = "BESS"
+    lv = "LV"
+    ms = "MS"
+    aerodynamics = "Aero"
+    chassis = "Chassis"
+    DV = "DV"
+    all = [vd, ss, pe, bess, lv, ms, aerodynamics, chassis, DV]
+
+
+
 @dataclass(frozen=True)
 class Driver:
     name: str

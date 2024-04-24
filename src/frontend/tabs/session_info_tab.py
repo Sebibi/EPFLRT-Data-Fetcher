@@ -6,7 +6,7 @@ from src.backend.sessions.create_sessions import SessionCreator
 from src.backend.data_crud.json_session_info import SessionInfoJsonCRUD, SessionInfo
 from src.backend.state_estimation.config.vehicle_params import VehicleParams
 from src.frontend.tabs.base import Tab
-from config.config import drivers
+from config.config import drivers, Divisons
 
 
 class SessionInfoTab(Tab):
@@ -35,12 +35,13 @@ class SessionInfoTab(Tab):
             new_df = st.data_editor(
                 df,
                 column_config={
+                    "flag": st.column_config.SelectboxColumn(options=Divisons.all),
                     "driver": st.column_config.SelectboxColumn(options=list(drivers.keys()), default='Unknown'),
                     "weather_condition": st.column_config.SelectboxColumn(options=['Wet', 'Dry', 'Humid'], default="None"),
                     "control_mode": st.column_config.SelectboxColumn(options=list(VehicleParams.ControlMode.values()), default="None"),
                     "description": st.column_config.TextColumn(help="Enter a description"),
                 },
-                column_order=["control_mode", "driver", "weather_condition", "description"],
+                column_order=["flag", "control_mode", "driver", "weather_condition", "description"],
                 use_container_width=True,
             )
 
