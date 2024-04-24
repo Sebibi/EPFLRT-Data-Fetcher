@@ -19,12 +19,14 @@ def estimate_longitudinal_tire_forces(x: np.array, use_traction_ellipse: bool = 
     return normal_forces * mu
 
 
-def traction_ellipse(x: np.array) -> np.ndarray:
+def traction_ellipse(x: np.array) -> float:
     # 1 = (ax / ax_max)^2 + (ay / ay_max)^2
     # 1 = (mux / mux_max)^2 + (ay * (Fz/g) / muy_max * Fz)^2
     # mux = mux_max * sqrt(1 - (ay / muy_max * g)^2)
     mux_max = VehicleParams.D
     muy_max = VehicleParams.D - 0.3
+
+    mux_max = min(VehicleParams.D, VehicleParams.mu_init + x[0] * (VehicleParams.D - VehicleParams.mu_init) / 5)
     mux = mux_max * np.sqrt(1 - min((x[3] / (muy_max * VehicleParams.g)) ** 2, 0.95))
     return mux
 
@@ -32,16 +34,19 @@ def traction_ellipse(x: np.array) -> np.ndarray:
 if __name__ == '__main__':
     slips = np.linspace(-1.5, 1.5, 100)
 
-    forces = []
-    for s in slips:
-        x = np.array([0, 0, 0, 0, 0, s, 0, 0, 0])
-        f = estimate_longitudinal_tire_force(x, 0)
-        forces.append(f)
-        print(x)
-        print(f)
+    vx = np.linspace(0, 10, 100)
+    states = np.array([np.array([v, 0, 0, 0, 0, 0, 0, 0, 0, 0]) for v in vx])
 
-    # plot the forces
+    mus = [traction_ellipse(x) for x in states]
+
+    # Plot the traction ellipse
     import matplotlib.pyplot as plt
-    plt.plot(slips, [f[0] for f in forces])
-    plt.plot(slips, slips * 1000, 'ro')
+    plt.plot(vx, mus, label="Traction ellipse")
+    plt.xlabel("vx [m/s]")
+    plt.ylabel("mux")
+    plt.legend()
+    plt.grid()
     plt.show()
+
+
+   

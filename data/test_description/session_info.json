@@ -196,11 +196,11 @@
         "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T12:56:07.774952Z, stop: 2024-04-20T12:56:43.973937Z)": {
-        "control_mode": null,
-        "description": null,
-        "driver": null,
-        "flag": null,
-        "weather_condition": null
+        "control_mode": "TCO",
+        "description": "State estimation not working",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T12:57:00.523856Z, stop: 2024-04-20T12:57:29.524655Z)": {
         "control_mode": null,
@@ -322,31 +322,31 @@
         "weather_condition": null
     },
     "range(start: 2024-04-20T15:48:38.525022Z, stop: 2024-04-20T15:50:31.874844Z)": {
-        "control_mode": null,
-        "description": null,
+        "control_mode": "Rien",
+        "description": "libre",
         "driver": null,
         "flag": null,
         "weather_condition": null
     },
     "range(start: 2024-04-20T16:07:44.785885Z, stop: 2024-04-20T16:10:46.146743Z)": {
-        "control_mode": null,
-        "description": null,
-        "driver": null,
+        "control_mode": "TV",
+        "description": "TV libre kp=100, K=0",
+        "driver": "Seb",
         "flag": null,
-        "weather_condition": null
+        "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T16:18:22.271753Z, stop: 2024-04-20T16:20:08.942614Z)": {
-        "control_mode": null,
-        "description": null,
-        "driver": null,
+        "control_mode": "TV",
+        "description": "TV libre kp=50 on knob, K=0",
+        "driver": "Seb",
         "flag": null,
-        "weather_condition": null
+        "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T16:28:11.077691Z, stop: 2024-04-20T16:29:52.149397Z)": {
-        "control_mode": null,
-        "description": null,
-        "driver": null,
-        "flag": null,
-        "weather_condition": null
+        "control_mode": "TV",
+        "description": "TV libre kp=50-80 on knob , K=-0.001",
+        "driver": "Seb",
+        "flag": "BESS",
+        "weather_condition": "Dry"
     }
 }
