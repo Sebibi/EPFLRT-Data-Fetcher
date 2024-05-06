@@ -10,7 +10,7 @@ class VehicleParams:
     dt = 0.01
 
     # Control Modes
-    ControlMode = defaultdict(lambda: 'Unkown', {1:'Rien', 2:'TV', 3:'TCO', 4:'TCC', 5:'TCO + TV', 6:'TCC + TV'})
+    ControlMode = defaultdict(lambda: 'Unkown', {1:'Rien', 2:'TV', 3:'TCO', 4:'TCC', 5:'TCO + TV', 6:'TCC + TV', 7:'TCOL'})
 
     # Aero
     A_front = 1.61
