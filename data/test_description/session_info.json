@@ -98,11 +98,11 @@
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:00:42.843788Z, stop: 2024-04-20T12:01:30.884129Z)": {
-        "control_mode": null,
-        "description": null,
-        "driver": null,
+        "control_mode": "Rien",
+        "description": "pretty good state estimator",
+        "driver": "Aubin",
         "flag": null,
-        "weather_condition": null
+        "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T12:12:37.786661Z, stop: 2024-04-20T12:13:25.137078Z)": {
         "control_mode": null,
@@ -189,11 +189,11 @@
         "weather_condition": null
     },
     "range(start: 2024-04-20T12:50:32.233627Z, stop: 2024-04-20T12:51:07.213654Z)": {
-        "control_mode": null,
-        "description": null,
-        "driver": null,
-        "flag": null,
-        "weather_condition": null
+        "control_mode": "TCO",
+        "description": "strong accel but state estimator not working",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": "Dry"
     },
     "range(start: 2024-04-20T12:56:07.774952Z, stop: 2024-04-20T12:56:43.973937Z)": {
         "control_mode": "TCO",
@@ -346,7 +346,7 @@
         "control_mode": "TV",
         "description": "TV libre kp=50-80 on knob , K=-0.001",
         "driver": "Seb",
-        "flag": "BESS",
+        "flag": null,
         "weather_condition": "Dry"
     },
     "range(start: 2024-05-04T11:16:50.963591Z, stop: 2024-05-04T11:18:43.703682Z)": {
