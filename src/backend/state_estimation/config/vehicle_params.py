@@ -29,7 +29,7 @@ class VehicleParams:
     kout = 0.162
 
     # Rigid parameters
-    g = 9.81
+    g = 9.785
     lzz = 180
     a = 1.24
     b = 1.24
