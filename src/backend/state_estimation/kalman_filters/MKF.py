@@ -57,8 +57,9 @@ class MKF:
         self.attitude_ekf.update(z)
         return self.attitude_ekf.x
 
-    def predict(self, x: np.array, P: np.ndarray):
-        x, P = self.ekf.predict(x, P)
+    def predict(self, x: np.array, P: np.ndarray, wheel_speeds: np.ndarray, wheel_acc: np.ndarray):
+        # x, P = self.ekf.predict(x, P)
+        x, P = self.ekf.predict(x, P, wheel_speeds, wheel_acc)
         return x, P
 
     def update(

@@ -34,7 +34,7 @@ class StateEstimatorApp:
         steering_deltas = measure_delta_wheel_angle(steering_angle=sensors['steering_angle'])
 
         # Predict step (EKF)
-        self.x, self.P = self.mkf.predict(self.x, self.P)
+        self.x, self.P = self.mkf.predict(self.x, self.P, wheel_speeds, wheel_acc)
 
         # Update step (LKF, UKF)
         self.x, self.P = self.mkf.update(
@@ -52,7 +52,7 @@ class StateEstimatorApp:
 
 if __name__ == '__main__':
     sensors = Sensors(
-        ins=np.array([0, 0, 0], dtype=float),
+        ins=np.array([0, 0, 0, 0, 0, 0], dtype=float),
         motor_speeds=np.array([0, 0, 0, 0], dtype=float),
         torques=np.array([0, 0, 0, 0], dtype=float),
         bps=np.array([0, 0, 0, 0], dtype=float),

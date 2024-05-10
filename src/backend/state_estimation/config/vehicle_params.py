@@ -40,7 +40,7 @@ class VehicleParams:
     z_cg = 0.295
 
     # Wheel parameters
-    Iw = 0.3
+    Iw = 0.3 # 0.3
     Rw = 0.202
     kb = 0 # 0.18
     kd = 0.17
