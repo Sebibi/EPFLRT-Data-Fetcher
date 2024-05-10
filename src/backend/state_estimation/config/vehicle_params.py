@@ -44,7 +44,7 @@ class VehicleParams:
     Rw = 0.202
     kb = 0 # 0.18
     kd = 0.17
-    ks = 15
+    ks = 5
     wheel_names = ['FL', 'FR', 'RL', 'RR']
 
     # Tire parameters
