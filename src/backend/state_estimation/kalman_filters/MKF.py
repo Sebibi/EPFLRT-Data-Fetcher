@@ -7,6 +7,7 @@ from src.backend.state_estimation.kalman_filters.LKF import LKF
 from src.backend.state_estimation.kalman_filters.UKF import UKF, UKF_one
 from src.backend.state_estimation.attitude_estimation.attitude_estimation import AttitudeEstimation
 from src.backend.state_estimation.attitude_estimation.attitude_estimation_simple import AttitudeEstimationSimple
+from src.backend.state_estimation.attitude_estimation.attitude_estimator_speed import AttitudeEstimationSpeed
 
 
 
@@ -18,7 +19,7 @@ class MKF:
         self.lkf = LKF()
         self.ukf = UKF_one() if independent_updates else UKF()
         self.ekf = EKF()
-        self.attitude_ekf = AttitudeEstimationSimple()
+        self.attitude_ekf = AttitudeEstimationSpeed()
 
         self.vx_prev = 0
         self.vy_prev = 0
@@ -50,12 +51,11 @@ class MKF:
 
     def update_attitude(self, x: np.ndarray, ins: np.ndarray):
         ax, ay, az, gyro_x, gyro_y, gyro_z = ins
+        vx, vy, ax, ay = x[0], x[1], x[2], x[3]
+        z = np.array([ax, ay, az, vx, vy, gyro_z])
         self.attitude_ekf.predict([gyro_y, gyro_x])
-        z = np.array([ax, ay, az])
         self.attitude_ekf.update(z)
         return self.attitude_ekf.x
-
-
 
     def predict(self, x: np.array, P: np.ndarray):
         x, P = self.ekf.predict(x, P)
@@ -72,8 +72,8 @@ class MKF:
             bp: np.ndarray,
             wheel_acc: np.ndarray,
     ):
-        attitude = self.update_attitude(x, ins)
-        print(attitude)
+        attitude = np.zeros(2) #  self.update_attitude(x, ins)
+        # print(attitude)
         self.lkf.update_bias(wheel_speeds=wheel_speeds)
         x, P = self.lkf.update(x, P, ins, attitude)  # Update ax, ay, az, yaw_rate from ins
         x, P = self.lkf.update_vy_reset(x, P)  # Update vy == 0 if steady state

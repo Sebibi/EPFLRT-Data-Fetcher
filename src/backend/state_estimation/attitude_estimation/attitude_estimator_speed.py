@@ -20,7 +20,7 @@ class AttitudeEstimationSpeed:
     H = np.array([[1, 0, 0, 0],
                   [0, 1, 0, 0]])
 
-    def __init__(self, pitch_grad):
+    def __init__(self, pitch_grad: float = 10):
         self.x = np.zeros(self.dim_x)
         self.P = np.eye(self.dim_x) * 0.00001 * self.dt
         self.pitch_grad = pitch_grad
@@ -199,4 +199,3 @@ if __name__ == '__main__':
         print(estimator.h(estimator.x))
         print()
         input()
-
