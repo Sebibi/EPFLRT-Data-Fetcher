@@ -348,5 +348,754 @@
         "driver": "Seb",
         "flag": null,
         "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T11:16:50.933627Z, stop: 2024-05-04T11:18:43.703682Z)": {
+        "control_mode": "Rien",
+        "description": "free",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T11:16:50.963591Z, stop: 2024-05-04T11:18:43.703682Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T11:49:30.816186Z, stop: 2024-05-04T11:49:48.106205Z)": {
+        "control_mode": "Rien",
+        "description": "replacement",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T11:49:30.826395Z, stop: 2024-05-04T11:49:48.106205Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T11:50:03.726088Z, stop: 2024-05-04T11:50:34.096073Z)": {
+        "control_mode": "TCOL",
+        "description": "skidpad",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T11:50:03.766129Z, stop: 2024-05-04T11:50:34.066012Z)": {
+        "control_mode": "TCO",
+        "description": "diff�rentiel bloqu�",
+        "driver": null,
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T11:54:58.356201Z, stop: 2024-05-04T11:55:27.866343Z)": {
+        "control_mode": "TCOL",
+        "description": "skidpad",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T11:54:58.366018Z, stop: 2024-05-04T11:55:27.766087Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T11:54:58.366018Z, stop: 2024-05-04T11:55:27.826231Z)": {
+        "control_mode": "TCO",
+        "description": "differentiel bloqué",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T11:57:07.506083Z, stop: 2024-05-04T11:57:21.156155Z)": {
+        "control_mode": "TCO",
+        "description": "code trop lent",
+        "driver": "Aubin",
+        "flag": "S&S",
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T11:57:07.546217Z, stop: 2024-05-04T11:57:21.106320Z)": {
+        "control_mode": "TCO",
+        "description": "code trop lent",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T11:58:13.766033Z, stop: 2024-05-04T11:58:41.336329Z)": {
+        "control_mode": "TCO",
+        "description": "skidpad",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T11:58:13.786107Z, stop: 2024-05-04T11:58:41.266358Z)": {
+        "control_mode": "TCO",
+        "description": "diff débloqué debug",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T11:58:13.786107Z, stop: 2024-05-04T11:58:41.326389Z)": {
+        "control_mode": "TCO",
+        "description": "diff d�bloqu�",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T12:00:05.046451Z, stop: 2024-05-04T12:00:33.626076Z)": {
+        "control_mode": "TCO",
+        "description": "skidpad, front wheel slip",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T12:00:05.086670Z, stop: 2024-05-04T12:00:33.526268Z)": {
+        "control_mode": "TCO",
+        "description": "diff d�bloqu� slip observ� � l'avant",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T12:00:05.086670Z, stop: 2024-05-04T12:00:33.586231Z)": {
+        "control_mode": "TCO",
+        "description": "diff�rentiel d�bloqu� slip avant",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T12:03:11.786396Z, stop: 2024-05-04T12:03:41.976440Z)": {
+        "control_mode": "TCO",
+        "description": "skidpad, front wheel  slip",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T12:03:11.806592Z, stop: 2024-05-04T12:03:41.866129Z)": {
+        "control_mode": "TCO",
+        "description": "diff d�bloqu� slip avant",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T12:03:11.806592Z, stop: 2024-05-04T12:03:41.926164Z)": {
+        "control_mode": "TCO",
+        "description": "diff�rentiel d�bloqu� slip avant",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T12:05:30.503416Z, stop: 2024-05-04T12:05:58.859392Z)": {
+        "control_mode": "TCOL",
+        "description": "skidpad",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T12:05:30.526219Z, stop: 2024-05-04T12:05:58.786235Z)": {
+        "control_mode": "TCO",
+        "description": "diff�rentiel bloqu�",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T12:05:30.526219Z, stop: 2024-05-04T12:05:58.846478Z)": {
+        "control_mode": "TCO",
+        "description": "diff�rentiel bloqu�",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T12:13:38.943096Z, stop: 2024-05-04T12:14:08.132793Z)": {
+        "control_mode": "TV",
+        "description": "start TV kp=40",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T12:13:38.992879Z, stop: 2024-05-04T12:14:08.032792Z)": {
+        "control_mode": "TV",
+        "description": "start kp = 30",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T12:13:38.992879Z, stop: 2024-05-04T12:14:08.092591Z)": {
+        "control_mode": "TV",
+        "description": "start TV",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T12:17:20.570016Z, stop: 2024-05-04T12:17:48.232940Z)": {
+        "control_mode": "TV",
+        "description": "to much front slip generated by TCO",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T12:19:11.703484Z, stop: 2024-05-04T12:19:39.572722Z)": {
+        "control_mode": "TV",
+        "description": "to much front slip generated by TCO",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T12:19:11.752736Z, stop: 2024-05-04T12:19:39.532894Z)": {
+        "control_mode": "TV",
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:17:41.085450Z, stop: 2024-05-04T13:17:56.024639Z)": {
+        "control_mode": "TV",
+        "description": "STOP TV, trop de slip à l'avant et limite des pneus en lateral",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:17:41.085450Z, stop: 2024-05-04T13:17:56.084660Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:17:41.085450Z, stop: 2024-05-04T13:17:56.114962Z)": {
+        "control_mode": "TV",
+        "description": "60-40 weigth distribution",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:23:03.631897Z, stop: 2024-05-04T13:23:25.244547Z)": {
+        "control_mode": "TV",
+        "description": null,
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:23:03.644777Z, stop: 2024-05-04T13:23:25.244547Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:23:43.741890Z, stop: 2024-05-04T13:23:59.344723Z)": {
+        "control_mode": "TV",
+        "description": null,
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:23:43.784628Z, stop: 2024-05-04T13:23:59.324747Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:25:15.834597Z, stop: 2024-05-04T13:25:44.954732Z)": {
+        "control_mode": "TV",
+        "description": null,
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:25:15.884614Z, stop: 2024-05-04T13:25:44.924765Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:28:58.504461Z, stop: 2024-05-04T13:29:17.804646Z)": {
+        "control_mode": "TV",
+        "description": "kp 40 cone touché",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:28:58.544599Z, stop: 2024-05-04T13:29:17.804646Z)": {
+        "control_mode": "TV",
+        "description": "cone touch� kp 40",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:31:10.121926Z, stop: 2024-05-04T13:31:39.104530Z)": {
+        "control_mode": "TV",
+        "description": "bien kp 40",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:31:10.121926Z, stop: 2024-05-04T13:31:39.165367Z)": {
+        "control_mode": "TV",
+        "description": "bien kp 40",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:31:10.121926Z, stop: 2024-05-04T13:31:39.195400Z)": {
+        "control_mode": "TV",
+        "description": "good kp 40",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:34:17.701939Z, stop: 2024-05-04T13:34:34.424893Z)": {
+        "control_mode": "TV",
+        "description": "kp 50 cone touché",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:34:17.744526Z, stop: 2024-05-04T13:34:34.364652Z)": {
+        "control_mode": "TV",
+        "description": "kp 50 cone touch�",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:34:17.744526Z, stop: 2024-05-04T13:34:34.424893Z)": {
+        "control_mode": "TV",
+        "description": "kp 50 ",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:36:03.174909Z, stop: 2024-05-04T13:36:27.724727Z)": {
+        "control_mode": "TV",
+        "description": "kp 50 cone touché",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:36:03.224792Z, stop: 2024-05-04T13:36:27.644864Z)": {
+        "control_mode": "TV",
+        "description": "kp 50 conse touch�s",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:36:03.224792Z, stop: 2024-05-04T13:36:27.704678Z)": {
+        "control_mode": "TV",
+        "description": "kp 50 cone touch�",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:38:44.481914Z, stop: 2024-05-04T13:39:15.204741Z)": {
+        "control_mode": "TV",
+        "description": "kp 60 debut de sensation de saturation du train avant",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:38:44.504768Z, stop: 2024-05-04T13:39:15.104714Z)": {
+        "control_mode": "TV",
+        "description": "kp 60 debut de sensation de saturation du train avant",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:38:44.504768Z, stop: 2024-05-04T13:39:15.164578Z)": {
+        "control_mode": "TV",
+        "description": "kp 60 debut de saturation du train avant",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:41:00.842054Z, stop: 2024-05-04T13:41:32.194788Z)": {
+        "control_mode": "TV",
+        "description": "kp 70 saturation train avant camber positif",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:41:00.884527Z, stop: 2024-05-04T13:41:32.084774Z)": {
+        "control_mode": "TV",
+        "description": "kp 70 saturation train avant camber positif",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:41:00.884527Z, stop: 2024-05-04T13:41:32.144787Z)": {
+        "control_mode": "TV",
+        "description": "kp 70 saturation train avant et camber positif",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:43:24.025394Z, stop: 2024-05-04T13:43:54.194742Z)": {
+        "control_mode": "TV",
+        "description": "kp 80 saturation train avant et camber positif",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:43:24.044577Z, stop: 2024-05-04T13:43:40.244854Z)": {
+        "control_mode": "TV",
+        "description": "kp 80 saturation train avant et camber positif ",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:43:24.044577Z, stop: 2024-05-04T13:43:54.104722Z)": {
+        "control_mode": "TV",
+        "description": "kp 80 saturation train avant et camber positif",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:43:24.044577Z, stop: 2024-05-04T13:43:54.164740Z)": {
+        "control_mode": "TV",
+        "description": "kp 80 saturation train avant et camber positif",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:45:46.832006Z, stop: 2024-05-04T13:46:14.834611Z)": {
+        "control_mode": "TV",
+        "description": "kp 90",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:45:46.844542Z, stop: 2024-05-04T13:45:52.964671Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:45:46.844542Z, stop: 2024-05-04T13:46:14.804708Z)": {
+        "control_mode": "TV",
+        "description": "kp 90",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:47:22.595019Z, stop: 2024-05-04T13:47:51.656550Z)": {
+        "control_mode": "TV",
+        "description": "estimator error",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:47:22.604430Z, stop: 2024-05-04T13:47:51.584722Z)": {
+        "control_mode": "TV",
+        "description": "perte de puissance",
+        "driver": null,
+        "flag": "VD",
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:47:22.604430Z, stop: 2024-05-04T13:47:51.644619Z)": {
+        "control_mode": "TV",
+        "description": "estimator error",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T13:56:06.022087Z, stop: 2024-05-04T13:56:35.364739Z)": {
+        "control_mode": "TV",
+        "description": "estimator error",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T13:56:06.044590Z, stop: 2024-05-04T13:56:35.324852Z)": {
+        "control_mode": "TV",
+        "description": "estimator error",
+        "driver": "Aubin",
+        "flag": "VD",
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:00:56.554715Z, stop: 2024-05-04T14:01:25.454763Z)": {
+        "control_mode": "TV",
+        "description": "",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T14:00:56.564676Z, stop: 2024-05-04T14:01:25.365253Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:00:56.564676Z, stop: 2024-05-04T14:01:25.424712Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:03:21.664679Z, stop: 2024-05-04T14:03:48.604590Z)": {
+        "control_mode": "TV",
+        "description": "lost rear a bit",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T14:03:21.704751Z, stop: 2024-05-04T14:03:48.584701Z)": {
+        "control_mode": "TV",
+        "description": "perdu l'arriere un peu",
+        "driver": null,
+        "flag": "VD",
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:05:04.484900Z, stop: 2024-05-04T14:05:33.104732Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:05:04.484900Z, stop: 2024-05-04T14:05:33.164780Z)": {
+        "control_mode": "TV",
+        "description": "blockage roue RL kp 130 ?",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:05:04.484900Z, stop: 2024-05-04T14:05:33.194973Z)": {
+        "control_mode": "TV",
+        "description": "RL wheel locked",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T14:09:11.404698Z, stop: 2024-05-04T14:09:38.194657Z)": {
+        "control_mode": "TV",
+        "description": "beaucoup d input volant knob 10",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T14:09:11.444708Z, stop: 2024-05-04T14:09:38.084801Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:09:11.444708Z, stop: 2024-05-04T14:09:38.144617Z)": {
+        "control_mode": "TV",
+        "description": "beaucoup d input volant knob 10",
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:12:16.554662Z, stop: 2024-05-04T14:12:45.084878Z)": {
+        "control_mode": "TV",
+        "description": "moins d'input pilote",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T14:12:16.604640Z, stop: 2024-05-04T14:12:44.985324Z)": {
+        "control_mode": null,
+        "description": null,
+        "driver": null,
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:12:16.604640Z, stop: 2024-05-04T14:12:45.044826Z)": {
+        "control_mode": "TV",
+        "description": "moins d'input pilote",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T14:15:03.301958Z, stop: 2024-05-04T14:15:30.885224Z)": {
+        "control_mode": "TV",
+        "description": "oversteer bizarre",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T14:15:03.344574Z, stop: 2024-05-04T14:15:25.964728Z)": {
+        "control_mode": "TV",
+        "description": "oversteer bizarre ",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": null
+    },
+    "range(start: 2024-05-04T15:49:29.617234Z, stop: 2024-05-04T15:49:49.077053Z)": {
+        "control_mode": "TV",
+        "description": "NA",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T15:50:13.886905Z, stop: 2024-05-04T15:50:45.877697Z)": {
+        "control_mode": "TV",
+        "description": "knob 8 slow run",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T15:51:33.287665Z, stop: 2024-05-04T15:52:00.947289Z)": {
+        "control_mode": "TV",
+        "description": "knob 8 very good run",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T15:53:04.596994Z, stop: 2024-05-04T15:53:34.157123Z)": {
+        "control_mode": "TV",
+        "description": "knob 10 good run",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T15:54:25.237453Z, stop: 2024-05-04T15:54:43.647315Z)": {
+        "control_mode": "TV",
+        "description": "knob 10 steering wheel got locked",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T15:57:22.716845Z, stop: 2024-05-04T15:57:32.918831Z)": {
+        "control_mode": "TV",
+        "description": "replacement",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T15:57:54.766941Z, stop: 2024-05-04T15:58:22.347124Z)": {
+        "control_mode": "TV",
+        "description": "knob 10 good run, clean, slow ?",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T15:59:32.317292Z, stop: 2024-05-04T15:59:59.846898Z)": {
+        "control_mode": "TV",
+        "description": "Kunder -0.001 knob 8 good run",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T16:00:45.557001Z, stop: 2024-05-04T16:01:14.026968Z)": {
+        "control_mode": "TV",
+        "description": "Kunder -0.001 knob 8 good run",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T16:02:06.526958Z, stop: 2024-05-04T16:02:33.676998Z)": {
+        "control_mode": "TV",
+        "description": "Kunder -0.001 knob 10 good run",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T16:04:11.506920Z, stop: 2024-05-04T16:04:23.047566Z)": {
+        "control_mode": "TV",
+        "description": "Kunder -0.001 knob 10 good run",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T16:05:56.356970Z, stop: 2024-05-04T16:06:19.277315Z)": {
+        "control_mode": "TV",
+        "description": "NA",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T16:06:40.056817Z, stop: 2024-05-04T16:07:11.858888Z)": {
+        "control_mode": "TV",
+        "description": "Kunder -0.002 knob 8 bad, abrupt torque ",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T16:11:01.626883Z, stop: 2024-05-04T16:11:28.227223Z)": {
+        "control_mode": "TV",
+        "description": "Kunder -0.002",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T16:12:01.636979Z, stop: 2024-05-04T16:12:21.497231Z)": {
+        "control_mode": "TV",
+        "description": "Kunder -0.002",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T16:14:42.105035Z, stop: 2024-05-04T16:15:00.417410Z)": {
+        "control_mode": "TV",
+        "description": "Kunder -0.002",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T16:15:14.076773Z, stop: 2024-05-04T16:15:43.657240Z)": {
+        "control_mode": "TV",
+        "description": "Kunder -0.002",
+        "driver": "Aubin",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T17:12:55.716879Z, stop: 2024-05-04T17:17:02.473558Z)": {
+        "control_mode": "TCO",
+        "description": "Drove on the street to main testing area",
+        "driver": "Seb",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T17:30:54.865485Z, stop: 2024-05-04T17:32:10.035319Z)": {
+        "control_mode": "Rien",
+        "description": "Front wheel drive, much slip",
+        "driver": "Seb",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T17:34:17.785189Z, stop: 2024-05-04T17:35:03.955371Z)": {
+        "control_mode": "Rien",
+        "description": "Front wheel drive",
+        "driver": "Seb",
+        "flag": null,
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T17:38:35.987052Z, stop: 2024-05-04T17:38:45.226908Z)": {
+        "control_mode": "Rien",
+        "description": "Rear wheel drive",
+        "driver": "Seb",
+        "flag": "BESS",
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T18:00:38.053238Z, stop: 2024-05-04T18:00:56.125905Z)": {
+        "control_mode": "TCOL",
+        "description": "Test aero and AMS",
+        "driver": "Seb",
+        "flag": "BESS",
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T18:23:15.349827Z, stop: 2024-05-04T18:23:40.050254Z)": {
+        "control_mode": "TCOL",
+        "description": "Test aero and AMS",
+        "driver": "Seb",
+        "flag": "BESS",
+        "weather_condition": "Dry"
+    },
+    "range(start: 2024-05-04T18:28:05.134138Z, stop: 2024-05-04T18:28:30.763657Z)": {
+        "control_mode": "TCOL",
+        "description": "Test aero and AMS",
+        "driver": "Seb",
+        "flag": "BESS",
+        "weather_condition": "Dry"
     }
 }

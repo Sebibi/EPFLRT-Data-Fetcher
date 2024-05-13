@@ -10,7 +10,7 @@ from src.backend.state_estimation.kalman_filters.estimation_transformation.norma
     estimate_aero_focre_one_tire
 from src.backend.state_estimation.measurments.sensors import Sensors, get_sensors_from_data
 from src.backend.state_estimation.state_estimator_app import StateEstimatorApp
-from src.frontend.plotting.plotting import plot_data
+from src.frontend.plotting.plotting import plot_data, plot_data_comparaison
 from src.frontend.tabs import Tab
 from src.backend.state_estimation.config.vehicle_params import VehicleParams
 from src.backend.state_estimation.measurments.measurement_transformation.wheel_speed import measure_wheel_speeds
@@ -22,7 +22,7 @@ from src.backend.state_estimation.kalman_filters.estimation_transformation.longi
 from src.backend.state_estimation.measurments.measurement_transformation.longitudonal_tire_force import \
     measure_tire_longitudinal_forces
 from src.backend.state_estimation.kalman_filters.estimation_transformation.longitudinal_tire_force import \
-    estimate_longitudinal_tire_forces
+    estimate_longitudinal_tire_forces, traction_ellipse
 from src.backend.state_estimation.measurments.measurement_transformation.wheel_acceleration import \
     measure_wheel_acceleration
 
@@ -31,6 +31,8 @@ class Tab14(Tab):
     acc_cols = ['sensors_aXEst', 'sensors_aYEst']
     speed_cols = ['sensors_vXEst', 'sensors_vYEst']
     motor_torques_cols = [f'VSI_TrqFeedback_{wheel}' for wheel in VehicleParams.wheel_names]
+    motor_torque_pos_lim = [f'MISC_Pos_Trq_Limit_{wheel}' for wheel in VehicleParams.wheel_names]
+    motor_torque_neg_lim = [f'MISC_Neg_Trq_Limit_{wheel}' for wheel in VehicleParams.wheel_names]
     max_motor_torques_cols = [f'sensors_TC_Tmax_{wheel}' for wheel in VehicleParams.wheel_names]
     min_motor_torques_cols = [f'sensors_TC_Tmin_{wheel}' for wheel in VehicleParams.wheel_names]
     motor_speeds_cols = [f'VSI_Motor_Speed_{wheel}' for wheel in VehicleParams.wheel_names]
@@ -40,7 +42,7 @@ class Tab14(Tab):
     knob_mode = 'sensors_Knob3_Mode'
 
     def __init__(self):
-        super().__init__(name="tab14", description="Skid Pad Analysis")
+        super().__init__(name="tab14", description="Skid-Pad Analysis")
         if "data" not in self.memory:
             self.memory['data'] = pd.DataFrame()
 
@@ -57,6 +59,11 @@ class Tab14(Tab):
         self.slip_cols10 = [f'sensors_s_{wheel}_est_10' for wheel in VehicleParams.wheel_names]
         self.slip_cols100 = [f'sensors_s_{wheel}_est_100' for wheel in VehicleParams.wheel_names]
         self.slip_cols1000 = [f'sensors_s_{wheel}_est_1000' for wheel in VehicleParams.wheel_names]
+
+        self.torque_pos_cols = [f'VSI_TrqPos_{wheel}' for wheel in VehicleParams.wheel_names]
+        self.torque_neg_cols = [f'VSI_TrqNeg_{wheel}' for wheel in VehicleParams.wheel_names]
+
+        self.sampling_time = 0.01
 
     def create_new_feature(self):
         data = self.memory['data'].copy()
@@ -78,6 +85,9 @@ class Tab14(Tab):
 
         # Motor Torque Cmd mean
         data['sensors_Torque_cmd_mean'] = data['sensors_Torque_cmd'].copy() / 4
+
+        # Steering angle rad
+        data['steering_angle_rad'] = data['sensors_steering_angle'] * np.pi / 180
 
         # Create wheel speeds and longitudinal velocity
         data[self.wheel_speeds_cols] = data[self.motor_speeds_cols].apply(
@@ -110,26 +120,44 @@ class Tab14(Tab):
             result_type='expand'
         )
         data[self.longitudinal_forces_est_cols] = data[SE_param.estimated_states_names].apply(
-            lambda x: estimate_longitudinal_tire_forces(x, use_traction_ellipse=False), axis=1,
+            lambda x: estimate_longitudinal_tire_forces(x, use_traction_ellipse=True), axis=1,
             result_type='expand'
         )
 
         # Create Fsum and Fsum_est
-        data['Fdrag'] = data[SE_param.estimated_states_names].apply(
-            lambda x: estimate_aero_focre_one_tire(x), axis=1)
+        # data['Fdrag'] = data[SE_param.estimated_states_names].apply(
+        #     lambda x: estimate_aero_focre_one_tire(x), axis=1)
 
-        data['Fsum'] = data[self.longitudinal_forces_cols].sum(axis=1) - data['Fdrag']
-        data['Fsum_est'] = data[self.longitudinal_forces_est_cols].sum(axis=1) - data['Fdrag']
-        data['Fsum_accx'] = data['sensors_accX'].map(lambda x: x * VehicleParams.m_car)
-        data['Fsum_accxEst'] = data['sensors_aXEst'].apply(lambda x: x * VehicleParams.m_car)
+        # data['Fsum'] = data[self.longitudinal_forces_cols].sum(axis=1) - data['Fdrag']
+        # data['Fsum_est'] = data[self.longitudinal_forces_est_cols].sum(axis=1) - data['Fdrag']
+        # data['Fsum_accx'] = data['sensors_accX'].map(lambda x: x * VehicleParams.m_car)
+        # data['Fsum_accxEst'] = data['sensors_aXEst'].apply(lambda x: x * VehicleParams.m_car)
+
+        # Compute Torque command
+        data[self.torque_pos_cols] = data[self.motor_torque_pos_lim].apply(lambda x: x / 0.773, axis=1)
+        data[self.torque_neg_cols] = data[self.motor_torque_neg_lim].apply(lambda x: x / 0.773, axis=1)
+
+        # Compute delta torque
+        data['Delta_Torque_feedback'] = data[self.motor_torques_cols].apply(
+            lambda x: (x[0] - x[1] + x[2] - x[3]), axis=1
+        )
 
         # Filter 0 values from RTK data and interpolate
-        rtk_columns = [col for col in data.columns if 'RTK' in col]
-        data[rtk_columns] = data[rtk_columns].replace(0, np.nan)
-        data[rtk_columns] = data[rtk_columns].interpolate(method='linear', axis=0)
+        # rtk_columns = [col for col in data.columns if 'RTK' in col]
+        # data[rtk_columns] = data[rtk_columns].replace(0, np.nan)
+        # data[rtk_columns] = data[rtk_columns].interpolate(method='linear', axis=0)
 
         # Compute the v norm from RTK data
-        data['sensors_RTK_v_norm'] = data[['sensors_RTK_vx', 'sensors_RTK_vy']].apply(lambda x: np.linalg.norm(x), axis=1)
+        # data['sensors_RTK_v_norm'] = np.sqrt(data['sensors_RTK_vx'].values ** 2 + data['sensors_RTK_vy'].values ** 2)
+
+        # data['sensors_pitch_rate_deg'] = data['sensors_gyroY'] * (180 / np.pi)
+        # data['sensors_pitch_rate_integ_deg'] = data['sensors_pitch_rate_deg'].cumsum() * self.sampling_time
+
+        # Create trcation ellipse mu
+        data['sensors_mu_est'] = data[SE_param.estimated_states_names].apply(
+            lambda x: traction_ellipse(x), axis=1
+        )
+
         self.memory['data'] = data.copy()
 
     def compute_state_estimator(self):
@@ -162,13 +190,16 @@ class Tab14(Tab):
     def build(self, session_creator) -> bool:
 
         st.header(self.description)
-        datetime_range = session_creator.r2d_session_selector(st.session_state.sessions,
-                                                              key=f"{self.name} session selector")
+        datetime_range = session_creator.r2d_session_selector(
+            st.session_state.sessions,
+            key=f"{self.name} session selector",
+            session_info=True
+        )
 
         cols = st.columns(6)
         if cols[0].button("Fetch this session", key=f"{self.name} fetch data button"):
             data = session_creator.fetch_data(datetime_range, verify_ssl=st.session_state.verify_ssl)
-            data.index = (data.index - data.index[0]).total_seconds()
+            data.index = (data.index - data.index[0]).total_seconds().round(2)
             self.memory['data'] = data
             self.create_new_feature()
 
@@ -194,27 +225,62 @@ class Tab14(Tab):
         if len(self.memory['data']) > 0:
             data = self.memory['data']
 
-            with st.container(border=True):
-                cols = st.columns(4)
-                threshold = cols[1].number_input("Threshold", value=60, key=f"{self.name} APPS Threshold")
-                left_shift = cols[2].number_input("Left Shift", value=20, key=f"{self.name} left shift")
-                right_shift = cols[3].number_input("Right Shift", value=0, key=f"{self.name} right shift")
-                if cols[0].toggle("Filter APPS > Threshold", key=f"{self.name} filter APPS"):
-                    index = data['sensors_APPS_Travel'] > threshold
-                    augmented_index = index | index.shift(right_shift) | index.shift(-left_shift)
-                    data = data[augmented_index]
+            with st.expander("Filtering"):
+
+                with st.container(border=True):
+                    cols = st.columns(4)
+                    threshold = cols[1].number_input("Threshold", value=60, key=f"{self.name} APPS Threshold")
+                    left_shift = cols[2].number_input("Left Shift", value=20, key=f"{self.name} left shift")
+                    right_shift = cols[3].number_input("Right Shift", value=0, key=f"{self.name} right shift")
+                    if cols[0].toggle("Filter APPS > Threshold", key=f"{self.name} filter APPS"):
+                        index = data['sensors_APPS_Travel'] > threshold
+                        augmented_index = index | index.shift(right_shift) | index.shift(-left_shift)
+                        data = data[augmented_index]
+
+
+                with st.container(border=True):
+                    cols = st.columns(3, gap='large')
+
+                    apps_diff = data['sensors_APPS_Travel'].diff()
+                    if cols[0].toggle("Filter APPS rising edge", key=f"{self.name} filter APPS rising edge"):
+                        # Find and APPS rising edge
+                        apps_rising_edge = apps_diff.gt(0)
+                        apps_rising_edge = apps_rising_edge[apps_rising_edge].index
+                        if len(apps_rising_edge) > 0:
+                            rising_edge_time = cols[0].selectbox("Rising edge time",apps_rising_edge, key=f"{self.name} rising edge number")
+                            data = data.loc[rising_edge_time:]
+                        else:
+                            st.warning("No rising edge found")
+
+                    if cols[1].toggle("Filter APPS falling edge", key=f"{self.name} filter APPS falling edge"):
+                        # Find and APPS falling edge
+                        apps_falling_edge = apps_diff.lt(0)
+                        apps_falling_edge = apps_falling_edge[apps_falling_edge].index
+                        if len(apps_falling_edge) > 0:
+                            falling_edge_time = cols[1].selectbox("Falling edge time", apps_falling_edge, key=f"{self.name} falling edge number")
+                            data = data.loc[:falling_edge_time]
+                        else:
+                            st.warning("No falling edge found")
+
+                    time_from_start = cols[2].number_input("Time from start [ms]", value=1000,
+                                                           key=f"{self.name} time from start")
+                    if cols[2].toggle("Filter with time from start"):
+                        data = data.iloc[:time_from_start]
+
+
+
 
             with st.container(border=True):
                 mode_int = data[self.knob_mode].iloc[0]
-                elapsed_time = data.index[-1] - data.index[0]
-                arg_max_accx = data['sensors_aXEst'].rolling(10).mean().idxmax()
-                max_accx = data['sensors_aXEst'].rolling(10).mean().max()
+                elapsed_time = data.index[-1] - data.index[0] + self.sampling_time
+                arg_max_accx = data['sensors_accX'].rolling(10).mean().idxmax()
+                max_accx = data['sensors_accX'].rolling(10).mean().max()
                 arg_max_vx = data['sensors_vXEst'].rolling(10).mean().idxmax()
                 max_vx = data['sensors_vXEst'].rolling(10).mean().max()
-                mean_accx = data['sensors_aXEst'].mean()
+                mean_accx = data['sensors_accX'].mean()
 
                 # Compute distance from velocity
-                data['distance'] = data['sensors_vXEst'].cumsum() * 0.01
+                data['distance'] = data['sensors_vXEst'].cumsum() * self.sampling_time
                 distance = data['distance'].iloc[-1]
 
                 # Show metrics
@@ -226,11 +292,40 @@ class Tab14(Tab):
                 cols[4].metric("Max VX", f"{max_vx:.2f} m/s", f"At {arg_max_vx:.2f} s", delta_color="off")
                 cols[5].metric("Distance", f"{distance:.2f} m")
 
+            st.divider()
+
+
+            st.subheader("Session Overview")
+            cols = st.columns(3)
+            with cols[0]:
+                driver_inputs_cols = ['sensors_APPS_Travel', 'sensors_BPF', 'sensors_steering_angle']
+                plot_data(data=data, tab_name=self.name + "DI", title="Driver Inputs", default_columns=driver_inputs_cols, simple_plot=True)
+            with cols[1]:
+                car_outputs_cols = self.motor_torques_cols
+                plot_data(data=data, tab_name=self.name + "CO", title="Car Outputs", default_columns=car_outputs_cols, simple_plot=True)
+            with cols[2]:
+                sensors_cols = ['sensors_accX', 'sensors_accY'] + self.wheel_speeds_cols
+                plot_data(data=data, tab_name=self.name + "S", title="Sensors", default_columns=sensors_cols, simple_plot=True)
+            st.divider()
+
+
             # PLot acceleration and speed
             with st.expander("Acceleration and Speed"):
-                data['v_accX_integrated'] = data['sensors_accX'].cumsum() * 0.01
+                data['v_accX_integrated'] = data['sensors_accX'].cumsum() * self.sampling_time
                 plot_data(data=data, tab_name=self.name + "AS", title="Overview",
-                          default_columns=self.acc_cols + self.speed_cols + ['v_accX_integrated'])
+                          default_columns=['sensors_accX', 'sensors_accY'] + self.acc_cols + self.speed_cols + ['v_accX_integrated'])
+
+            # Plot yaw rate tracking
+            with st.expander("Yaw Rate Tracking"):
+                if st.toggle("Show yaw rate tracking", key=f"{self.name} show yaw rate tracking"):
+                    plot_data_comparaison(
+                        data=self.memory['data'],
+                        tab_name=self.name + "_tv_reference_comparison",
+                        default_columns=["sensors_gyroZ", "sensors_TV_yaw_ref"],
+                        title="TV reference tracking",
+                        comparison_names=["Oversteer", "Understeer"],
+                        extra_columns=['steering_angle_rad'],
+                    )
 
             # Plot wheel speeds
             with st.expander("Wheel Speeds"):
@@ -320,3 +415,13 @@ class Tab14(Tab):
                 if st.toggle("Show Fsum", key=f"{self.name} show Fsum"):
                     plot_data(data=data, tab_name=self.name + "Fsum", title="Fsum",
                               default_columns=['Fsum', 'Fsum_est', 'Fsum_accx', 'Fsum_accxEst'])
+
+
+            # Plot delta torque
+            with st.expander("Delta Torque"):
+                if st.toggle("Show delta torque", key=f"{self.name} show delta torque"):
+                    plot_data_comparaison(
+                        data=data, tab_name=self.name + "DT", title="Delta Torque",
+                        default_columns=['Delta_Torque_feedback', 'sensors_TV_delta_torque'],
+                        extra_columns=[self.steering_col]
+                    )

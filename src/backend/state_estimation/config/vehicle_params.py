@@ -10,7 +10,7 @@ class VehicleParams:
     dt = 0.01
 
     # Control Modes
-    ControlMode = defaultdict(lambda: 'Unkown', {1:'Rien', 2:'TV', 3:'TCO', 4:'TCC', 5:'TCO + TV', 6:'TCC + TV'})
+    ControlMode = defaultdict(lambda: 'Unkown', {1:'Rien', 2:'TV', 3:'TCO', 4:'TCC', 5:'TCO + TV', 6:'TCC + TV', 7:'TCOL'})
 
     # Aero
     A_front = 1.61
@@ -29,7 +29,7 @@ class VehicleParams:
     kout = 0.162
 
     # Rigid parameters
-    g = 9.81
+    g = 9.785
     lzz = 180
     a = 1.24
     b = 1.24
@@ -40,11 +40,11 @@ class VehicleParams:
     z_cg = 0.295
 
     # Wheel parameters
-    Iw = 0.3
+    Iw = 0.3 # 0.3
     Rw = 0.202
     kb = 0 # 0.18
     kd = 0.17
-    ks = 15
+    ks = 5
     wheel_names = ['FL', 'FR', 'RL', 'RR']
 
     # Tire parameters

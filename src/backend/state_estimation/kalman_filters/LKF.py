@@ -4,6 +4,7 @@ import numpy as np
 from filterpy import kalman
 
 from src.backend.state_estimation.config.state_estimation_param import SE_param
+from src.backend.state_estimation.config.vehicle_params import VehicleParams
 
 
 class LKF:
@@ -44,7 +45,7 @@ class LKF:
             return True
         return False
 
-    def update(self, x: np.array, P: np.ndarray, ins: np.ndarray):
+    def update(self, x: np.array, P: np.ndarray, ins: np.ndarray, attitude: np.ndarray) -> (np.array, np.ndarray):
         """
         Compute the update step of the LKF
         :param x: shape(n,)
@@ -52,12 +53,12 @@ class LKF:
         :param ins: [ax ay yaw rate] np.array
         :return: x, P
         """
-        ax, ay, yaw_rate = ins
+        ax, ay, _, _, _, yaw_rate = ins
         self.ax_hist.append(ax)
         self.ay_hist.append(ay)
         self.yaw_hist.append(yaw_rate)
-        ax -= self.ax_bias
-        ay -= self.ay_bias
+        ax = ax - self.ax_bias - np.sin(attitude[0]) * VehicleParams.g
+        ay = ay - self.ay_bias + np.sin(attitude[1]) * np.cos(attitude[0]) * VehicleParams.g
         x, P = kalman.update(x, P, np.array([ax, ay, yaw_rate]), self.R, self.H)
         return x, P
 
