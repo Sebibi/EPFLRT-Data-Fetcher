@@ -129,21 +129,21 @@ if __name__ == '__main__':
 
     cols = st.columns(3)
     if use_slider:
-        Tcmd = cols[0].slider("Commanded Torque", -1100, 1100, 300)
-        Mz_cmd = cols[1].slider("Commanded Moment", -2000, 2000, 0)
-        steering = cols[2].slider("Steering Angle", -120, 120, 0)
+        Tcmd = cols[0].slider("Torque Command [Nm]", -1100, 1100, 300, 5)
+        Mz_cmd = cols[1].slider("Moment Z reference [Nm]", -2000, 2000, 0, 5)
+        steering = cols[2].slider("Steering Angle [deg]", -120, 120, 0, 5)
     else:
-        Tcmd = cols[0].number_input("Commanded Torque", -1100, 1100, 300)
-        Mz_cmd = cols[1].number_input("Commanded Moment", -2000, 2000, 0)
-        steering = cols[2].number_input("Steering Angle", -120, 120, 0)
+        Tcmd = cols[0].number_input("Torque Command [Nm]", -1100, 1100, 300, 5)
+        Mz_cmd = cols[1].number_input("Moment Z reference [Nm]", -2000, 2000, 0, 5)
+        steering = cols[2].number_input("Steering Angle [deg]", -120, 120, 0, 5)
 
     cols = st.columns(4)
     Tmax = np.array([0, 0, 0, 0])
     for i in range(4):
         if use_slider:
-            Tmax[i] = cols[i].slider(f"{wheels[i]}", 0, 275, 200)
+            Tmax[i] = cols[i].slider(f"{wheels[i]} [Nm]", 0, 275, 200, 5)
         else:
-            Tmax[i] = cols[i].number_input(f"{wheels[i]}", 0, 275, 200)
+            Tmax[i] = cols[i].number_input(f"{wheels[i]} [Nm]", 0, 275, 200, 5)
     st.divider()
 
 
@@ -167,15 +167,15 @@ if __name__ == '__main__':
     delta = np.round(results_raw_rounded['total_T'] - Tcmd, 1)
     color = 'inverse' if Tcmd < 0 else 'inverse'if delta != 0 else 'off'
     cols[0].metric(
-        "Total Torque",
-        results_raw_rounded["total_T"],
+        "Total Torque [Nm]",
+        f"{results_raw_rounded['total_T']}",
         f"Error: {-delta}",
         delta_color=color
     )
     delta = np.round(results_raw_rounded['total_Mz'] - Mz_cmd, 1)
     color = 'inverse' if Tcmd < 0 else 'inverse' if delta != 0 else 'off'
     cols[0].metric(
-        "Total Moment",
+        "Total Moment [Nm]",
         results_raw_rounded["total_Mz"],
         f"Error: {-delta}",
         delta_color=color
@@ -185,7 +185,7 @@ if __name__ == '__main__':
     for i in range(4):
         grip = abs(np.round(results_raw["grip_allocation"][i], 2))
         cols[i%2 + 1].metric(
-            f"{wheels[i]}", results_raw_rounded["T_final"][i],
+            f"{wheels[i]} [Nm]", results_raw_rounded["T_final"][i],
             f"Ratio: {int(grip * 100)}%",
             delta_color='off'
         )
