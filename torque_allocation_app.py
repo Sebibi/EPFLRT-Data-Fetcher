@@ -166,7 +166,6 @@ if __name__ == '__main__':
     cols = st.columns(3)
     delta = np.round(results_raw_rounded['total_T'] - Tcmd, 1)
     color = 'inverse' if Tcmd < 0 else 'inverse'if delta != 0 else 'off'
-    st.warning(color)
     cols[0].metric(
         "Total Torque",
         results_raw_rounded["total_T"],
