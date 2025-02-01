@@ -229,7 +229,6 @@ class Tab13(Tab):
                         augmented_index = index | index.shift(right_shift) | index.shift(-left_shift)
                         data = data[augmented_index]
 
-
                 with st.container(border=True):
                     cols = st.columns(3, gap='large')
 
@@ -239,7 +238,8 @@ class Tab13(Tab):
                         apps_rising_edge = apps_diff.gt(0)
                         apps_rising_edge = apps_rising_edge[apps_rising_edge].index
                         if len(apps_rising_edge) > 0:
-                            rising_edge_time = cols[0].selectbox("Rising edge time",apps_rising_edge, key=f"{self.name} rising edge number")
+                            rising_edge_time = cols[0].selectbox("Rising edge time", apps_rising_edge,
+                                                                 key=f"{self.name} rising edge number")
                             data = data.loc[rising_edge_time:]
                         else:
                             st.warning("No rising edge found")
@@ -249,7 +249,8 @@ class Tab13(Tab):
                         apps_falling_edge = apps_diff.lt(0)
                         apps_falling_edge = apps_falling_edge[apps_falling_edge].index
                         if len(apps_falling_edge) > 0:
-                            falling_edge_time = cols[1].selectbox("Falling edge time", apps_falling_edge, key=f"{self.name} falling edge number")
+                            falling_edge_time = cols[1].selectbox("Falling edge time", apps_falling_edge,
+                                                                  key=f"{self.name} falling edge number")
                             data = data.loc[:falling_edge_time]
                         else:
                             st.warning("No falling edge found")
@@ -258,9 +259,6 @@ class Tab13(Tab):
                                                            key=f"{self.name} time from start")
                     if cols[2].toggle("Filter with time from start"):
                         data = data.iloc[:time_from_start]
-
-
-
 
             with st.container(border=True):
                 mode_int = data[self.knob_mode].iloc[0]
@@ -286,37 +284,46 @@ class Tab13(Tab):
 
             st.divider()
 
+            if st.checkbox("Show data", key=f"{self.name} show data"):
+                with st.expander("Raw Data"):
+                    selected_columns = st.multiselect("Select columns to display", data.columns)
+                    ddata = data[selected_columns].copy()
+                    st.dataframe(ddata)
 
             st.subheader("Session Overview")
             cols = st.columns(3)
             with cols[0]:
                 driver_inputs_cols = ['sensors_APPS_Travel', 'sensors_BPF', 'sensors_steering_angle']
-                plot_data(data=data, tab_name=self.name + "DI", title="Driver Inputs", default_columns=driver_inputs_cols, simple_plot=True)
+                plot_data(data=data, tab_name=self.name + "DI", title="Driver Inputs",
+                          default_columns=driver_inputs_cols, simple_plot=True)
             with cols[1]:
                 car_outputs_cols = self.motor_torques_cols
-                plot_data(data=data, tab_name=self.name + "CO", title="Car Outputs", default_columns=car_outputs_cols, simple_plot=True)
+                plot_data(data=data, tab_name=self.name + "CO", title="Car Outputs", default_columns=car_outputs_cols,
+                          simple_plot=True)
             with cols[2]:
                 sensors_cols = ['sensors_accX', 'sensors_accY'] + self.wheel_speeds_cols + ['sensors_RTK_v_norm']
-                plot_data(data=data, tab_name=self.name + "S", title="Sensors", default_columns=sensors_cols, simple_plot=True)
+                plot_data(data=data, tab_name=self.name + "S", title="Sensors", default_columns=sensors_cols,
+                          simple_plot=True)
             st.divider()
-
 
             # PLot acceleration and speed
             with st.expander("Acceleration and Speed"):
                 data['v_accX_integrated'] = data['sensors_accX'].cumsum() * self.sampling_time
                 plot_data(data=data, tab_name=self.name + "AS", title="Overview",
-                          default_columns=['sensors_accX', 'sensors_accY'] + self.acc_cols + self.speed_cols + ['v_accX_integrated'])
+                          default_columns=['sensors_accX', 'sensors_accY'] + self.acc_cols + self.speed_cols + [
+                              'v_accX_integrated'])
 
             # Plot wheel speeds
             with st.expander("Wheel Speeds"):
                 if st.toggle("Show wheel speeds", key=f"{self.name} show wheel speeds"):
                     plot_data(data=data, tab_name=self.name + "WS", title="Wheel Speeds",
-                          default_columns=self.wheel_speeds_cols + self.speed_cols[:1] + ['v_accX_integrated'])
+                              default_columns=self.wheel_speeds_cols + self.speed_cols[:1] + ['v_accX_integrated'])
 
             # Plot the wheel slip
             with st.expander("Wheel Slip"):
                 if st.toggle("Show wheel slip", key=f"{self.name} show wheel slip"):
-                    plot_data(data=data, tab_name=self.name + "Slip", title="Slip Ratios", default_columns=self.slip_cols)
+                    plot_data(data=data, tab_name=self.name + "Slip", title="Slip Ratios",
+                              default_columns=self.slip_cols)
 
             # Sanity check: plot the wheel speeds estimation
             with st.expander("Wheel Speeds Estimation subplots"):
@@ -331,7 +338,8 @@ class Tab13(Tab):
             # Plot longitudinal force
             with st.expander("Wheel Speeds Estimation"):
                 if st.toggle("Show longitudinal forces", key=f"{self.name} show wheel speed estimation"):
-                    wheel = st.selectbox("Wheel", VehicleParams.wheel_names + ['all'], key=f"{self.name} wheel selection long force")
+                    wheel = st.selectbox("Wheel", VehicleParams.wheel_names + ['all'],
+                                         key=f"{self.name} wheel selection long force")
                     cols = self.wheel_speeds_cols + self.wheel_speeds_est_cols + self.vl_cols
                     if wheel != 'all':
                         cols = [col for col in cols if wheel in col]
@@ -364,7 +372,8 @@ class Tab13(Tab):
             # Plot longitudinal force
             with st.expander("Longitudinal Forces"):
                 if st.toggle("Show longitudinal forces", key=f"{self.name} show longitudinal force"):
-                    wheel = st.selectbox("Wheel", VehicleParams.wheel_names + ['all'], key=f"{self.name} wheel selection long force")
+                    wheel = st.selectbox("Wheel", VehicleParams.wheel_names + ['all'],
+                                         key=f"{self.name} wheel selection long force")
                     cols = self.longitudinal_forces_cols + self.longitudinal_forces_est_cols + self.slip_cols1000
                     if wheel != 'all':
                         cols = [col for col in cols if wheel in col]
@@ -379,10 +388,12 @@ class Tab13(Tab):
                     fig, ax = plt.subplots(2, 2, figsize=(15, 10))
 
                     for i, wheel in enumerate(VehicleParams.wheel_names):
-                        cols = [self.motor_torques_cols[i], self.max_motor_torques_cols[i], self.min_motor_torques_cols[i]]
+                        cols = [self.motor_torques_cols[i], self.max_motor_torques_cols[i],
+                                self.min_motor_torques_cols[i]]
                         if add_slips:
                             cols += [self.slip_cols1000[i]]
-                        data[cols].rolling(window_size).mean().plot(ax=ax[i // 2, i % 2], title=f"Wheel {wheel} torques")
+                        data[cols].rolling(window_size).mean().plot(ax=ax[i // 2, i % 2],
+                                                                    title=f"Wheel {wheel} torques")
                     plt.tight_layout()
                     st.pyplot(fig)
 

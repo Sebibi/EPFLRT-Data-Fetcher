@@ -30,10 +30,20 @@ def measure_delta_wheel_angle(steering_angle: float) -> np.ndarray:
     delta_wheels[1] = np.dot(k_FR, x)
     return np.deg2rad(delta_wheels)
 
+def measure_delta_wheel_angle_mean(steering_angle: float):
+    delta_wheels = np.zeros(4)
+    k_FL = [1.24529686449354e-08, 2.15639847160840e-06, 0.000194484114611891, 0.208689090578083, 0.0378881485270762]
+    k_FR = [-1.24529686449398e-08, 2.15639847160880e-06, -0.000194484114611844, 0.208689090578078, -0.0378881485268889]
+    k_mean = (np.array(k_FL) + np.array(k_FR)) / 2.0
+    x = np.array([steering_angle ** 4, steering_angle ** 3, steering_angle ** 2, steering_angle, 1])
+    delta_wheels[0] = np.dot(k_mean, x)
+    delta_wheels[1] = np.dot(k_mean, x)
+    return np.deg2rad(delta_wheels)
+
 
 if __name__ == '__main__':
-    steering_angles = np.linspace(-80, 80, 100)
-    delta_wheel_angles = np.array([measure_delta_wheel_angle_old(steering_angle) for steering_angle in steering_angles])
+    steering_angles = np.linspace(-110, 110, 100)
+    delta_wheel_angles = np.array([measure_delta_wheel_angle(steering_angle) for steering_angle in steering_angles])
 
     delta_wheel_angles = np.rad2deg(delta_wheel_angles)
     delta_FL = delta_wheel_angles[:, 0]
@@ -50,3 +60,4 @@ if __name__ == '__main__':
     plt.xlabel('Steering angle [deg]')
     plt.ylabel('Delta wheel angle [deg]')
     plt.show()
+
