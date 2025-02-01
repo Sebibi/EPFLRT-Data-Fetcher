@@ -153,7 +153,7 @@ for i in range(len(st.session_state.default_answer)):
         answer_match = [a == b for a, b in zip(answer, st.session_state.answer)]
         answer_score = sum(answer_match)
         # # if cols[1].button("Show score", key=f"show_score {i}"):
-        cols[1].number_input(f"Score {i+1}", answer_score, label_visibility="collapsed", key=f"answer_score {i}")
+        cols[1].text_input(f"Score {i+1}", answer_score, disabled=True, label_visibility="collapsed", key=f"answer_score {i}")
     else:
         answer_score = cols[1].number_input(
             label=f"Score {i+1}", 
